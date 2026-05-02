@@ -22,9 +22,16 @@ $leaves = $db->query($sql)->fetchAll();
 
 <div class="flex items-center justify-between mb-4">
     <h1 class="page-title">Time Off</h1>
-    <a href="<?= BASE_URL ?>index.php?page=leave/apply" class="btn btn-primary">
-        <i data-lucide="plus" class="w-4 h-4"></i> New Request
-    </a>
+    <div class="flex items-center gap-2">
+        <?php if (canManageLeaves()): ?>
+        <a href="<?= BASE_URL ?>../backend/reports/email_demo_report.php" class="btn btn-secondary">
+            <i data-lucide="mail" class="w-4 h-4 mr-1"></i> Email Leave Report
+        </a>
+        <?php endif; ?>
+        <a href="<?= BASE_URL ?>index.php?page=leave/apply" class="btn btn-primary">
+            <i data-lucide="plus" class="w-4 h-4 mr-1"></i> New Request
+        </a>
+    </div>
 </div>
 
 <!-- Tab Bar per spec 5.5 -->

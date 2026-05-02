@@ -198,7 +198,6 @@ if ($role === ROLE_ADMIN || $role === ROLE_HR || $role === ROLE_PAYROLL) {
         </div>
     </div>
 </div>
-
 <!-- Quick Actions -->
 <div class="mt-6">
     <h2 class="section-heading mb-4">Quick Actions</h2>
@@ -221,5 +220,75 @@ if ($role === ROLE_ADMIN || $role === ROLE_HR || $role === ROLE_PAYROLL) {
         </a>
     </div>
 </div>
+
+<?php if ($role === ROLE_ADMIN): 
+    // Fetch Email Metrics
+    $emailStats = $db->query("SELECT 
+        COUNT(*) as total, 
+        SUM(CASE WHEN status = 'sent' THEN 1 ELSE 0 END) as success,
+        SUM(CASE WHEN status = 'failed' THEN 1 ELSE 0 END) as failed
+        FROM email_logs")->fetch();
+    
+    $totalMail = $emailStats['total'] ?? 0;
+    $successRate = $totalMail > 0 ? round(($emailStats['success'] / $totalMail) * 100) : 0;
+    
+    $recentMailLogs = $db->query("SELECT * FROM email_logs ORDER BY sent_at DESC LIMIT 5")->fetchAll();
+?>
+<!-- Email Metrics Section (Admin Only) -->
+<div class="mt-8">
+    <div class="flex items-center justify-between mb-4">
+        <h2 class="section-heading">System Communication Metrics</h2>
+        <div class="flex items-center gap-4 text-[12px]">
+            <span class="flex items-center gap-1.5"><span class="w-2 h-2 rounded-full bg-success"></span> Sent: <?= $emailStats['success'] ?></span>
+            <span class="flex items-center gap-1.5"><span class="w-2 h-2 rounded-full bg-danger"></span> Failed: <?= $emailStats['failed'] ?></span>
+        </div>
+    </div>
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        <!-- Stats Card -->
+        <div class="card flex flex-col justify-center items-center py-8">
+            <div class="relative w-24 h-24 flex items-center justify-center mb-4">
+                <svg class="w-full h-full transform -rotate-90">
+                    <circle cx="48" cy="48" r="40" stroke="currentColor" stroke-width="8" fill="transparent" class="text-surface-100" />
+                    <circle cx="48" cy="48" r="40" stroke="currentColor" stroke-width="8" fill="transparent" class="text-brand" stroke-dasharray="<?= (2 * pi() * 40) ?>" stroke-dashoffset="<?= (2 * pi() * 40) * (1 - $successRate/100) ?>" />
+                </svg>
+                <span class="absolute text-[18px] font-bold text-brand"><?= $successRate ?>%</span>
+            </div>
+            <p class="text-[13px] font-medium text-txt">Delivery Success Rate</p>
+            <p class="caption"><?= $totalMail ?> Total Emails Processed</p>
+        </div>
+
+        <!-- Logs Table -->
+        <div class="lg:col-span-2 card !p-0">
+            <div class="px-6 py-4 border-b border-surface-200">
+                <p class="text-[13px] font-medium">Recent Communication Logs</p>
+            </div>
+            <table class="data-table">
+                <thead><tr>
+                    <th>Recipient</th>
+                    <th>Subject</th>
+                    <th>Status</th>
+                    <th class="text-right">Time</th>
+                </tr></thead>
+                <tbody>
+                    <?php if (empty($recentMailLogs)): ?>
+                        <tr><td colspan="4" class="text-center text-muted py-4">No emails sent yet.</td></tr>
+                    <?php else: foreach ($recentMailLogs as $log): ?>
+                        <tr>
+                            <td class="text-[12px]"><?= htmlspecialchars($log['recipient_email']) ?></td>
+                            <td class="text-[12px] truncate max-w-[150px]"><?= htmlspecialchars($log['subject']) ?></td>
+                            <td>
+                                <span class="badge <?= $log['status'] === 'sent' ? 'badge-approved' : 'badge-cancelled' ?> !text-[10px]">
+                                    <?= ucfirst($log['status']) ?>
+                                </span>
+                            </td>
+                            <td class="text-right text-muted text-[11px]"><?= date('H:i', strtotime($log['sent_at'])) ?></td>
+                        </tr>
+                    <?php endforeach; endif; ?>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+<?php endif; ?>
 
 <?php require_once COMPONENTS_PATH . 'footer.php'; ?>

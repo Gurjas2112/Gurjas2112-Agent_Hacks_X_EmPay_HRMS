@@ -45,6 +45,26 @@ try {
     $db = getDBConnection();
     $stmt = $db->prepare("INSERT INTO leaves (user_id, leave_type_id, from_date, to_date, days, reason, status) VALUES (?,?,?,?,?,?,'pending')");
     $stmt->execute([$userId, $leaveType, $fromDate, $toDate, $days, $reason]);
+
+    // Send Notification Email to HR
+    require_once __DIR__ . '/../../utils/mailer.php';
+    $mailConfig = require __DIR__ . '/../../config/mail.php';
+    $hrEmail = $mailConfig['accounts']['hr']['email'];
+    $userName = getUserName();
+    
+    $subject = "New Leave Request: $userName";
+    $body = "
+        <h2>New Leave Request</h2>
+        <p><strong>Employee:</strong> $userName</p>
+        <p><strong>Period:</strong> $fromDate to $toDate ($days days)</p>
+        <p><strong>Reason:</strong> $reason</p>
+        <p>Please log in to the HRMS portal to approve or reject this request.</p>
+        <br>
+        <p>Regards,<br>EmPay System</p>
+    ";
+    
+    sendEmPayEmail($hrEmail, $subject, $body, 'system');
+
 } catch (PDOException $e) {
     error_log("DB Error apply leave: " . $e->getMessage());
     setFlash('error', 'Database error.');

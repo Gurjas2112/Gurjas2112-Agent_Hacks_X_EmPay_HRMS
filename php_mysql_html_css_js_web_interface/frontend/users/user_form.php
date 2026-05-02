@@ -37,9 +37,6 @@ if ($isEdit) {
 $departments = $db->query("SELECT id, name FROM departments")->fetchAll();
 ?>
 
-
-
-
 <div class="flex items-center justify-between mb-6">
     <h1 class="page-title"><?= $pageTitle ?></h1>
     <div class="flex items-center gap-2">
@@ -99,7 +96,16 @@ $departments = $db->query("SELECT id, name FROM departments")->fetchAll();
                 <input type="date" name="date_of_join" value="<?= htmlspecialchars($user['date_of_join']) ?>" class="form-input" placeholder="DD/MM/YYYY" <?= !$canEdit ? 'readonly' : '' ?>>
             </div>
             
-
+            <?php if (!$isEdit && $canEdit) { ?>
+            <div class="sm:col-span-2 mt-2">
+                <div class="p-3 bg-surface-50 border border-surface-200 rounded-md">
+                    <p class="text-[12px] text-muted flex items-center gap-2">
+                        <i data-lucide="info" class="w-3.5 h-3.5"></i>
+                        Password will be automatically generated and sent to the employee.
+                    </p>
+                </div>
+            </div>
+            <?php } ?>
         </div>
     </form>
 </div>

@@ -11,7 +11,7 @@ $userRole = getUserRole();
 $sidebarItems = [
     ['label' => 'Dashboard',     'icon' => 'layout-dashboard', 'page' => 'dashboard',        'roles' => [ROLE_ADMIN, ROLE_EMPLOYEE, ROLE_HR, ROLE_PAYROLL]],
     ['label' => 'Employees',     'icon' => 'users',            'page' => 'users',             'roles' => [ROLE_ADMIN, ROLE_HR]],
-    ['label' => 'Add Employee',  'icon' => 'user-plus',        'page' => 'users/form',        'roles' => [ROLE_ADMIN, ROLE_HR]],
+    ['label' => 'Add Employee',  'icon' => 'user-plus',        'page' => 'users/user_form',   'roles' => [ROLE_ADMIN, ROLE_HR]],
     ['label' => 'Mark Attendance','icon' => 'clock',            'page' => 'attendance/mark',   'roles' => [ROLE_ADMIN, ROLE_EMPLOYEE, ROLE_HR, ROLE_PAYROLL]],
     ['label' => 'Attendance Log','icon' => 'calendar-days',     'page' => 'attendance/history','roles' => [ROLE_ADMIN, ROLE_EMPLOYEE, ROLE_HR, ROLE_PAYROLL]],
     ['label' => 'Apply Leave',   'icon' => 'calendar-plus',    'page' => 'leave/apply',       'roles' => [ROLE_ADMIN, ROLE_EMPLOYEE, ROLE_HR, ROLE_PAYROLL]],

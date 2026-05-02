@@ -48,6 +48,7 @@ $payruns = $db->query($sql)->fetchAll();
                 <td><span class="badge <?= $bc ?> capitalize"><?= htmlspecialchars($run['status']) ?></span></td>
                 <td class="text-right">
                     <a href="<?= BASE_URL ?>index.php?page=payroll/my_payslips&month=<?= urlencode($run['month']) ?>" class="btn btn-secondary text-[12px]">View Details</a>
+                    <a href="<?= BASE_URL ?>../backend/payroll/email_demo_payslip.php?month=<?= urlencode($run['month']) ?>" class="btn btn-primary text-[12px]" title="Send PDF-style Report via Email">Email Payslip</a>
                 </td>
             </tr>
             <?php endforeach; ?>

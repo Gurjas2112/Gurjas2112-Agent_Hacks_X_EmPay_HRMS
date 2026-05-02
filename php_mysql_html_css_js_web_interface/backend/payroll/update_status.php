@@ -48,6 +48,30 @@ try {
     
     $stmt = $db->prepare($sql);
     $stmt->execute($params);
+
+    if ($newStatus === 'paid') {
+        // Fetch employee and salary details
+        $stmt = $db->prepare("SELECT p.*, u.email, u.full_name FROM payroll p JOIN users u ON p.user_id = u.id WHERE p.id = ?");
+        $stmt->execute([$payslipId]);
+        $payrollData = $stmt->fetch();
+
+        if ($payrollData) {
+            require_once __DIR__ . '/../../utils/mailer.php';
+            $subject = "Payslip Paid: " . $payrollData['month'];
+            $netSalary = $payrollData['basic_salary'] + $payrollData['hra'] + $payrollData['transport'] + $payrollData['special'] - ($payrollData['pf'] + $payrollData['professional_tax'] + $payrollData['tds']);
+            
+            $body = "
+                <h2>Payslip Published</h2>
+                <p>Hi " . htmlspecialchars($payrollData['full_name']) . ",</p>
+                <p>Your salary for <strong>" . $payrollData['month'] . "</strong> has been processed and marked as PAID.</p>
+                <p><strong>Net Amount:</strong> ₹ " . number_format($netSalary, 2) . "</p>
+                <p>You can view and print your detailed payslip by logging into the EmPay portal.</p>
+                <br>
+                <p>Regards,<br>EmPay Payroll Department</p>
+            ";
+            sendEmPayEmail($payrollData['email'], $subject, $body, 'payroll');
+        }
+    }
     
     setFlash('success', 'Payslip status updated to ' . ucfirst($newStatus) . '.');
 } catch (PDOException $e) {

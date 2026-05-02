@@ -60,7 +60,10 @@ $hasPayslips = count($payslips) > 0;
                     <td class="font-medium">₹ <?= number_format($p['net_salary'], 2) ?></td>
                     <td><span class="badge <?= $bc ?> capitalize"><?= htmlspecialchars($p['status']) ?></span></td>
                     <td class="text-right">
-                        <a href="<?= BASE_URL ?>index.php?page=payroll/payslip&id=<?= $p['id'] ?>" class="btn btn-secondary text-[12px]">View Payslip</a>
+                        <a href="<?= BASE_URL ?>index.php?page=payroll/payslip&id=<?= $p['id'] ?>" class="btn btn-secondary text-[12px]">View</a>
+                        <?php if ($role !== ROLE_EMPLOYEE): ?>
+                        <a href="<?= BASE_URL ?>../backend/payroll/email_demo_payslip.php?id=<?= $p['id'] ?>" class="btn btn-primary text-[12px]">Email Payslip</a>
+                        <?php endif; ?>
                     </td>
                 </tr>
                 <?php endforeach; ?>
