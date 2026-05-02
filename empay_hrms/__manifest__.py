@@ -27,6 +27,7 @@ Key Features:
         'mail',
         'bus',
         'base_setup',
+        'auth_signup',
     ],
     'data': [
         'security/empay_security.xml',
@@ -41,6 +42,7 @@ Key Features:
         'views/hr_payrun_views.xml',
         'views/hr_payslip_views.xml',
         'views/dashboard_views.xml',
+        'views/auth_templates.xml',
         'views/menu_views.xml',
     ],
     'demo': [

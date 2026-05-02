@@ -16,7 +16,7 @@
               name="Dashboard"
               parent="menu_empay_root"
               action="action_empay_dashboard"
-              groups="empay_hrms.group_hr_officer,empay_hrms.group_payroll_officer,empay_hrms.group_admin"
+              groups="empay_hrms.group_employee,empay_hrms.group_hr_officer,empay_hrms.group_payroll_officer,empay_hrms.group_admin"
               sequence="1"/>
 
     <!-- ============================================================ -->
@@ -121,6 +121,13 @@
               action="action_empay_payslips"
               groups="empay_hrms.group_payroll_officer,empay_hrms.group_admin"
               sequence="2"/>
+
+    <menuitem id="menu_empay_my_payslips"
+              name="My Payslips"
+              parent="menu_empay_root"
+              action="action_empay_my_payslips"
+              groups="empay_hrms.group_employee,empay_hrms.group_hr_officer,empay_hrms.group_payroll_officer,empay_hrms.group_admin"
+              sequence="45"/>
 
     <!-- ============================================================ -->
     <!--                   REPORTS                                     -->

@@ -7,7 +7,10 @@
             <!-- Header -->
             <div class="empay-header">
                 <div class="empay-header-left">
-                    <h1 class="empay-title">EmPay Dashboard</h1>
+                    <div class="empay-logo-container">
+                        <img src="/empay_hrms/static/src/img/logo.jpeg" class="empay-header-logo" alt="EmPay Logo"/>
+                        <h1 class="empay-title">EmPay Dashboard</h1>
+                    </div>
                     <div class="empay-subtitle-row">
                         <p class="empay-subtitle">Smart HR Analytics &amp; Overview</p>
                         <!-- Live Status Indicator -->
@@ -112,6 +115,37 @@
                             <span class="empay-stat-small-value"><t t-esc="formatCurrency(state.stats.month_net_payroll)"/></span>
                         </div>
                     </div>
+
+                    <!-- Quick Actions -->
+                    <div class="empay-quick-actions">
+                        <button class="empay-action-btn empay-action-btn-primary" t-on-click="openGeneratePayrun">
+                            <i class="fa fa-calculator"/> Generate Pay Run
+                        </button>
+                        <button class="empay-action-btn empay-action-btn-accent" t-on-click="openPayslips">
+                            <i class="fa fa-file-text-o"/> View Payslips
+                        </button>
+                    </div>
+
+                    <!-- Last Payrun Info Card -->
+                    <t t-if="state.stats.last_payrun and state.stats.last_payrun.name != 'N/A'">
+                        <div class="empay-payrun-info-card" t-on-click="openPayruns">
+                            <div class="empay-payrun-info-left">
+                                <div class="empay-payrun-info-icon">
+                                    <i class="fa fa-briefcase"/>
+                                </div>
+                                <div class="empay-payrun-info-details">
+                                    <h4>Last Pay Run</h4>
+                                    <div class="empay-payrun-name"><t t-esc="state.stats.last_payrun.name"/></div>
+                                </div>
+                            </div>
+                            <div class="empay-payrun-info-right">
+                                <span t-attf-class="empay-badge #{getPayrunStateBadge(state.stats.last_payrun.state).class}">
+                                    <t t-esc="getPayrunStateBadge(state.stats.last_payrun.state).label"/>
+                                </span>
+                                <div class="empay-payrun-amount"><t t-esc="formatCurrency(state.stats.last_payrun.total_net)"/></div>
+                            </div>
+                        </div>
+                    </t>
 
                     <div class="empay-dashboard-main-content">
                         <div class="empay-chart-card">

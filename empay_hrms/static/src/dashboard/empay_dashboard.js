@@ -320,6 +320,20 @@ export class EmpayDashboard extends Component {
             views: [[false, "list"], [false, "form"]],
         });
     }
+
+    openGeneratePayrun() {
+        this.action.doAction("empay_hrms.action_generate_payrun_wizard");
+    }
+
+    openPayslips() {
+        this.action.doAction({
+            type: "ir.actions.act_window",
+            name: "Payslips",
+            res_model: "empay.payslip",
+            view_mode: "list,form",
+            views: [[false, "list"], [false, "form"]],
+        });
+    }
 }
 
 registry.category("actions").add("empay_dashboard", EmpayDashboard);

@@ -154,4 +154,17 @@
         </field>
     </record>
 
+    <!-- My Payslips: Employee self-service view -->
+    <record id="action_empay_my_payslips" model="ir.actions.act_window">
+        <field name="name">My Payslips</field>
+        <field name="res_model">empay.payslip</field>
+        <field name="view_mode">list,form</field>
+        <field name="domain">[('employee_id.user_id', '=', uid)]</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                No payslips available yet. Your payslips will appear here once generated.
+            </p>
+        </field>
+    </record>
+
 </odoo>

@@ -329,5 +329,129 @@
             <field name="state">paid</field>
         </record>
 
+        <!-- ============================================================ -->
+        <!--            LEAVE ALLOCATIONS (Annual quotas for employees)  -->
+        <!-- ============================================================ -->
+
+        <!-- Rahul Kumar Allocations -->
+        <record id="alloc_rahul_annual" model="hr.leave.allocation">
+            <field name="name">Annual Leave - Rahul Kumar</field>
+            <field name="employee_id" ref="emp_1"/>
+            <field name="holiday_status_id" ref="leave_type_annual"/>
+            <field name="number_of_days">20</field>
+        </record>
+        <record id="alloc_rahul_sick" model="hr.leave.allocation">
+            <field name="name">Sick Leave - Rahul Kumar</field>
+            <field name="employee_id" ref="emp_1"/>
+            <field name="holiday_status_id" ref="leave_type_sick"/>
+            <field name="number_of_days">10</field>
+        </record>
+        <record id="alloc_rahul_casual" model="hr.leave.allocation">
+            <field name="name">Casual Leave - Rahul Kumar</field>
+            <field name="employee_id" ref="emp_1"/>
+            <field name="holiday_status_id" ref="leave_type_casual"/>
+            <field name="number_of_days">7</field>
+        </record>
+
+        <!-- Neha Gupta Allocations -->
+        <record id="alloc_neha_annual" model="hr.leave.allocation">
+            <field name="name">Annual Leave - Neha Gupta</field>
+            <field name="employee_id" ref="emp_2"/>
+            <field name="holiday_status_id" ref="leave_type_annual"/>
+            <field name="number_of_days">20</field>
+        </record>
+        <record id="alloc_neha_sick" model="hr.leave.allocation">
+            <field name="name">Sick Leave - Neha Gupta</field>
+            <field name="employee_id" ref="emp_2"/>
+            <field name="holiday_status_id" ref="leave_type_sick"/>
+            <field name="number_of_days">10</field>
+        </record>
+        <record id="alloc_neha_casual" model="hr.leave.allocation">
+            <field name="name">Casual Leave - Neha Gupta</field>
+            <field name="employee_id" ref="emp_2"/>
+            <field name="holiday_status_id" ref="leave_type_casual"/>
+            <field name="number_of_days">7</field>
+        </record>
+
+        <!-- Amit Singh Allocations -->
+        <record id="alloc_amit_annual" model="hr.leave.allocation">
+            <field name="name">Annual Leave - Amit Singh</field>
+            <field name="employee_id" ref="emp_3"/>
+            <field name="holiday_status_id" ref="leave_type_annual"/>
+            <field name="number_of_days">20</field>
+        </record>
+        <record id="alloc_amit_sick" model="hr.leave.allocation">
+            <field name="name">Sick Leave - Amit Singh</field>
+            <field name="employee_id" ref="emp_3"/>
+            <field name="holiday_status_id" ref="leave_type_sick"/>
+            <field name="number_of_days">10</field>
+        </record>
+
+        <!-- Sneha Reddy Allocations -->
+        <record id="alloc_sneha_annual" model="hr.leave.allocation">
+            <field name="name">Annual Leave - Sneha Reddy</field>
+            <field name="employee_id" ref="emp_4"/>
+            <field name="holiday_status_id" ref="leave_type_annual"/>
+            <field name="number_of_days">20</field>
+        </record>
+        <record id="alloc_sneha_sick" model="hr.leave.allocation">
+            <field name="name">Sick Leave - Sneha Reddy</field>
+            <field name="employee_id" ref="emp_4"/>
+            <field name="holiday_status_id" ref="leave_type_sick"/>
+            <field name="number_of_days">10</field>
+        </record>
+
+        <!-- Ravi Joshi Allocations -->
+        <record id="alloc_ravi_annual" model="hr.leave.allocation">
+            <field name="name">Annual Leave - Ravi Joshi</field>
+            <field name="employee_id" ref="emp_5"/>
+            <field name="holiday_status_id" ref="leave_type_annual"/>
+            <field name="number_of_days">20</field>
+        </record>
+        <record id="alloc_ravi_sick" model="hr.leave.allocation">
+            <field name="name">Sick Leave - Ravi Joshi</field>
+            <field name="employee_id" ref="emp_5"/>
+            <field name="holiday_status_id" ref="leave_type_sick"/>
+            <field name="number_of_days">10</field>
+        </record>
+
+        <!-- Validate all allocations through the proper workflow -->
+        <function model="hr.employee" name="_validate_demo_allocation">
+            <value>empay_hrms.alloc_rahul_annual</value>
+        </function>
+        <function model="hr.employee" name="_validate_demo_allocation">
+            <value>empay_hrms.alloc_rahul_sick</value>
+        </function>
+        <function model="hr.employee" name="_validate_demo_allocation">
+            <value>empay_hrms.alloc_rahul_casual</value>
+        </function>
+        <function model="hr.employee" name="_validate_demo_allocation">
+            <value>empay_hrms.alloc_neha_annual</value>
+        </function>
+        <function model="hr.employee" name="_validate_demo_allocation">
+            <value>empay_hrms.alloc_neha_sick</value>
+        </function>
+        <function model="hr.employee" name="_validate_demo_allocation">
+            <value>empay_hrms.alloc_neha_casual</value>
+        </function>
+        <function model="hr.employee" name="_validate_demo_allocation">
+            <value>empay_hrms.alloc_amit_annual</value>
+        </function>
+        <function model="hr.employee" name="_validate_demo_allocation">
+            <value>empay_hrms.alloc_amit_sick</value>
+        </function>
+        <function model="hr.employee" name="_validate_demo_allocation">
+            <value>empay_hrms.alloc_sneha_annual</value>
+        </function>
+        <function model="hr.employee" name="_validate_demo_allocation">
+            <value>empay_hrms.alloc_sneha_sick</value>
+        </function>
+        <function model="hr.employee" name="_validate_demo_allocation">
+            <value>empay_hrms.alloc_ravi_annual</value>
+        </function>
+        <function model="hr.employee" name="_validate_demo_allocation">
+            <value>empay_hrms.alloc_ravi_sick</value>
+        </function>
+
     </data>
 </odoo>

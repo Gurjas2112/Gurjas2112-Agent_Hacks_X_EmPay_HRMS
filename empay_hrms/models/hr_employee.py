@@ -147,3 +147,22 @@ class HrEmployee(models.Model):
                     _logger.info('Set wage %s for %s', wage, employee.name)
         except Exception as e:
             _logger.warning('Could not set demo wage for %s: %s', employee_xmlid, e)
+
+    @api.model
+    def _validate_demo_allocation(self, allocation_xmlid):
+        """Validate a demo leave allocation through the proper workflow.
+
+        Odoo 19 requires allocations to go through draft → confirm → validate.
+        Called from demo_data.xml via <function> after allocations are created.
+        """
+        try:
+            alloc = self.env.ref(allocation_xmlid, raise_if_not_found=False)
+            if alloc:
+                alloc = alloc.sudo()
+                if alloc.state == 'draft':
+                    alloc.action_confirm()
+                if alloc.state == 'confirm':
+                    alloc.action_validate()
+                _logger.info('Validated allocation %s', allocation_xmlid)
+        except Exception as e:
+            _logger.warning('Could not validate demo allocation %s: %s', allocation_xmlid, e)

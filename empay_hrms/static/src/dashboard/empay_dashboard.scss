@@ -317,7 +317,7 @@ $empay-radius: 12px;
 /* Table Section (Matching Mock) */
 .empay-dashboard-main-content {
     display: grid;
-    grid-template-columns: 2fr 1fr;
+    grid-template-columns: 3fr 2fr;
     gap: 24px;
     margin-bottom: 28px;
 
@@ -377,6 +377,22 @@ $empay-radius: 12px;
         justify-content: center;
         font-weight: 600;
         font-size: 12px;
+    }
+
+    .empay-header-left {
+        .empay-logo-container {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 4px;
+
+            .empay-header-logo {
+                height: 40px;
+                width: auto;
+                border-radius: 8px;
+                box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            }
+        }
     }
 
     .empay-user-info {
@@ -459,12 +475,8 @@ $empay-radius: 12px;
 /* Charts Grid */
 .empay-charts-grid {
     display: grid;
-    grid-template-columns: repeat(3, 1fr);
+    grid-template-columns: repeat(2, 1fr);
     gap: 20px;
-
-    @media (max-width: 1200px) {
-        grid-template-columns: 1fr 1fr;
-    }
 
     @media (max-width: 768px) {
         grid-template-columns: 1fr;
@@ -809,3 +821,109 @@ $empay-radius: 12px;
     color: $empay-text-muted;
     font-weight: 600;
 }
+
+/* Quick Actions Row */
+.empay-quick-actions {
+    display: flex;
+    gap: 12px;
+    margin-bottom: 24px;
+    flex-wrap: wrap;
+}
+
+.empay-action-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: 600;
+    transition: all 0.2s ease;
+
+    &:hover {
+        transform: translateY(-2px);
+        box-shadow: $empay-shadow-hover;
+    }
+
+    i { font-size: 16px; }
+}
+
+.empay-action-btn-primary {
+    background: linear-gradient(135deg, $empay-primary, darken($empay-primary, 10%));
+    color: #fff;
+}
+
+.empay-action-btn-accent {
+    background: linear-gradient(135deg, $empay-accent, darken($empay-accent, 10%));
+    color: #fff;
+}
+
+/* Last Payrun Info Card */
+.empay-payrun-info-card {
+    background: $empay-card-bg;
+    border-radius: $empay-radius;
+    padding: 20px 24px;
+    box-shadow: $empay-shadow;
+    margin-bottom: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border-left: 4px solid $empay-primary;
+    cursor: pointer;
+    transition: all 0.2s ease;
+
+    &:hover {
+        box-shadow: $empay-shadow-hover;
+        transform: translateY(-1px);
+    }
+}
+
+.empay-payrun-info-left {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+}
+
+.empay-payrun-info-icon {
+    width: 48px;
+    height: 48px;
+    border-radius: 12px;
+    background: rgba($empay-primary, 0.1);
+    color: $empay-primary;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 20px;
+}
+
+.empay-payrun-info-details {
+    h4 {
+        margin: 0;
+        font-size: 14px;
+        color: $empay-text-muted;
+        font-weight: 500;
+    }
+    .empay-payrun-name {
+        font-size: 16px;
+        font-weight: 600;
+        color: $empay-text;
+        margin-top: 2px;
+    }
+}
+
+.empay-payrun-info-right {
+    text-align: right;
+
+    .empay-payrun-amount {
+        font-size: 20px;
+        font-weight: 700;
+        color: $empay-primary;
+    }
+}
+
+/* Activity type colors */
+.text-success { color: #38a169 !important; }
+.text-primary { color: $empay-primary !important; }
+.text-muted { color: $empay-text-muted !important; }
