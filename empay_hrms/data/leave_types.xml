@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+
+        <!-- ============================================================ -->
+        <!--                    LEAVE TYPES                               -->
+        <!-- ============================================================ -->
+
+        <!-- Annual Leave: 20 days/year, paid, requires approval -->
+        <record id="leave_type_annual" model="hr.leave.type">
+            <field name="name">Annual Leave</field>
+            <field name="requires_allocation">yes</field>
+            <field name="leave_validation_type">hr</field>
+            <field name="request_unit">day</field>
+            <field name="color">4</field>
+        </record>
+
+        <!-- Sick Leave: 10 days/year, paid, requires approval -->
+        <record id="leave_type_sick" model="hr.leave.type">
+            <field name="name">Sick Leave</field>
+            <field name="requires_allocation">yes</field>
+            <field name="leave_validation_type">hr</field>
+            <field name="request_unit">day</field>
+            <field name="color">2</field>
+        </record>
+
+        <!-- Casual Leave: 7 days/year, paid, requires approval -->
+        <record id="leave_type_casual" model="hr.leave.type">
+            <field name="name">Casual Leave</field>
+            <field name="requires_allocation">yes</field>
+            <field name="leave_validation_type">hr</field>
+            <field name="request_unit">day</field>
+            <field name="color">5</field>
+        </record>
+
+        <!-- Unpaid Leave: unlimited, unpaid, requires approval -->
+        <record id="leave_type_unpaid" model="hr.leave.type">
+            <field name="name">Unpaid Leave</field>
+            <field name="requires_allocation">no</field>
+            <field name="leave_validation_type">hr</field>
+            <field name="request_unit">day</field>
+            <field name="color">1</field>
+        </record>
+
+        <!-- Maternity Leave: 180 days, paid, requires approval -->
+        <record id="leave_type_maternity" model="hr.leave.type">
+            <field name="name">Maternity Leave</field>
+            <field name="requires_allocation">yes</field>
+            <field name="leave_validation_type">hr</field>
+            <field name="request_unit">day</field>
+            <field name="color">3</field>
+        </record>
+
+        <!-- ============================================================ -->
+        <!--              EMPLOYEE ID SEQUENCE                            -->
+        <!-- ============================================================ -->
+        <record id="seq_empay_employee_id" model="ir.sequence">
+            <field name="name">EmPay Employee ID</field>
+            <field name="code">empay.employee.id</field>
+            <field name="prefix">EMP-</field>
+            <field name="padding">3</field>
+            <field name="number_next">1</field>
+            <field name="number_increment">1</field>
+        </record>
+
+    </data>
+</odoo>

@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- ============================================================ -->
+    <!-- Dashboard Client Action                                       -->
+    <!-- ============================================================ -->
+    <record id="action_empay_dashboard" model="ir.actions.client">
+        <field name="name">EmPay Dashboard</field>
+        <field name="tag">empay_dashboard</field>
+    </record>
+
+</odoo>

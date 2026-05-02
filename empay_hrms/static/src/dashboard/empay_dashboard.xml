@@ -1,0 +1,320 @@
+<?xml version="1.0" encoding="utf-8"?>
+<templates xml:space="preserve">
+
+    <t t-name="empay_hrms.EmpayDashboard">
+        <div class="empay-dashboard">
+
+            <!-- Header -->
+            <div class="empay-header">
+                <div class="empay-header-left">
+                    <div class="empay-logo-container">
+                        <img src="/empay_hrms/static/src/img/logo.jpeg" class="empay-header-logo" alt="EmPay Logo"/>
+                        <h1 class="empay-title">EmPay Dashboard</h1>
+                    </div>
+                    <div class="empay-subtitle-row">
+                        <p class="empay-subtitle">Smart HR Analytics &amp; Overview</p>
+                        <!-- Live Status Indicator -->
+                        <span class="empay-live-badge" t-if="state.autoRefreshEnabled">
+                            <span class="empay-live-dot"/>
+                            LIVE
+                        </span>
+                        <span class="empay-paused-badge" t-else="">
+                            PAUSED
+                        </span>
+                    </div>
+                </div>
+                <div class="empay-header-right">
+                    <!-- Last Updated Timestamp -->
+                    <span class="empay-last-updated" t-if="state.lastUpdated">
+                        <i class="fa fa-clock-o"/>
+                        Updated: <t t-esc="state.lastUpdated"/>
+                    </span>
+                    <button class="empay-auto-refresh-btn" t-on-click="toggleAutoRefresh"
+                            t-attf-class="empay-auto-refresh-btn #{state.autoRefreshEnabled ? 'active' : ''}">
+                        <i t-attf-class="fa #{state.autoRefreshEnabled ? 'fa-pause' : 'fa-play'}"/>
+                        <t t-esc="state.autoRefreshEnabled ? 'Pause' : 'Resume'"/>
+                    </button>
+                    <button class="empay-refresh-btn" t-on-click="onRefresh">
+                        <i class="fa fa-refresh"/> Refresh
+                    </button>
+                </div>
+            </div>
+
+            <!-- Loading State -->
+            <t t-if="state.isLoading">
+                <div class="empay-loading">
+                    <div class="empay-spinner"/>
+                    <p>Loading dashboard data...</p>
+                </div>
+            </t>
+
+            <!-- Error State -->
+            <t t-elif="state.hasError">
+                <div class="empay-error">
+                    <i class="fa fa-exclamation-triangle"/>
+                    <h3>Unable to load dashboard</h3>
+                    <p><t t-esc="state.errorMessage"/></p>
+                    <button class="empay-retry-btn" t-on-click="onRefresh">
+                        <i class="fa fa-refresh"/> Retry
+                    </button>
+                </div>
+            </t>
+
+            <!-- Dashboard Content -->
+            <t t-else="">
+
+                <!-- ADMIN VIEW -->
+                <t t-if="state.is_admin">
+                    <!-- Main Stat Cards (Matching Mock) -->
+                    <div class="empay-stats-grid">
+                        <!-- ... cards remain the same ... -->
+                        <div class="empay-stat-card empay-card-employees" t-on-click="openEmployees">
+                            <div class="empay-stat-icon"><i class="fa fa-users"/></div>
+                            <div class="empay-stat-info">
+                                <span class="empay-stat-value"><t t-esc="state.stats.total_employees"/></span>
+                                <span class="empay-stat-label">Total Employees</span>
+                            </div>
+                        </div>
+                        <div class="empay-stat-card empay-card-on-leave" t-on-click="openLeaves">
+                            <div class="empay-stat-icon"><i class="fa fa-plane"/></div>
+                            <div class="empay-stat-info">
+                                <span class="empay-stat-value"><t t-esc="state.stats.on_leave_today"/></span>
+                                <span class="empay-stat-label">Employees on Leave</span>
+                            </div>
+                        </div>
+                        <div class="empay-stat-card empay-card-late" t-on-click="openAttendance">
+                            <div class="empay-stat-icon"><i class="fa fa-clock-o"/></div>
+                            <div class="empay-stat-info">
+                                <span class="empay-stat-value"><t t-esc="state.stats.late_arrivals"/></span>
+                                <span class="empay-stat-label">Late Arrivals</span>
+                            </div>
+                        </div>
+                        <div class="empay-stat-card empay-card-early" t-on-click="openAttendance">
+                            <div class="empay-stat-icon"><i class="fa fa-sign-out"/></div>
+                            <div class="empay-stat-info">
+                                <span class="empay-stat-value"><t t-esc="state.stats.early_departures"/></span>
+                                <span class="empay-stat-label">Early Departures</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="empay-stats-grid-secondary">
+                        <div class="empay-stat-card-small empay-card-present" t-on-click="openAttendance">
+                            <i class="fa fa-check-circle"/>
+                            <span class="empay-stat-small-label">Present: </span>
+                            <span class="empay-stat-small-value"><t t-esc="state.stats.present_today"/></span>
+                        </div>
+                        <div class="empay-stat-card-small empay-card-pending" t-on-click="openLeaves">
+                            <i class="fa fa-hourglass-half"/>
+                            <span class="empay-stat-small-label">Pending: </span>
+                            <span class="empay-stat-small-value"><t t-esc="state.stats.pending_leaves"/></span>
+                        </div>
+                        <div class="empay-stat-card-small empay-card-payroll" t-on-click="openPayruns">
+                            <i class="fa fa-money"/>
+                            <span class="empay-stat-small-label">Payroll: </span>
+                            <span class="empay-stat-small-value"><t t-esc="formatCurrency(state.stats.month_net_payroll)"/></span>
+                        </div>
+                    </div>
+
+                    <!-- Quick Actions -->
+                    <div class="empay-quick-actions">
+                        <button class="empay-action-btn empay-action-btn-primary" t-on-click="openGeneratePayrun">
+                            <i class="fa fa-calculator"/> Generate Pay Run
+                        </button>
+                        <button class="empay-action-btn empay-action-btn-accent" t-on-click="openPayslips">
+                            <i class="fa fa-file-text-o"/> View Payslips
+                        </button>
+                    </div>
+
+                    <!-- Last Payrun Info Card -->
+                    <t t-if="state.stats.last_payrun and state.stats.last_payrun.name != 'N/A'">
+                        <div class="empay-payrun-info-card" t-on-click="openPayruns">
+                            <div class="empay-payrun-info-left">
+                                <div class="empay-payrun-info-icon">
+                                    <i class="fa fa-briefcase"/>
+                                </div>
+                                <div class="empay-payrun-info-details">
+                                    <h4>Last Pay Run</h4>
+                                    <div class="empay-payrun-name"><t t-esc="state.stats.last_payrun.name"/></div>
+                                </div>
+                            </div>
+                            <div class="empay-payrun-info-right">
+                                <span t-attf-class="empay-badge #{getPayrunStateBadge(state.stats.last_payrun.state).class}">
+                                    <t t-esc="getPayrunStateBadge(state.stats.last_payrun.state).label"/>
+                                </span>
+                                <div class="empay-payrun-amount"><t t-esc="formatCurrency(state.stats.last_payrun.total_net)"/></div>
+                            </div>
+                        </div>
+                    </t>
+
+                    <div class="empay-dashboard-main-content">
+                        <div class="empay-chart-card">
+                            <h3 class="empay-chart-title"><i class="fa fa-bar-chart"/> Monthly Salary Trends</h3>
+                            <div class="empay-bar-chart">
+                                <t t-foreach="state.stats.payroll_trend" t-as="item" t-key="item.month">
+                                    <div class="empay-bar-item">
+                                        <div class="empay-bar-value"><t t-esc="formatCurrency(item.total)"/></div>
+                                        <div class="empay-bar-track">
+                                            <div class="empay-bar-fill empay-bar-payroll" t-attf-style="height: #{getBarHeight(item.total, getMaxPayroll())}"/>
+                                        </div>
+                                        <div class="empay-bar-label"><t t-esc="item.month"/></div>
+                                    </div>
+                                </t>
+                            </div>
+                        </div>
+                        <div class="empay-activities-card">
+                            <h3><i class="fa fa-history"/> Recent Activities</h3>
+                            <table class="empay-table">
+                                <thead>
+                                    <tr><th>Employee</th><th>Activity</th><th>Time</th><th>Status</th></tr>
+                                </thead>
+                                <tbody>
+                                    <t t-foreach="state.stats.recent_activities" t-as="activity" t-key="activity_index">
+                                        <tr>
+                                            <td>
+                                                <div class="empay-user-info">
+                                                    <div class="empay-avatar"><t t-esc="activity.employee_initials"/></div>
+                                                    <span><t t-esc="activity.employee_name"/></span>
+                                                </div>
+                                            </td>
+                                            <td><span t-attf-class="empay-activity-type #{activity.type == 'Check In' ? 'text-success' : 'text-primary'}"><t t-esc="activity.type"/></span></td>
+                                            <td class="text-muted"><t t-esc="formatTime(activity.time)"/></td>
+                                            <td><span t-attf-class="empay-badge #{activity.status == 'present' ? 'badge-paid' : 'badge-confirmed'}"><t t-esc="activity.status"/></span></td>
+                                        </tr>
+                                    </t>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <div class="empay-charts-grid">
+                        <div class="empay-chart-card">
+                            <h3 class="empay-chart-title"><i class="fa fa-calendar-check-o"/> Monthly Attendance</h3>
+                            <div class="empay-bar-chart">
+                                <t t-foreach="state.stats.monthly_attendance" t-as="item" t-key="item.month">
+                                    <div class="empay-bar-item">
+                                        <div class="empay-bar-value"><t t-esc="item.count"/></div>
+                                        <div class="empay-bar-track">
+                                            <div class="empay-bar-fill empay-bar-attendance" t-attf-style="height: #{getBarHeight(item.count, getMaxAttendance())}"/>
+                                        </div>
+                                        <div class="empay-bar-label"><t t-esc="item.month"/></div>
+                                    </div>
+                                </t>
+                            </div>
+                        </div>
+                        <div class="empay-chart-card">
+                            <h3 class="empay-chart-title"><i class="fa fa-pie-chart"/> Leave Distribution</h3>
+                            <div class="empay-donut-chart">
+                                <t t-foreach="state.stats.leave_distribution" t-as="item" t-key="item.type">
+                                    <div class="empay-donut-item">
+                                        <div class="empay-donut-bar-track">
+                                            <div class="empay-donut-bar-fill" t-attf-style="width: #{getLeavePercentage(item.count)}%; background-color: #{getLeaveColor(item_index)}"/>
+                                        </div>
+                                        <div class="empay-donut-label">
+                                            <span class="empay-donut-color" t-attf-style="background-color: #{getLeaveColor(item_index)}"/>
+                                            <span><t t-esc="item.type"/></span>
+                                            <span class="empay-donut-count"><t t-esc="item.count"/></span>
+                                        </div>
+                                    </div>
+                                </t>
+                            </div>
+                        </div>
+                    </div>
+                </t>
+
+                <!-- EMPLOYEE VIEW -->
+                <t t-else="">
+                    <div class="empay-employee-grid">
+                        
+                        <!-- Left Column: Profile & Attendance -->
+                        <div class="empay-employee-col">
+                            
+                            <!-- Profile Widget -->
+                            <div class="empay-profile-card">
+                                <div class="empay-profile-header">
+                                    <div class="empay-profile-avatar"><t t-esc="state.employee_data.name ? state.employee_data.name[0] : 'U'"/></div>
+                                    <div class="empay-profile-info">
+                                        <h2><t t-esc="state.employee_data.name"/></h2>
+                                        <p><t t-esc="state.employee_data.job_title"/></p>
+                                        <span class="empay-badge-outline"><t t-esc="state.employee_data.emp_id"/></span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Attendance Widget -->
+                            <div class="empay-attendance-widget">
+                                <h3>Attendance Status</h3>
+                                <div class="empay-attendance-status-row">
+                                    <div class="empay-status-indicator">
+                                        <span class="empay-live-dot"/>
+                                        <span>Currently <strong>Clocked Out</strong></span>
+                                    </div>
+                                    <div class="empay-attendance-actions">
+                                        <button class="empay-btn-primary" t-on-click="onClockIn">Clock In</button>
+                                        <button class="empay-btn-secondary" t-on-click="onClockOut">Clock Out</button>
+                                    </div>
+                                </div>
+                                <div class="empay-attendance-history-link" t-on-click="openMyAttendance">
+                                    View History <i class="fa fa-arrow-right"/>
+                                </div>
+                            </div>
+
+                        </div>
+
+                        <!-- Right Column: Salary & Leaves -->
+                        <div class="empay-employee-col">
+                            
+                            <!-- Salary Components -->
+                            <div class="empay-salary-card">
+                                <h3>Latest Payslip Breakdown</h3>
+                                <t t-if="state.employee_data.latest_slip">
+                                    <div class="empay-salary-breakdown">
+                                        <div class="empay-salary-item">
+                                            <span>Basic</span>
+                                            <strong><t t-esc="formatCurrency(state.employee_data.latest_slip.basic)"/></strong>
+                                        </div>
+                                        <div class="empay-salary-item">
+                                            <span>HRA</span>
+                                            <strong><t t-esc="formatCurrency(state.employee_data.latest_slip.hra)"/></strong>
+                                        </div>
+                                        <div class="empay-salary-item">
+                                            <span>Transport</span>
+                                            <strong><t t-esc="formatCurrency(state.employee_data.latest_slip.transport)"/></strong>
+                                        </div>
+                                        <div class="empay-salary-item deduction">
+                                            <span>PF Deduction</span>
+                                            <strong><t t-esc="formatCurrency(state.employee_data.latest_slip.pf)"/></strong>
+                                        </div>
+                                        <div class="empay-salary-total">
+                                            <span>Net Payable</span>
+                                            <strong><t t-esc="formatCurrency(state.employee_data.latest_slip.net)"/></strong>
+                                        </div>
+                                    </div>
+                                </t>
+                                <t t-else="">
+                                    <p class="text-muted">No payslips generated yet.</p>
+                                </t>
+                            </div>
+
+                            <!-- Leave Balances -->
+                            <div class="empay-leaves-card">
+                                <h3>Leave Balances</h3>
+                                <div class="empay-leave-grid">
+                                    <t t-foreach="state.employee_data.leave_balances" t-as="leave" t-key="leave.type">
+                                        <div class="empay-leave-item">
+                                            <span class="empay-leave-count"><t t-esc="leave.remaining"/></span>
+                                            <span class="empay-leave-name"><t t-esc="leave.type"/></span>
+                                        </div>
+                                    </t>
+                                </div>
+                            </div>
+
+                        </div>
+
+                    </div>
+                </t>
+
+            </t>
+        </div>
+    </t>
+</templates>

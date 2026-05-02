@@ -1,0 +1,15 @@
+# Docker
+*.pyc
+__pycache__
+.git
+.gitignore
+*.md
+*.txt
+!requirements.txt
+.vscode/
+.idea/
+*.egg-info/
+dist/
+build/
+.env
+node_modules/

@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- ============================================================ -->
+    <!-- Employee Form View Extension - EmPay Details Tab              -->
+    <!-- ============================================================ -->
+    <record id="view_employee_form_empay" model="ir.ui.view">
+        <field name="name">hr.employee.form.empay</field>
+        <field name="model">hr.employee</field>
+        <field name="inherit_id" ref="hr.view_employee_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//notebook" position="inside">
+                <page string="EmPay Details" name="empay_details">
+                    <group>
+                        <group string="Employee Information">
+                            <field name="empay_employee_id" readonly="1"/>
+                            <field name="employment_type"/>
+                            <field name="date_of_joining"/>
+                            <field name="empay_group" readonly="1"/>
+                        </group>
+                        <group string="Banking &amp; Emergency">
+                            <field name="bank_account_number"
+                                   groups="empay_hrms.group_hr_officer,empay_hrms.group_admin"/>
+                            <field name="emergency_contact_name"/>
+                            <field name="emergency_contact_phone"/>
+                        </group>
+                    </group>
+                </page>
+            </xpath>
+        </field>
+    </record>
+
+    <!-- ============================================================ -->
+    <!-- Employee Search View (Standalone for Odoo 19)                -->
+    <!-- ============================================================ -->
+    <record id="view_employee_search_empay" model="ir.ui.view">
+        <field name="name">hr.employee.search.empay</field>
+        <field name="model">hr.employee</field>
+        <field name="priority">50</field>
+        <field name="arch" type="xml">
+            <search string="Search Employees">
+                <field name="name"/>
+                <field name="empay_employee_id"/>
+                <field name="department_id"/>
+                <field name="employment_type"/>
+                <separator/>
+                <filter string="Full-Time" name="full_time"
+                        domain="[('employment_type', '=', 'full_time')]"/>
+                <filter string="Part-Time" name="part_time"
+                        domain="[('employment_type', '=', 'part_time')]"/>
+                <filter string="Contract" name="contract_type"
+                        domain="[('employment_type', '=', 'contract')]"/>
+                <filter string="Intern" name="intern"
+                        domain="[('employment_type', '=', 'intern')]"/>
+                <separator/>
+                <filter string="Active" name="active"
+                        domain="[('active', '=', True)]"/>
+            </search>
+        </field>
+    </record>
+
+    <!-- ============================================================ -->
+    <!-- Employee Actions                                              -->
+    <!-- ============================================================ -->
+    <record id="action_empay_employee_directory" model="ir.actions.act_window">
+        <field name="name">Employee Directory</field>
+        <field name="res_model">hr.employee</field>
+        <field name="view_mode">list,form,kanban</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                No employees found. Add your first employee!
+            </p>
+        </field>
+    </record>
+
+    <record id="action_empay_employee_profiles" model="ir.actions.act_window">
+        <field name="name">Employee Profiles</field>
+        <field name="res_model">hr.employee</field>
+        <field name="view_mode">form,list</field>
+    </record>
+
+</odoo>
