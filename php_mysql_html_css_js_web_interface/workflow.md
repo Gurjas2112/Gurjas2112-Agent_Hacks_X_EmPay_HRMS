@@ -13,7 +13,7 @@
 ## 📁 Project Structure
 
 ```
-/vit_odoo_hrms
+/php_mysql_html_css_js_web_interface
 ├── /config
 │   ├── app.php              → App constants, paths, roles
 │   └── database.php         → PDO connection factory
@@ -71,14 +71,14 @@
 
 1. Clone/place the project in your web server root:
    ```
-   C:\xampp\htdocs\vit_odoo_hrms
+   C:\xampp\htdocs\Agent_Hacks_X_EmPay_HRMS\php_mysql_html_css_js_web_interface
    ```
 
 2. Start Apache from XAMPP Control Panel
 
 3. Open in browser:
    ```
-   http://localhost/vit_odoo_hrms/public/
+   http://localhost/Agent_Hacks_X_EmPay_HRMS/php_mysql_html_css_js_web_interface/public/
    ```
 
 4. You'll be redirected to the login page.
