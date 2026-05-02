@@ -1,0 +1,169 @@
+
+ODOO HACKATHON 2026 — GRAND FINALE
+24-Hour Sprint
+EmPay HRM System
+Content Planning & Strategy Document
+Version 1.0  |  May 2026
+Role: Content Designer & Content Manager
+
+Table of Contents
+
+
+1. Project Overview & Content Goals
+EmPay is an AI-assisted Human Resource Management (HRM) system built on the Odoo framework. Designed for modern teams, it combines payroll processing, attendance tracking, employee self-service, and HR analytics inside a clean, purple-branded interface. This document defines every piece of written content needed to ship a polished, submission-ready product within the 24-hour hackathon window.
+
+1.1  Core Content Objectives
+Deliver zero-ambiguity UI copy across all screens — labels, buttons, tooltips, empty states, and error messages.
+Establish a consistent brand voice that feels professional yet approachable, matching the Odoo design language.
+Provide ready-to-use email and notification templates so the demo showcases end-to-end HR workflows.
+Create concise onboarding text and in-app guidance so judges can navigate the system without assistance.
+Ensure all content is accessible, gender-neutral, and free from jargon.
+
+1.2  Software Modules in Scope
+
+2. Target Audience & User Personas
+EmPay serves three distinct user types. Content must be calibrated for each persona's technical literacy and daily goals.
+
+
+3. Module-by-Module Content Map
+Each module listing specifies the exact strings that must be written, reviewed, and implemented before demo submission.
+
+3.1  Dashboard
+Navigation & Header
+Top nav labels: Dashboard · Employees · Attendance · Time Off · Payroll · My Payslips · Reports
+Company name display: 'YourCompany' — replace with client logo + name in final build
+KPI Tiles — Copy Pattern
+Format: [Metric Label] / [Value] / [Trend caption e.g., '+3 since last month']
+Present Today — shows live check-in count
+On Leave — employees currently on approved leave
+Pending Approvals — leave/expense requests awaiting action
+Open Positions — vacant roles in active recruitment
+Empty State (no data yet)
+
+3.2  Employee Directory
+Search & Filter Panel — Labels
+Filters: Upcoming Appraisals · On Time Off · At Work · My Team · My Department · Newly Hired · Fixed Hours · Flexible Hours · Archived
+Group By: Manager · Presence · Department · Work Location · Job · Skills · Start Date · Next Appraisal · Tags
+Search placeholder: 'Search employees…'
+Employee Card — Microcopy
+Status badges: Employee · Consultant · Archived
+Presence icons: 🏠 Remote · 🟢 At Work · ✈️ On Leave · 🔲 No Status
+Empty State — New Hire
+
+3.3  Payroll / EmPay
+Payslip Header Fields
+Employee Details: Employee · Contract · Pay Run
+Pay Period: Period Start · Period End
+Attendance Summary Tab
+Present Days · Half Days · Leave Days · Absent Days · Total Working Days
+Salary Breakdown Tab — Column Headers
+Component · Type · Amount · YTD Total
+Status Workflow Labels
+Draft → Confirm → Done
+Action Buttons
+Confirm — triggers salary calculation
+Recompute — recalculates if attendance data changed
+Print Payslip — generates PDF
+Cancel — returns payslip to Draft
+Confirmation Dialogs
+
+3.4  My Payslips (Employee Self-Service)
+Page title: 'My Payslips'
+Breadcrumb: My Payslips > [Employee Name] – [Month Year] Payrun
+Empty state: 'Your payslips will appear here once your HR team confirms your first pay run.'
+
+4. UI Copy & Microcopy Standards
+
+4.1  Button Copy Rules
+
+4.2  Form Field Labels
+Use sentence case for all labels (e.g., 'Period start', not 'PERIOD START').
+Required fields marked with an asterisk (*) — include helper text 'Fields marked * are required' above each form.
+Date fields: use DD/MM/YYYY format with placeholder text matching the format.
+4.3  Status Labels & Colour Mapping
+4.4  Error Message Standards
+Required field missing: '[Field name] is required to continue.'
+Invalid date range: 'End date must be after start date.'
+Duplicate entry: 'An employee record with this name already exists. Please check the directory.'
+System error: 'Something went wrong. Your data has been saved. Please refresh and try again.'
+
+5. Onboarding & In-App Help Content
+
+5.1  First-Login Welcome Message
+Screen title: Welcome to EmPay
+Body: 'Your all-in-one HR platform is ready. Start by adding your employees, setting up contracts, and running your first payroll — all in one place. Need a hand? Click the ? icon any time for contextual help.'
+CTA button: Let's Get Started →
+
+5.2  Module-Level Tooltips
+
+5.3  Empty State Copy Bank
+Employees list (new company): 'Your team starts here. Add your first employee to kick off payroll, attendance tracking, and more.'
+Attendance log: 'No records for this date range. Attendance is automatically logged when employees check in via the kiosk or mobile app.'
+Reports (no data): 'Reports will populate as your team becomes active. Try changing the date filter or check back after the next payroll run.'
+My Payslips (new employee): 'Nothing here yet — your payslips will appear here once your HR team processes your first pay run.'
+
+6. Communication Templates
+These templates are used by the system for automated emails, in-app notifications, and chatter log entries.
+
+6.1  Email: Payslip Ready
+
+6.2  Email: Leave Request — Manager Notification
+
+6.3  In-App Chatter Auto-Log Entries
+Payslip created: 'EmPay Payslip created for [Pay Period].'
+Contract assigned: 'Contract [Contract Name] assigned — effective [Start Date].'
+Leave approved: 'Leave request approved by [Manager Name] on [Date].'
+Leave refused: 'Leave request refused by [Manager Name]. Reason: [Reason].'
+
+7. Content Calendar — 24-Hour Sprint
+The hackathon runs for 24 hours. Below is the content delivery schedule aligned to the development sprint, ensuring copy is ready before UI implementation.
+
+
+8. Tone of Voice Guidelines
+
+8.1  Brand Voice in Four Words
+Clear · Human · Confident · Efficient
+
+8.2  Do / Don't Matrix
+
+8.3  Numeric & Date Formatting
+Currency: ₹ 1,25,000.00 (Indian number system for demo; configurable per locale)
+Dates: DD Mon YYYY (e.g., 01 May 2026) for display; DD/MM/YYYY in input fields
+Percentages: 12.5% (no space between number and symbol)
+Large numbers: Use comma separators (1,25,000 — Indian standard)
+
+9. Accessibility & Localisation Notes
+
+9.1  Accessibility Checklist
+All icon-only buttons must have an aria-label or screen-reader text equivalent.
+Colour must not be the sole indicator of status — always pair with text label.
+Error messages must be announced by screen readers (use role='alert').
+Form fields must have associated <label> elements, not just placeholder text.
+Avoid emoji as the sole conveyor of information in labels or status badges.
+
+9.2  Localisation Flags for Future Sprints
+All user-facing strings should be wrapped in translation keys (t() in Odoo's i18n system) — no hardcoded text in templates.
+Date and currency formats are locale-aware; default to en_IN for hackathon demo.
+Right-to-left (RTL) layout is not in scope for this sprint but architecture should support it.
+
+10. Review & Sign-off Checklist
+Use this checklist during the QA passes at hours 19–23. All items must be ticked before content freeze.
+
+10.1  Copy Quality
+All navigation labels reviewed and consistent across screens
+Button labels follow the Verb + Noun pattern where required
+No placeholder text (e.g., 'Lorem ipsum' or 'TODO') remains in any view
+All empty states have copy for both zero-data and error conditions
+Confirmation and error dialogs reviewed and signed off
+
+10.2  Brand & Tone
+All copy reviewed against tone-of-voice guidelines in Section 8
+No gendered language or exclusionary terms present
+Numeric and date formats consistent across all modules
+Brand name 'EmPay' capitalised correctly throughout
+
+10.3  Technical Hand-off
+All strings documented in this planning doc with module reference
+Email templates provided to backend team with variable placeholders clearly marked
+Translation keys confirmed with development team
+Final document version uploaded to shared drive / hackathon repo

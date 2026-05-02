@@ -1,0 +1,151 @@
+HRM System
+Design System & Style Guide
+Odoo Hackathon 2026  |  Based on EmPay + Odoo 17 UI Patterns
+
+1. Brand Identity
+The HRM system inherits its visual identity from Odoo's enterprise product suite, adapted for the EmPay payroll module. The brand is defined by a single primary color — plum purple — layered over a minimal neutral base.
+
+1.1 Brand Principles
+Clinical clarity — information-dense layouts, zero decorative elements.
+Neutral canvas — white and near-white surfaces let data take center stage.
+Single accent — purple is the only strong color; all else is gray or semantic.
+Precision borders — 0.5px strokes, never drop shadows.
+
+2. Color Palette
+2.1 Primary Brand Colors
+
+
+2.2 Neutral Scale
+
+
+2.3 Semantic Colors
+
+
+Rule: Never use semantic colors for decoration. Green = positive/present. Red = negative/absent. Amber = warning/pending. Blue-teal = informational links.
+
+3. Typography
+Font family: Inter (primary), fallback to system-ui, sans-serif. Two font weights only: 400 regular and 500 medium. Never use 600 or 700 — they appear heavy in dense UI.
+
+3.1 Type Scale
+
+
+3.2 Link & Interactive Text
+Default links: #714B67 (purple), no underline until hover.
+Breadcrumb items: #714B67, separator in muted gray.
+Chatter @mentions and record links: #714B67 with underline.
+
+4. Layout & Structure
+4.1 Page Zones
+
+
+4.2 Spacing Tokens
+
+
+Border radius: 4px inputs/chips, 6px buttons/small cards, 8px large cards/modals. Borders: always 0.5px. Default color: #E5E5E5. Hover/focus: #B0ADB5.
+
+5. UI Components
+5.1 Navigation Bar
+Background: #714B67 (primary purple).
+Height: 40px. Font size: 12–13px.
+Active nav item: white text, font-weight 500.
+Inactive nav items: rgba(255,255,255,0.75).
+Right section: notification icon buttons (circular, rgba white bg), user avatar (purple-dark circle with initials).
+No bottom border — the purple bar creates natural separation.
+
+5.2 Buttons
+
+
+Padding: 7px 14px. Border radius: 6px. Font: 13px / weight 500. Button order (left to right): Primary action → Secondary actions → Destructive.
+
+5.3 Status Badges & Chips
+
+
+Badge anatomy: 6px dot (currentColor, 0.8 opacity) + label text. Padding: 2px 8px. Border radius: 50px (pill). Font: 11px / weight 500.
+
+5.4 Status Pipeline / Workflow
+Use a chevron breadcrumb strip to visualize multi-step workflows (payslip states, onboarding stages, leave approvals):
+
+
+Active stage: filled color bg + bold text. Inactive stages to right: lighter bg, muted. Never show stages the user cannot reach.
+
+5.5 Tabs
+Active tab: #714B67 text + 2px solid #714B67 bottom border.
+Inactive tab: #6E6C72 muted text, transparent.
+Font: 12px / weight 500 for active, 400 for inactive.
+Tab height: 36px. No background fill on tabs.
+Tab bar bottom border: 1px solid #E5E5E5.
+
+5.6 Form Fields
+Label: 11px, weight 500, uppercase, #6E6C72, letter-spacing 0.06em.
+Input background: #F8F8F8 for read-only, white for editable.
+Input border: 0.5px solid #E5E5E5. Focus: 2px solid #714B67.
+Input height: 32px. Padding: 6px 8px. Border radius: 4px.
+Linked values (contract dates, run names): display in #714B67.
+Two columns for parallel fields (Period Start / Period End).
+
+5.7 Stat Cards (Attendance Summary)
+
+
+Stat card rules: gray-50 bg, 0.5px border, 10px uppercase label, 20–28px value. Positive = green. Negative = red. Neutral = black. 4-column grid with 8px gap.
+
+5.8 Employee Kanban Card
+Card: white bg, 0.5px border #E5E5E5, border-radius 8px, padding 12px.
+Avatar: 40px circle, #F3EEF1 bg, initials in #714B67, 13px / weight 500.
+Name: 13px / weight 500. Role title: 11px / muted.
+Contact info: 11px muted, icon + text with 4px gap.
+Role chips at bottom: purple chip for Employee, blue for Consultant, green for Sales.
+Status icon (top-right): house icon = WFH, plane = on leave, green dot = at work.
+
+5.9 Department Sidebar Filter
+Width: 180px. Background: white. Right border: 0.5px #E5E5E5.
+Section heading: 10px uppercase muted, padding 0 12px.
+Item row: 12px text, 6px 12px padding, hover: #F8F8F8.
+Active item: #F3EEF1 bg, #714B67 text, weight 500, 2px left border #714B67.
+Count badge: 10px, #F1F1F1 bg, muted text, pill shape.
+Nested departments: 20px left indent, smaller count.
+
+5.10 Chatter / Activity Panel
+Background: white. Left panel divider: 0.5px #E5E5E5.
+Action buttons row: 'Send message', 'Log note', 'Activity' — secondary button style.
+Message thread: avatar (30px circle) + author name (12px bold) + timestamp (10px muted).
+Message body: 11px muted. Record links: #714B67.
+Thread items separated by 0.5px divider. No card wrapper per message — whitespace only.
+Date grouping header: 'Today', 'Yesterday' — centered 10px muted.
+
+5.11 View Switcher
+Container: gray-100 bg, 4px border-radius, 4px internal padding.
+Active view pill: #714B67 bg, white text, 4px border-radius.
+Inactive views: transparent, muted text, hover: gray-50 bg.
+Available views: Kanban (grid), List (rows), Activity (timeline), Graph (chart), Pivot (table), Hierarchy.
+
+6. Search, Filters & Group By
+Odoo's search bar supports three types of refinements accessible through a dropdown triggered by the chevron button:
+
+
+Search input: 36px height, 0.5px border, full border-radius (pill shape), 12–13px placeholder text. Active filter tags appear inline in the search bar as removable chips.
+
+7. HRM Module Patterns
+7.1 Payslip Form Layout
+Header block: 2-column grid — Employee Details (left) | Pay Period (right).
+Employee, Contract, Pay Run fields on the left.
+Period Start and Period End fields on the right.
+Tab strip below the header: 'Attendance Summary' | 'Salary Breakdown'.
+Attendance tab: 3-column stat grid (Present, Half, Leave Days) + (Absent, Total Working Days).
+Action bar order: [Confirm] [Cancel] [Recompute] [Print Payslip] | [Draft ▶ Done].
+
+7.2 Employee List / Kanban View
+Kanban default. 2-column grid on desktop, 1-column on mobile.
+Cards show: avatar, name, job title, email, phone, tags/chips, status icon.
+Status icons (top-right corner): house (WFH), plane (travel/leave), location pin (on-site), clock (pending).
+New button: purple filled, top-left above the grid.
+Pagination: 'X-50 / 87' counter with prev/next arrows, top-right.
+Department filter sidebar persistent on left in both list and kanban views.
+
+7.3 Odoo Platform Pricing Context
+For the Indian market, Odoo One pricing is 580 Rs/month for ALL apps. The platform positions itself as an affordable all-in-one solution. The HRM module is part of the Employees app which covers: hiring, onboarding, attendance, performance, payroll, and employee self-service — all AI-powered.
+
+8. Do & Don't
+
+
+
+HRM Design System  |  Odoo Hackathon 2026  |  Generated May 2026

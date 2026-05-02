@@ -1,4 +1,4 @@
-# EmPay – Smart Human Resource Management System
+# EmPay – Smart Human Resource Management System 🚀
 
 > **Simplifying HR & Payroll Operations for Smarter Workplaces**
 
@@ -33,149 +33,135 @@ The challenge was to develop a working HRMS system focusing on the following cor
 
 ---
 
-## 🚀 Quick Start (Docker)
+## ⚡ Tech Stack
 
-```bash
-# Clone the repository
-git clone https://github.com/Gurjas2112/Gurjas2112-Agent_Hacks_X_EmPay_HRMS.git
-cd Gurjas2112-Agent_Hacks_X_EmPay_HRMS
+The application has been modernized from its original framework to a fast, lightweight PHP architecture:
+- **Backend:** Core PHP (no framework)
+- **Database:** PDO (MySQL) for secure database interactions
+- **Frontend:** Tailwind CSS (CDN) + Custom CSS + Vanilla JS
+- **Icons:** Lucide Icons
+- **Font:** Inter (Google Fonts)
 
-# Start Odoo + PostgreSQL
-docker-compose up -d
+---
+
+## 📁 Project Structure
+
+```text
+/vit_odoo_hrms
+├── /config
+│   ├── app.php              → App constants, paths, roles
+│   └── database.php         → PDO connection factory
+│
+├── /auth
+│   ├── session.php          → Session management helpers
+│   ├── login_check.php      → Auth guard (protect pages)
+│   └── role_check.php       → Role-based access control
+│
+├── /backend                 → API endpoints and action handlers
+│   ├── /auth
+│   ├── /users
+│   ├── /attendance
+│   ├── /leave
+│   ├── /payroll
+│   └── /schedule
+│
+├── /frontend                → View templates (HTML/PHP mix)
+│   ├── /auth          
+│   ├── /dashboard     
+│   ├── /users         
+│   ├── /attendance    
+│   ├── /leave         
+│   ├── /payroll       
+│   ├── /reports
+│   └── /schedule
+│
+├── /components              → Reusable UI components
+│   ├── header.php     
+│   ├── sidebar.php    
+│   ├── navbar.php     
+│   └── footer.php     
+│
+├── /public                  → Web root
+│   ├── index.php      
+│   ├── router.php     
+│   └── /assets
+│
+└── seed.sql                 → Database schema and initial data
 ```
 
 ---
 
-## 🏗️ Detailed Codebase Breakdown
+## 🚀 Getting Started
 
-### 📂 Root Directory
-- `__init__.py`: Python package initializer.
-- `__manifest__.py`: Module metadata (dependencies, views, security, demo data).
+### Prerequisites
+- XAMPP / WAMP / PHP 8.0+
+- MySQL Server
 
-### 📂 models/ (Business Logic)
-| File | Description | Use Case |
-|------|-------------|----------|
-| `hr_employee.py` | Core employee extension adding EmPay IDs, job details, and contract wages. | Profile management. |
-| `hr_attendance.py` | Attendance logic (check-in/out), late/OT calculation, and real-time Bus notifications. | Daily tracking. |
-| `hr_leave.py` | Time-off workflow management and dashboard reactivity. | Leave management. |
-| `hr_payslip.py` | Standalone payroll calculation engine for salary, PF (12%), and slab-based taxes. | Wage computation. |
-| `empay_payrun.py` | Batch payroll processing and dashboard statistics aggregation. | Monthly pay cycles. |
+### Installation
 
-### 📂 views/ (User Interface)
-| File | Description |
-|------|-------------|
-| `auth_templates.xml` | Custom premium branding for Odoo login and signup pages. |
-| `dashboard_views.xml` | Action and client-action definition for the OWL Dashboard. |
-| `hr_employee_views.xml` | Profile views (Kanban/Form/List) with custom EmPay fields. |
-| `hr_attendance_views.xml` | Real-time attendance logs and analytics views. |
-| `hr_leave_views.xml` | Leave request forms and approval workflows. |
-| `hr_payslip_views.xml` | Individual payslip management and PDF generation actions. |
-| `hr_payrun_views.xml` | Batch payrun management interface. |
-| `menu_views.xml` | The primary navigation structure (Root menu and submenus). |
+1. Clone/place the project in your web server root:
+   ```bash
+   C:\xampp\htdocs\Agent_Hacks_X_EmPay_HRMS
+   ```
+   *(Ensure the working directory points to `vit_odoo_hrms` inside if you are running it locally)*
 
-### 📂 static/ (Frontend Assets)
-- **src/dashboard/empay_dashboard.js**: JavaScript logic for the OWL component (Bus listeners, state management).
-- **src/dashboard/empay_dashboard.xml**: QWeb templates for dashboard widgets, charts, and action cards.
-- **src/dashboard/empay_dashboard.scss**: SCSS for premium visual aesthetics (gradients, shadows, responsive grid).
-- **src/img/logo.jpeg**: Official EmPay branding asset.
+2. Setup the Database:
+   - Create a new MySQL database named `empay_hrms`
+   - Import the `seed.sql` file (located in `/vit_odoo_hrms/seed.sql`) to set up the tables and demo data.
 
-### 📂 data/ (Configuration & Initial State)
-| File | Description |
-|------|-------------|
-| `salary_rules.xml` | Definitions for Basic, HRA, Transport, PF, and Tax components. |
-| `leave_types.xml` | System-defined leave categories (Annual, Sick, Casual, Unpaid). |
-| `demo_data.xml` | Mock users, employees, 29+ payslips, and attendance history for testing. |
+3. Start Apache & MySQL from XAMPP Control Panel.
 
-### 📂 security/ (Access Control)
-| File | Description |
-|------|-------------|
-| `empay_security.xml` | Defines the 4 security groups (Admin, HR, Payroll, Employee) and Record Rules. |
-| `ir.model.access.csv` | Model-level CRUD permissions for each role. |
+4. Open in browser:
+   ```text
+   http://localhost/Agent_Hacks_X_EmPay_HRMS/vit_odoo_hrms/public/
+   ```
 
-### 📂 wizard/ (Interactive Workflows)
-| File | Description |
-|------|-------------|
-| `generate_payrun_wizard.py` | Logic to automate payslip generation for selected date ranges. |
-| `generate_payrun_wizard.xml` | UI for the payroll generation step-by-step process. |
-
-### 📂 report/ (Documentation)
-| File | Description |
-|------|-------------|
-| `payslip_report.xml` | Report action definition for PDF output. |
-| `payslip_report_template.xml`| Custom QWeb template for the professional salary breakdown document. |
+5. You'll be redirected to the login page.
 
 ---
 
-## 👥 User Roles & Responsibilities
+## 👥 Demo Accounts
 
-| Role | Responsibilities | Access Level |
-|------|------------------|--------------|
-| **Admin** | Register on portal, manage users, CRUD all data, manage roles. | **Full Access** |
-| **Employee** | Apply for time off, view personal attendance/records, access directory (Read-only). | **Restricted**: No payroll, settings, or reports. |
-| **HR Officer** | Manage employee profiles, monitor company-wide attendance, allocate leaves. | **HR Only**: No payroll data or system settings. |
-| **Payroll Officer**| Approve/Reject time-off, generate payslips/reports, manage payroll & attendance. | **Payroll/Time-Off**: No profile modification or settings. |
-
----
-
-## 💻 Code-Wise Workflow & Technical Pipelines
-
-The system is built on a reactive architecture where frontend components and backend models communicate via a unified data pipeline.
-
-### 1. Authentication & User Provisioning
-- **Entry**: `/web/signup` (B2C Free Signup enabled in `auth_templates.xml`).
-- **Logic**: Odoo's `auth_signup` creates a `res.users` record.
-- **Auto-provisioning**: A triggered action (or default group in manifest) assigns the **EmPay: Employee** group.
-- **UI**: Custom QWeb templates in `views/auth_templates.xml` inject premium CSS for the login/signup screens.
-
-### 2. Real-Time Attendance Pipeline
-- **Frontend**: The `AttendanceWidget` in `empay_dashboard.xml` triggers a JS call.
-- **Backend**: `hr.attendance` model processes the `check_in`/`check_out`.
-- **Reactivity**: The `_notify_dashboard` method in `hr_attendance.py` sends a message via `bus.bus`.
-- **Dashboard Refresh**: `empay_dashboard.js` listens to the channel and silently updates the `state.stats` without a full page reload.
-
-### 3. Leave Management Workflow
-- **Submission**: Employee submits `hr.leave` via the dashboard or form view.
-- **Validation**: `hr_leave.py` checks against `hr.leave.allocation` quotas.
-- **Approval**: HR/Payroll Officer approves. This triggers a `bus.bus` notification to update the "On Leave" counter on the Admin Dashboard.
-- **Payroll Integration**: Approved leaves are automatically fetched by the Payroll engine during the next Payrun.
-
-### 4. Standalone Payroll Engine Pipeline
-- **Initiation**: `generate_payrun_wizard.py` is called with a date range.
-- **Batching**: `empay.payrun` creates individual `empay.payslip` records for all active employees.
-- **Computation**:
-    1.  Fetch `hr.attendance` for the period.
-    2.  Calculate **Present Days** (Check-in count) vs **Working Days**.
-    3.  Compute **Prorated Basic** = `(Wage / Working Days) * Present Days`.
-    4.  Apply `salary_rules.xml` (HRA, Transport, PF).
-    5.  Execute **Slab-based Tax Logic** in `hr_payslip.py`.
-- **Finalization**: `report/payslip_report_template.xml` renders the data into a professional PDF.
+| Role     | Email              | Password  |
+|----------|--------------------|-----------|
+| Admin    | admin@empay.com    | admin123  |
+| HR       | hr@empay.com       | hr123     |
+| Employee | emp@empay.com      | emp123    |
+| Payroll  | payroll@empay.com  | pay123    |
 
 ---
 
-## 💰 Statutory Calculations
+## 🔐 Role-Based Access
 
-### Payroll Formula
-```
-Basic Salary = (Contract Wage / Days in Month) * Present Days
-Deductions:
-- PF (Employee): 12% of Basic
-- Professional Tax: Slab-based (₹0 to ₹300)
-Net Pay = (Basic + HRA + Transport) - PF - Prof. Tax
-```
-
----
-
-## 👥 Demo Credentials
-
-| Role | Login | Password |
-|------|-------|----------|
-| **Admin** | `empay_admin@demo.com` | `admin123` |
-| **HR Officer** | `empay_hr@demo.com` | `hr123` |
-| **Payroll Officer** | `empay_payroll@demo.com` | `payroll123` |
-| **Employee** | `rahul@demo.com` | `emp123` |
+| Feature         | Admin | HR  | Employee | Payroll |
+|-----------------|-------|-----|----------|---------|
+| Dashboard       | ✅    | ✅  | ✅       | ✅      |
+| Manage Users    | ✅    | ✅  | ❌       | ❌      |
+| Attendance      | ✅    | ✅  | ✅       | ❌      |
+| Leave Apply     | ✅    | ✅  | ✅       | ❌      |
+| Leave Approve   | ✅    | ✅  | ❌       | ❌      |
+| Payroll         | ✅    | ❌  | ❌       | ✅      |
 
 ---
 
-## 📄 License
+## 🎨 Design System
 
-MIT License
+- **Modern Aesthetic** with primary plum purple accents (#714B67)
+- **Glassmorphism & Gradients** implemented through Tailwind for a premium feel
+- **Responsive Navigation** with a collapsible sidebar and mobile toggle
+- **Micro-interactions** on hover/focus states to make the UI feel alive
+
+---
+
+## 📝 Notes
+
+- Flash messages automatically dismiss after a few seconds.
+- Session timeout is strictly enforced for security.
+- Comprehensive backend validation is present on all form submissions.
+- Passwords are conventionally hashed using `password_hash()` in the database.
+
+---
+
+## 📜 License
+
+MIT License — Built for EmPay HRMS.
