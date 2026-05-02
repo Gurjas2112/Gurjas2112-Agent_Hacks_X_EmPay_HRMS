@@ -1,0 +1,16 @@
+# Ngrok
+ngrok.log
+ngrok.yml
+start_tunnel.bat
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# PHP/Composer
+vendor/
+.env
+
+# Temporary files
+*.tmp
+*.log
