@@ -5,7 +5,17 @@ require_once __DIR__ . '/../../config/app.php';
 require_once __DIR__ . '/../../config/database.php';
 require_once __DIR__ . '/../../auth/login_check.php';
 require_once __DIR__ . '/../../auth/role_check.php';
-requireRole(ROLE_ADMIN, ROLE_HR);
+requireRole(ROLE_ADMIN, ROLE_HR, ROLE_PAYROLL, ROLE_EMPLOYEE);
+$userRole = getUserRole();
+$canEdit = ($userRole === ROLE_ADMIN || $userRole === ROLE_HR);
+
+if (!$canEdit && !$isEdit) {
+    // Employees cannot create new users
+    setFlash('error', 'Unauthorized access.');
+    header('Location: ' . BASE_URL . 'index.php?page=users');
+    exit;
+}
+
 require_once COMPONENTS_PATH . 'header.php';
 require_once COMPONENTS_PATH . 'navbar.php';
 require_once COMPONENTS_PATH . 'sidebar.php';
@@ -32,13 +42,15 @@ $departments = $db->query("SELECT id, name FROM departments")->fetchAll();
 <div class="flex items-center justify-between mb-6">
     <h1 class="page-title"><?= $pageTitle ?></h1>
     <div class="flex items-center gap-2">
-        <a href="<?= BASE_URL ?>index.php?page=users" class="btn btn-secondary">Cancel</a>
+        <a href="<?= BASE_URL ?>index.php?page=users" class="btn btn-secondary"><?= $canEdit ? 'Cancel' : 'Back' ?></a>
+        <?php if ($canEdit): ?>
         <button type="submit" form="emp-form" class="btn btn-primary"><?= $isEdit ? 'Save' : 'Create Employee' ?></button>
+        <?php endif; ?>
     </div>
 </div>
 
 <div class="card max-w-3xl">
-    <p class="caption mb-5">Fields marked * are required</p>
+    <p class="caption mb-5"><?= $canEdit ? 'Fields marked * are required' : 'View-only access' ?></p>
     <form id="emp-form" action="<?= BASE_URL ?>../backend/users/<?= $isEdit ? 'update_user' : 'create_user' ?>.php" method="POST">
         <?php if ($isEdit): ?><input type="hidden" name="user_id" value="<?= (int)$_GET['id'] ?>"><?php endif; ?>
 
@@ -46,23 +58,23 @@ $departments = $db->query("SELECT id, name FROM departments")->fetchAll();
         <div class="grid grid-cols-1 sm:grid-cols-2 gap-x-3 gap-y-4">
             <div>
                 <label class="form-label block">Full name *</label>
-                <input type="text" name="full_name" required value="<?= htmlspecialchars($user['full_name']) ?>" placeholder="John Doe" class="form-input">
+                <input type="text" name="full_name" required value="<?= htmlspecialchars($user['full_name']) ?>" placeholder="John Doe" class="form-input" <?= !$canEdit ? 'readonly' : '' ?>>
             </div>
             <div>
                 <label class="form-label block">Email address *</label>
-                <input type="email" name="email" required value="<?= htmlspecialchars($user['email']) ?>" placeholder="john@company.com" class="form-input">
+                <input type="email" name="email" required value="<?= htmlspecialchars($user['email']) ?>" placeholder="john@company.com" class="form-input" <?= !$canEdit ? 'readonly' : '' ?>>
             </div>
             <div>
                 <label class="form-label block">Username *</label>
-                <input type="text" name="username" required value="<?= htmlspecialchars($user['username']) ?>" placeholder="johndoe" class="form-input">
+                <input type="text" name="username" required value="<?= htmlspecialchars($user['username']) ?>" placeholder="johndoe" class="form-input" <?= !$canEdit ? 'readonly' : '' ?>>
             </div>
             <div>
                 <label class="form-label block">Phone</label>
-                <input type="tel" name="phone" value="<?= htmlspecialchars($user['phone']) ?>" placeholder="+91 98765 43210" class="form-input">
+                <input type="tel" name="phone" value="<?= htmlspecialchars($user['phone']) ?>" placeholder="+91 98765 43210" class="form-input" <?= !$canEdit ? 'readonly' : '' ?>>
             </div>
             <div>
                 <label class="form-label block">Department</label>
-                <select name="department_id" class="form-input">
+                <select name="department_id" class="form-input" <?= !$canEdit ? 'disabled' : '' ?>>
                     <option value="">Select department</option>
                     <?php foreach ($departments as $dept): ?>
                     <option value="<?= $dept['id'] ?>" <?= $user['department_id'] == $dept['id'] ? 'selected' : '' ?>><?= htmlspecialchars($dept['name']) ?></option>
@@ -71,11 +83,11 @@ $departments = $db->query("SELECT id, name FROM departments")->fetchAll();
             </div>
             <div>
                 <label class="form-label block">Designation</label>
-                <input type="text" name="designation" value="<?= htmlspecialchars($user['designation']) ?>" placeholder="Software Engineer" class="form-input">
+                <input type="text" name="designation" value="<?= htmlspecialchars($user['designation']) ?>" placeholder="Software Engineer" class="form-input" <?= !$canEdit ? 'readonly' : '' ?>>
             </div>
             <div>
                 <label class="form-label block">Role *</label>
-                <select name="role" class="form-input">
+                <select name="role" class="form-input" <?= !$canEdit ? 'disabled' : '' ?>>
                     <option value="employee" <?= $user['role'] === 'employee' ? 'selected' : '' ?>>Employee</option>
                     <option value="hr" <?= $user['role'] === 'hr' ? 'selected' : '' ?>>HR</option>
                     <option value="payroll" <?= $user['role'] === 'payroll' ? 'selected' : '' ?>>Payroll</option>
@@ -84,9 +96,9 @@ $departments = $db->query("SELECT id, name FROM departments")->fetchAll();
             </div>
             <div>
                 <label class="form-label block">Date of joining</label>
-                <input type="date" name="date_of_join" value="<?= htmlspecialchars($user['date_of_join']) ?>" class="form-input" placeholder="DD/MM/YYYY">
+                <input type="date" name="date_of_join" value="<?= htmlspecialchars($user['date_of_join']) ?>" class="form-input" placeholder="DD/MM/YYYY" <?= !$canEdit ? 'readonly' : '' ?>>
             </div>
-            <?php if (!$isEdit): ?>
+            <?php if (!$isEdit && $canEdit): ?>
             <div class="sm:col-span-2">
                 <label class="form-label block">Password *</label>
                 <input type="password" name="password" required minlength="6" placeholder="Min 6 characters" class="form-input max-w-xs">

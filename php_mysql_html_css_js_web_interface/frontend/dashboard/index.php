@@ -11,14 +11,13 @@ $db = getDBConnection();
 $userId = getUserId();
 $role = getUserRole();
 
-// Initialize stats
-$presentToday = 0;
-$onLeave = 0;
-$pendingApprovals = 0;
 $openPositions = 3; // Mocked for now
+$totalEmployees = 0;
 
 if ($role === ROLE_ADMIN || $role === ROLE_HR || $role === ROLE_PAYROLL) {
     // Global stats
+    $stmt = $db->query("SELECT COUNT(*) FROM users WHERE is_active = 1");
+    $totalEmployees = $stmt->fetchColumn();
     $stmt = $db->query("SELECT COUNT(*) FROM attendance WHERE date = CURRENT_DATE AND check_in IS NOT NULL");
     $presentToday = $stmt->fetchColumn();
 
@@ -72,9 +71,9 @@ if ($role === ROLE_ADMIN || $role === ROLE_HR || $role === ROLE_PAYROLL) {
             <p class="text-[13px] text-white/80 max-w-2xl leading-relaxed mb-4">
                 Your all-in-one HR platform is ready. Start by adding your employees, setting up contracts, and running your first payroll — all in one place. Need a hand? Click the ? icon any time for contextual help.
             </p>
-            <button class="bg-white text-brand px-4 py-2 rounded-md text-[13px] font-medium hover:bg-surface-50 transition-colors">
+            <a href="<?= BASE_URL ?>index.php?page=users/form" class="inline-flex items-center bg-white text-brand px-4 py-2 rounded-md text-[13px] font-medium hover:bg-surface-50 transition-colors">
                 Let's Get Started &rarr;
-            </button>
+            </a>
         </div>
         <i data-lucide="sparkles" class="w-12 h-12 opacity-20"></i>
     </div>
@@ -103,7 +102,13 @@ if ($role === ROLE_ADMIN || $role === ROLE_HR || $role === ROLE_PAYROLL) {
         <p class="caption mt-1">Leave requests awaiting action</p>
     </div>
 
-    <?php if ($role !== ROLE_EMPLOYEE && $role !== ROLE_PAYROLL): ?>
+    <?php if ($role === ROLE_ADMIN): ?>
+    <div class="stat-card">
+        <p class="stat-label">Total Employees</p>
+        <p class="stat-value stat-value-neutral"><?= $totalEmployees ?></p>
+        <p class="caption mt-1">Active staff members</p>
+    </div>
+    <?php elseif ($role === ROLE_HR): ?>
     <div class="stat-card">
         <p class="stat-label">Open Positions</p>
         <p class="stat-value stat-value-neutral"><?= $openPositions ?></p>
@@ -175,7 +180,11 @@ if ($role === ROLE_ADMIN || $role === ROLE_HR || $role === ROLE_PAYROLL) {
             else:
             foreach ($recentLeaves as $l):
                 $bc = match($l['status']) { 'pending'=>'badge-pending','approved'=>'badge-approved',default=>'badge-cancelled' };
-                $sl = match($l['status']) { 'pending'=>'To Approve','approved'=>'Approved',default=>'Refused' };
+                $sl = match($l['status']) { 
+                    'pending' => ($role === ROLE_EMPLOYEE ? 'Pending' : 'To Approve'),
+                    'approved' => 'Approved',
+                    default => 'Refused' 
+                };
             ?>
             <div class="flex items-center gap-3 px-6 py-3">
                 <div class="kanban-avatar w-8 h-8 text-[10px]"><?= strtoupper(substr($l['name'],0,2)) ?></div>
@@ -202,13 +211,13 @@ if ($role === ROLE_ADMIN || $role === ROLE_HR || $role === ROLE_PAYROLL) {
             <i data-lucide="calendar-plus" class="w-5 h-5 text-brand"></i>
             <span class="text-[13px] font-medium">Apply Leave</span>
         </a>
-        <a href="<?= BASE_URL ?>index.php?page=payroll/payslip" class="card !p-4 flex items-center gap-3 hover:border-[var(--border-hover)] transition-colors">
+        <a href="<?= BASE_URL ?>index.php?page=payroll/my_payslips" class="card !p-4 flex items-center gap-3 hover:border-[var(--border-hover)] transition-colors">
             <i data-lucide="file-text" class="w-5 h-5 text-brand"></i>
-            <span class="text-[13px] font-medium">View Payslip</span>
+            <span class="text-[13px] font-medium">My Payslips</span>
         </a>
-        <a href="<?= BASE_URL ?>index.php?page=users/form" class="card !p-4 flex items-center gap-3 hover:border-[var(--border-hover)] transition-colors">
-            <i data-lucide="user-plus" class="w-5 h-5 text-brand"></i>
-            <span class="text-[13px] font-medium">Create Employee</span>
+        <a href="<?= BASE_URL ?>index.php?page=users" class="card !p-4 flex items-center gap-3 hover:border-[var(--border-hover)] transition-colors">
+            <i data-lucide="users" class="w-5 h-5 text-brand"></i>
+            <span class="text-[13px] font-medium">Directory</span>
         </a>
     </div>
 </div>

@@ -42,17 +42,60 @@ $userRole = getUserRole();
 
     <!-- Right: Notifications + Avatar -->
     <div class="flex items-center gap-2">
-        <button class="w-7 h-7 rounded-full bg-white/15 flex items-center justify-center hover:bg-white/25 transition-colors" aria-label="Notifications">
-            <i data-lucide="bell" class="w-3.5 h-3.5"></i>
-        </button>
-        <button class="w-7 h-7 rounded-full bg-white/15 flex items-center justify-center hover:bg-white/25 transition-colors" aria-label="Help">
+        <?php
+        // Fetch pending items for badge (HR/Admin only)
+        $pendingCount = 0;
+        if ($userRole === ROLE_ADMIN || $userRole === ROLE_HR) {
+            $db = getDBConnection();
+            $pendingCount = (int)$db->query("SELECT COUNT(*) FROM leaves WHERE status = 'pending'")->fetchColumn();
+        }
+        ?>
+        <div class="relative">
+            <button class="w-7 h-7 rounded-full bg-white/15 flex items-center justify-center hover:bg-white/25 transition-colors" aria-label="Notifications">
+                <i data-lucide="bell" class="w-3.5 h-3.5"></i>
+                <?php if ($pendingCount > 0): ?>
+                    <span class="absolute -top-1 -right-1 w-3.5 h-3.5 bg-danger text-[8px] flex items-center justify-center rounded-full ring-1 ring-brand"><?= $pendingCount ?></span>
+                <?php endif; ?>
+            </button>
+        </div>
+        <button onclick="window.open('https://odoo.com/help', '_blank')" class="w-7 h-7 rounded-full bg-white/15 flex items-center justify-center hover:bg-white/25 transition-colors" aria-label="Help">
             <i data-lucide="help-circle" class="w-3.5 h-3.5"></i>
         </button>
-        <div class="w-7 h-7 rounded-full bg-brand-dark flex items-center justify-center text-[10px] font-medium ml-1" title="<?= htmlspecialchars(getUserName()) ?>">
-            <?= getUserInitials() ?>
+        
+        <div class="relative">
+            <button onclick="toggleUserMenu()" class="w-7 h-7 rounded-full bg-brand-dark flex items-center justify-center text-[10px] font-medium ml-1 hover:ring-1 hover:ring-white/50 transition-all" title="<?= htmlspecialchars(getUserName()) ?>">
+                <?= getUserInitials() ?>
+            </button>
+            <div id="user-dropdown" class="hidden absolute top-full right-0 mt-1 w-48 bg-white border border-surface-200 rounded-md shadow-lg z-[100] text-txt">
+                <div class="px-4 py-3 border-b border-surface-100">
+                    <p class="font-medium truncate"><?= htmlspecialchars(getUserName()) ?></p>
+                    <p class="text-[11px] text-muted truncate"><?= htmlspecialchars($userRole) ?></p>
+                </div>
+                <?php if ($userRole === ROLE_ADMIN): ?>
+                <a href="<?= BASE_URL ?>index.php?page=admin/settings" class="block px-4 py-2 hover:bg-surface-50">Settings</a>
+                <?php endif; ?>
+                <a href="<?= BASE_URL ?>index.php?page=payroll/my_payslips" class="block px-4 py-2 hover:bg-surface-50">My Profile</a>
+                <div class="border-t border-surface-100"></div>
+                <a href="<?= BASE_URL ?>../backend/auth/logout.php" class="block px-4 py-2 text-danger hover:bg-danger-light">Logout</a>
+            </div>
         </div>
     </div>
 </nav>
+
+<script>
+function toggleUserMenu() {
+    document.getElementById('user-dropdown').classList.toggle('hidden');
+}
+// Close dropdown when clicking outside
+window.addEventListener('click', function(e) {
+    if (!e.target.closest('#user-dropdown') && !e.target.closest('button[onclick="toggleUserMenu()"]')) {
+        var dropdown = document.getElementById('user-dropdown');
+        if (dropdown && !dropdown.classList.contains('hidden')) {
+            dropdown.classList.add('hidden');
+        }
+    }
+});
+</script>
 
 <!-- Breadcrumb Strip — 32px, gray-50 bg -->
 <div class="h-8 bg-surface-50 border-b border-surface-200 flex items-center px-4 text-[12px]">

@@ -2,10 +2,6 @@
 $pageTitle = 'Payslip Details';
 require_once __DIR__ . '/../../config/app.php';
 require_once __DIR__ . '/../../auth/login_check.php';
-require_once COMPONENTS_PATH . 'header.php';
-require_once COMPONENTS_PATH . 'navbar.php';
-require_once COMPONENTS_PATH . 'sidebar.php';
-
 require_once __DIR__ . '/../../config/database.php';
 
 $db = getDBConnection();
@@ -18,6 +14,10 @@ if (!$payslipId) {
     header('Location: ' . BASE_URL . 'index.php?page=payroll/my_payslips');
     exit;
 }
+
+require_once COMPONENTS_PATH . 'header.php';
+require_once COMPONENTS_PATH . 'navbar.php';
+require_once COMPONENTS_PATH . 'sidebar.php';
 
 // Fetch payslip
 $stmt = $db->prepare("SELECT p.*, u.full_name as name 
@@ -74,22 +74,40 @@ $net = $gross - $totalDed;
                     <input type="hidden" name="status" value="paid">
                     <button type="submit" class="btn btn-primary">Mark as Paid</button>
                 </form>
-                <form action="<?= BASE_URL ?>../backend/payroll/update_status.php" method="POST" class="inline">
-                    <input type="hidden" name="id" value="<?= $payslipId ?>">
-                    <input type="hidden" name="status" value="draft">
-                    <button type="submit" class="btn btn-secondary">Set to Draft</button>
-                </form>
             <?php endif; ?>
             
-            <button class="btn btn-secondary">Recompute</button>
+            <form action="<?= BASE_URL ?>../backend/payroll/update_status.php" method="POST" class="inline">
+                <input type="hidden" name="id" value="<?= $payslipId ?>">
+                <input type="hidden" name="status" value="<?= $status ?>">
+                <input type="hidden" name="action" value="recompute">
+                <button type="submit" class="btn btn-secondary">Recompute</button>
+            </form>
         <?php endif; ?>
         <button class="btn btn-secondary" onclick="window.print()"><i data-lucide="printer" class="w-4 h-4"></i> Print</button>
     </div>
     
     <div class="workflow-steps">
-        <div class="workflow-step <?= $status === 'draft' ? 'active' : '' ?>">Draft</div>
-        <div class="workflow-step <?= $status === 'generated' ? 'active' : '' ?>">Confirmed</div>
-        <div class="workflow-step <?= $status === 'paid' ? 'active' : '' ?>">Done</div>
+        <?php if ($isEmployeeSelfService): ?>
+            <div class="workflow-step <?= $status === 'draft' ? 'active' : '' ?>">Draft</div>
+            <div class="workflow-step <?= $status === 'generated' ? 'active' : '' ?>">Confirmed</div>
+            <div class="workflow-step <?= $status === 'paid' ? 'active' : '' ?>">Done</div>
+        <?php else: ?>
+            <form action="<?= BASE_URL ?>../backend/payroll/update_status.php" method="POST" class="inline">
+                <input type="hidden" name="id" value="<?= $payslipId ?>">
+                <input type="hidden" name="status" value="draft">
+                <button type="submit" class="workflow-step <?= $status === 'draft' ? 'active' : '' ?>">Draft</button>
+            </form>
+            <form action="<?= BASE_URL ?>../backend/payroll/update_status.php" method="POST" class="inline">
+                <input type="hidden" name="id" value="<?= $payslipId ?>">
+                <input type="hidden" name="status" value="generated">
+                <button type="submit" class="workflow-step <?= $status === 'generated' ? 'active' : '' ?>">Confirmed</button>
+            </form>
+            <form action="<?= BASE_URL ?>../backend/payroll/update_status.php" method="POST" class="inline">
+                <input type="hidden" name="id" value="<?= $payslipId ?>">
+                <input type="hidden" name="status" value="paid">
+                <button type="submit" class="workflow-step <?= $status === 'paid' ? 'active' : '' ?>">Done</button>
+            </form>
+        <?php endif; ?>
     </div>
 </div>
 
@@ -105,21 +123,21 @@ $net = $gross - $totalDed;
                 </div>
                 <div class="grid grid-cols-3 items-center gap-4">
                     <span class="form-label mb-0 col-span-1">Contract</span>
-                    <a href="#" class="link col-span-2 text-[13px]">CONT/2024/045</a>
+                    <span class="col-span-2 text-[13px]">CONT/<?= date('Y', strtotime($payslip['month'].'-01')) ?>/<?= str_pad($payslip['user_id'], 3, '0', STR_PAD_LEFT) ?></span>
                 </div>
                 <div class="grid grid-cols-3 items-center gap-4">
                     <span class="form-label mb-0 col-span-1">Pay Run</span>
-                    <span class="col-span-2 text-[13px] text-muted">Batch_April_2026</span>
+                    <span class="col-span-2 text-[13px] text-muted">Batch_<?= date('M_Y', strtotime($payslip['month'].'-01')) ?></span>
                 </div>
             </div>
             <div class="space-y-4">
                 <div class="grid grid-cols-3 items-center gap-4">
                     <span class="form-label mb-0 col-span-1">Period Start</span>
-                    <span class="col-span-2 text-[13px]">01/04/2026</span>
+                    <span class="col-span-2 text-[13px]">01/<?= date('m/Y', strtotime($payslip['month'].'-01')) ?></span>
                 </div>
                 <div class="grid grid-cols-3 items-center gap-4">
                     <span class="form-label mb-0 col-span-1">Period End</span>
-                    <span class="col-span-2 text-[13px]">30/04/2026</span>
+                    <span class="col-span-2 text-[13px]"><?= date('t/m/Y', strtotime($payslip['month'].'-01')) ?></span>
                 </div>
             </div>
         </div>
@@ -135,11 +153,11 @@ $net = $gross - $totalDed;
     <div class="p-6">
         <div id="tab-attendance" class="hidden">
             <div class="grid grid-cols-2 sm:grid-cols-5 gap-2">
-                <div class="stat-card !p-4"><p class="stat-label">Present Days</p><p class="stat-value stat-value-positive">21.0</p></div>
+                <div class="stat-card !p-4"><p class="stat-label">Present Days</p><p class="stat-value stat-value-positive"><?= number_format($payslip['present_days'], 1) ?></p></div>
                 <div class="stat-card !p-4"><p class="stat-label">Half Days</p><p class="stat-value stat-value-neutral">0.0</p></div>
-                <div class="stat-card !p-4"><p class="stat-label">Leave Days</p><p class="stat-value stat-value-neutral">1.0</p></div>
+                <div class="stat-card !p-4"><p class="stat-label">Leave Days</p><p class="stat-value stat-value-neutral"><?= number_format($payslip['working_days'] - $payslip['present_days'], 1) ?></p></div>
                 <div class="stat-card !p-4"><p class="stat-label">Absent Days</p><p class="stat-value stat-value-negative">0.0</p></div>
-                <div class="stat-card !p-4"><p class="stat-label">Total Working</p><p class="stat-value stat-value-neutral">22.0</p></div>
+                <div class="stat-card !p-4"><p class="stat-label">Total Working</p><p class="stat-value stat-value-neutral"><?= number_format($payslip['working_days'], 1) ?></p></div>
             </div>
         </div>
 

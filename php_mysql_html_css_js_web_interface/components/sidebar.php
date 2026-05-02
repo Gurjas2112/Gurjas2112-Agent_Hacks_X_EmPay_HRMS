@@ -12,13 +12,15 @@ $sidebarItems = [
     ['label' => 'Dashboard',     'icon' => 'layout-dashboard', 'page' => 'dashboard',        'roles' => [ROLE_ADMIN, ROLE_EMPLOYEE, ROLE_HR, ROLE_PAYROLL]],
     ['label' => 'Employees',     'icon' => 'users',            'page' => 'users',             'roles' => [ROLE_ADMIN, ROLE_HR]],
     ['label' => 'Add Employee',  'icon' => 'user-plus',        'page' => 'users/form',        'roles' => [ROLE_ADMIN, ROLE_HR]],
-    ['label' => 'Mark Attendance','icon' => 'clock',            'page' => 'attendance/mark',   'roles' => [ROLE_ADMIN, ROLE_EMPLOYEE, ROLE_HR]],
-    ['label' => 'Attendance Log','icon' => 'calendar-days',     'page' => 'attendance/history','roles' => [ROLE_ADMIN, ROLE_EMPLOYEE, ROLE_HR]],
-    ['label' => 'Apply Leave',   'icon' => 'calendar-plus',    'page' => 'leave/apply',       'roles' => [ROLE_ADMIN, ROLE_EMPLOYEE, ROLE_HR]],
-    ['label' => 'Manage Leaves', 'icon' => 'calendar-off',     'page' => 'leave/manage',      'roles' => [ROLE_ADMIN, ROLE_HR]],
-    ['label' => 'Schedule',      'icon' => 'calendar-clock',   'page' => 'schedule/index',    'roles' => [ROLE_ADMIN, ROLE_EMPLOYEE, ROLE_HR]],
+    ['label' => 'Mark Attendance','icon' => 'clock',            'page' => 'attendance/mark',   'roles' => [ROLE_ADMIN, ROLE_EMPLOYEE, ROLE_HR, ROLE_PAYROLL]],
+    ['label' => 'Attendance Log','icon' => 'calendar-days',     'page' => 'attendance/history','roles' => [ROLE_ADMIN, ROLE_EMPLOYEE, ROLE_HR, ROLE_PAYROLL]],
+    ['label' => 'Apply Leave',   'icon' => 'calendar-plus',    'page' => 'leave/apply',       'roles' => [ROLE_ADMIN, ROLE_EMPLOYEE, ROLE_HR, ROLE_PAYROLL]],
+    ['label' => 'Manage Leaves', 'icon' => 'calendar-off',     'page' => 'leave/manage',      'roles' => [ROLE_ADMIN, ROLE_HR, ROLE_PAYROLL]],
+    ['label' => 'Schedule',      'icon' => 'calendar-clock',   'page' => 'schedule/index',    'roles' => [ROLE_ADMIN, ROLE_EMPLOYEE, ROLE_HR, ROLE_PAYROLL]],
     ['label' => 'Payroll',       'icon' => 'wallet',           'page' => 'payroll',            'roles' => [ROLE_ADMIN, ROLE_PAYROLL]],
     ['label' => 'My Payslip',    'icon' => 'file-text',        'page' => 'payroll/my_payslips', 'roles' => [ROLE_ADMIN, ROLE_EMPLOYEE, ROLE_HR, ROLE_PAYROLL]],
+    ['label' => 'Reports',       'icon' => 'bar-chart-3',      'page' => 'reports/index',      'roles' => [ROLE_ADMIN, ROLE_PAYROLL]],
+    ['label' => 'Settings',      'icon' => 'settings',         'page' => 'admin/settings',     'roles' => [ROLE_ADMIN]],
 ];
 ?>
 

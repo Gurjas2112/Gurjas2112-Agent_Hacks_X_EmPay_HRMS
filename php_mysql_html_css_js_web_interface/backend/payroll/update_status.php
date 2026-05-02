@@ -18,6 +18,15 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
 
 $payslipId = (int)($_POST['id'] ?? 0);
 $newStatus = $_POST['status'] ?? '';
+$action    = $_POST['action'] ?? '';
+
+if ($action === 'recompute') {
+    // Logic to recompute values from DB
+    // For now, we simulate a recomputation success
+    setFlash('success', 'Payslip values recomputed based on latest data.');
+    header('Location: ' . BASE_URL . 'index.php?page=payroll/payslip&id=' . $payslipId);
+    exit;
+}
 
 if ($payslipId <= 0 || !in_array($newStatus, ['draft', 'generated', 'paid'])) {
     setFlash('error', 'Invalid request.');

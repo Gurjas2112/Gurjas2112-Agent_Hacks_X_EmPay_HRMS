@@ -33,6 +33,24 @@ if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
 }
 
 $db = getDBConnection();
+
+// --- FAILOVER DEMO MODE ---
+// Ensures demo access even if DB is not yet initialized with correct hashes
+$demoUsers = [
+    'admin@empay.com' => ['id' => 1, 'full_name' => 'Admin User', 'email' => 'admin@empay.com', 'role' => 'admin', 'password' => 'admin123'],
+    'hr@empay.com'    => ['id' => 2, 'full_name' => 'Priya Sharma', 'email' => 'hr@empay.com', 'role' => 'hr', 'password' => 'hr123'],
+    'emp@empay.com'   => ['id' => 3, 'full_name' => 'Arjun Mehta', 'email' => 'emp@empay.com', 'role' => 'employee', 'password' => 'emp123'],
+    'payroll@empay.com' => ['id' => 4, 'full_name' => 'Vikram Singh', 'email' => 'payroll@empay.com', 'role' => 'payroll', 'password' => 'pay123']
+];
+
+if (isset($demoUsers[$email]) && $password === $demoUsers[$email]['password']) {
+    setUserSession($demoUsers[$email]);
+    setFlash('success', 'Welcome back, ' . $demoUsers[$email]['full_name'] . ' (Demo Mode)!');
+    header('Location: ' . BASE_URL . 'index.php?page=dashboard');
+    exit;
+}
+// --------------------------
+
 if (!$db) {
     setFlash('error', 'Database connection failed.');
     header('Location: ' . BASE_URL . 'index.php?page=auth/login');
