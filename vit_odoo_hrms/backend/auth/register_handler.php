@@ -33,21 +33,38 @@ if (!empty($errors)) {
     exit;
 }
 
-/**
- * DATABASE QUERY PLACEHOLDER
- *
- * $db = getDBConnection();
- * 
- * // Check if email/username already exists
- * $stmt = $db->prepare("SELECT id FROM users WHERE email = :email OR username = :username");
- * $stmt->execute([':email' => $email, ':username' => $username]);
- * if ($stmt->fetch()) { ... duplicate error ... }
- *
- * // Insert new user
- * $hashedPassword = password_hash($password, PASSWORD_DEFAULT);
- * $stmt = $db->prepare("INSERT INTO users (full_name, email, username, password, role) VALUES (?,?,?,?,?)");
- * $stmt->execute([$fullName, $email, $username, $hashedPassword, $role]);
- */
+$db = getDBConnection();
+if (!$db) {
+    setFlash('error', 'Database connection failed. Please try again later.');
+    header('Location: ' . BASE_URL . 'index.php?page=auth/register');
+    exit;
+}
+
+try {
+    // Check if email or username already exists
+    $stmt = $db->prepare("SELECT id FROM users WHERE email = :email OR username = :username");
+    $stmt->execute([':email' => $email, ':username' => $username]);
+    
+    if ($stmt->fetch()) {
+        setFlash('error', 'Username or Email already exists.');
+        header('Location: ' . BASE_URL . 'index.php?page=auth/register');
+        exit;
+    }
+
+    // Insert new user
+    $hashedPassword = password_hash($password, PASSWORD_DEFAULT);
+    $stmt = $db->prepare("INSERT INTO users (full_name, email, username, password, role) VALUES (?, ?, ?, ?, ?)");
+    $result = $stmt->execute([$fullName, $email, $username, $hashedPassword, $role]);
+
+    if (!$result) {
+        throw new Exception('Failed to insert user into database.');
+    }
+} catch (Exception $e) {
+    error_log("Registration Error: " . $e->getMessage());
+    setFlash('error', 'An error occurred during registration. Please try again.');
+    header('Location: ' . BASE_URL . 'index.php?page=auth/register');
+    exit;
+}
 
 setFlash('success', 'Account created successfully! Please log in.');
 header('Location: ' . BASE_URL . 'index.php?page=auth/login');

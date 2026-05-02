@@ -74,5 +74,5 @@ function canManagePayroll(): bool
  */
 function canManageLeaves(): bool
 {
-    return in_array(getUserRole(), [ROLE_ADMIN, ROLE_HR]);
+    return in_array(getUserRole(), [ROLE_ADMIN, ROLE_HR, ROLE_PAYROLL]);
 }

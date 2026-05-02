@@ -17,8 +17,8 @@ $onLeave = 0;
 $pendingApprovals = 0;
 $openPositions = 3; // Mocked for now
 
-if ($role === ROLE_ADMIN || $role === ROLE_HR) {
-    // Admin/HR see global stats
+if ($role === ROLE_ADMIN || $role === ROLE_HR || $role === ROLE_PAYROLL) {
+    // Global stats
     $stmt = $db->query("SELECT COUNT(*) FROM attendance WHERE date = CURRENT_DATE AND check_in IS NOT NULL");
     $presentToday = $stmt->fetchColumn();
 
@@ -27,15 +27,33 @@ if ($role === ROLE_ADMIN || $role === ROLE_HR) {
 
     $stmt = $db->query("SELECT COUNT(*) FROM leaves WHERE status = 'pending'");
     $pendingApprovals = $stmt->fetchColumn();
+
+    // Fetch real recent attendance
+    $stmt = $db->query("SELECT a.*, u.full_name as name FROM attendance a JOIN users u ON a.user_id = u.id ORDER BY a.date DESC, a.check_in DESC LIMIT 5");
+    $recentAttendance = $stmt->fetchAll();
+
+    // Fetch real pending leaves
+    $stmt = $db->query("SELECT l.*, u.full_name as name, t.name as type FROM leaves l JOIN users u ON l.user_id = u.id JOIN leave_types t ON l.leave_type_id = t.id WHERE l.status = 'pending' ORDER BY l.created_at DESC LIMIT 5");
+    $recentLeaves = $stmt->fetchAll();
 } else if ($role === ROLE_EMPLOYEE) {
-    // Employee sees their own stats
+    // Employee stats
     $stmt = $db->prepare("SELECT COUNT(*) FROM attendance WHERE user_id = ? AND date = CURRENT_DATE AND check_in IS NOT NULL");
     $stmt->execute([$userId]);
-    $presentToday = $stmt->fetchColumn(); // 1 if checked in, 0 otherwise
+    $presentToday = $stmt->fetchColumn();
 
     $stmt = $db->prepare("SELECT COUNT(*) FROM leaves WHERE user_id = ? AND status = 'pending'");
     $stmt->execute([$userId]);
     $pendingApprovals = $stmt->fetchColumn();
+
+    // Fetch my recent attendance
+    $stmt = $db->prepare("SELECT a.*, u.full_name as name FROM attendance a JOIN users u ON a.user_id = u.id WHERE a.user_id = ? ORDER BY a.date DESC LIMIT 5");
+    $stmt->execute([$userId]);
+    $recentAttendance = $stmt->fetchAll();
+
+    // Fetch my recent leaves
+    $stmt = $db->prepare("SELECT l.*, u.full_name as name, t.name as type FROM leaves l JOIN users u ON l.user_id = u.id JOIN leave_types t ON l.leave_type_id = t.id WHERE l.user_id = ? ORDER BY l.created_at DESC LIMIT 5");
+    $stmt->execute([$userId]);
+    $recentLeaves = $stmt->fetchAll();
 }
 ?>
 
@@ -115,29 +133,29 @@ if ($role === ROLE_ADMIN || $role === ROLE_HR) {
             </tr></thead>
             <tbody>
                 <?php
-                $attendance = [
-                    ['name'=>'Arjun Mehta',   'date'=>'02 May 2026','in'=>'09:02','out'=>'18:15','status'=>'present'],
-                    ['name'=>'Priya Sharma',  'date'=>'02 May 2026','in'=>'09:15','out'=>'18:00','status'=>'present'],
-                    ['name'=>'Ravi Kumar',    'date'=>'02 May 2026','in'=>'10:30','out'=>'18:30','status'=>'late'],
-                    ['name'=>'Sneha Patel',   'date'=>'02 May 2026','in'=>'—',    'out'=>'—',    'status'=>'absent'],
-                    ['name'=>'Vikram Singh',  'date'=>'02 May 2026','in'=>'08:55','out'=>'18:00','status'=>'present'],
-                ];
-                foreach ($attendance as $a):
+                if (empty($recentAttendance)):
+                ?>
+                <tr><td colspan="5" class="text-center text-muted">No recent records.</td></tr>
+                <?php
+                else:
+                foreach ($recentAttendance as $a):
                     $badgeClass = match($a['status']) { 'present'=>'badge-present','late'=>'badge-late','absent'=>'badge-absent',default=>'badge-draft' };
+                    $checkIn = $a['check_in'] ? date('H:i', strtotime($a['check_in'])) : '—';
+                    $checkOut = $a['check_out'] ? date('H:i', strtotime($a['check_out'])) : '—';
                 ?>
                 <tr>
                     <td>
                         <div class="flex items-center gap-2">
                             <div class="kanban-avatar w-7 h-7 text-[10px]"><?= strtoupper(substr($a['name'],0,2)) ?></div>
-                            <span class="font-medium"><?= $a['name'] ?></span>
+                            <span class="font-medium"><?= htmlspecialchars($a['name']) ?></span>
                         </div>
                     </td>
-                    <td class="text-muted"><?= $a['date'] ?></td>
-                    <td class="text-muted"><?= $a['in'] ?></td>
-                    <td class="text-muted"><?= $a['out'] ?></td>
-                    <td><span class="badge <?= $badgeClass ?> capitalize"><?= $a['status'] ?></span></td>
+                    <td class="text-muted"><?= date('d M Y', strtotime($a['date'])) ?></td>
+                    <td class="text-muted"><?= $checkIn ?></td>
+                    <td class="text-muted"><?= $checkOut ?></td>
+                    <td><span class="badge <?= $badgeClass ?> capitalize"><?= htmlspecialchars($a['status']) ?></span></td>
                 </tr>
-                <?php endforeach; ?>
+                <?php endforeach; endif; ?>
             </tbody>
         </table>
     </div>
@@ -150,24 +168,24 @@ if ($role === ROLE_ADMIN || $role === ROLE_HR) {
         </div>
         <div class="divide-y divide-surface-200">
             <?php
-            $leaves = [
-                ['name'=>'Priya Sharma','type'=>'Sick Leave','days'=>2,'status'=>'pending'],
-                ['name'=>'Ravi Kumar','type'=>'Casual Leave','days'=>1,'status'=>'approved'],
-                ['name'=>'Sneha Patel','type'=>'Annual Leave','days'=>5,'status'=>'pending'],
-            ];
-            foreach ($leaves as $l):
+            if (empty($recentLeaves)):
+            ?>
+            <div class="px-6 py-8 text-center text-muted">No pending requests.</div>
+            <?php
+            else:
+            foreach ($recentLeaves as $l):
                 $bc = match($l['status']) { 'pending'=>'badge-pending','approved'=>'badge-approved',default=>'badge-cancelled' };
                 $sl = match($l['status']) { 'pending'=>'To Approve','approved'=>'Approved',default=>'Refused' };
             ?>
             <div class="flex items-center gap-3 px-6 py-3">
                 <div class="kanban-avatar w-8 h-8 text-[10px]"><?= strtoupper(substr($l['name'],0,2)) ?></div>
                 <div class="flex-1 min-w-0">
-                    <p class="text-[13px] font-medium truncate"><?= $l['name'] ?></p>
-                    <p class="caption"><?= $l['type'] ?> · <?= $l['days'] ?> day<?= $l['days']>1?'s':'' ?></p>
+                    <p class="text-[13px] font-medium truncate"><?= htmlspecialchars($l['name']) ?></p>
+                    <p class="caption"><?= htmlspecialchars($l['type']) ?> · <?= floor($l['days']) ?> day<?= $l['days']>1?'s':'' ?></p>
                 </div>
                 <span class="badge <?= $bc ?>"><?= $sl ?></span>
             </div>
-            <?php endforeach; ?>
+            <?php endforeach; endif; ?>
         </div>
     </div>
 </div>

@@ -51,7 +51,13 @@ $flash = getFlash();
                     <label class="form-label block">Password *</label>
                     <input type="password" name="password" required minlength="6" placeholder="Min 6 characters" class="form-input">
                 </div>
-                <input type="hidden" name="role" value="employee">
+                <div>
+                    <label class="form-label block">Register as *</label>
+                    <select name="role" class="form-input">
+                        <option value="hr">HR Officer (Personnel Management)</option>
+                        <option value="payroll">Payroll Officer (Finance & Time-off)</option>
+                    </select>
+                </div>
                 <button type="submit" class="btn btn-primary w-full justify-center">Create Account</button>
             </form>
         </div>

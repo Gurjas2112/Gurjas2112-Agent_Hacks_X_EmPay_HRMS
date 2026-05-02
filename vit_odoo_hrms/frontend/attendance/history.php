@@ -14,7 +14,7 @@ $role = getUserRole();
 
 // Filter by month or user
 $filterMonth = $_GET['month'] ?? date('Y-m');
-$queryUserId = ($role === ROLE_ADMIN || $role === ROLE_HR) && isset($_GET['user_id']) ? (int)$_GET['user_id'] : $userId;
+$queryUserId = ($role === ROLE_ADMIN || $role === ROLE_HR || $role === ROLE_PAYROLL) && isset($_GET['user_id']) ? (int)$_GET['user_id'] : $userId;
 
 $stmt = $db->prepare("SELECT * FROM attendance WHERE user_id = ? AND date LIKE ? ORDER BY date DESC");
 $stmt->execute([$queryUserId, $filterMonth . '%']);

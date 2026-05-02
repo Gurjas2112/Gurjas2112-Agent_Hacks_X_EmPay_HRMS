@@ -52,11 +52,7 @@ $flash = getFlash();
                         </button>
                     </div>
                 </div>
-                <div class="flex items-center justify-between text-[12px]">
-                    <label class="flex items-center gap-1.5 cursor-pointer">
-                        <input type="checkbox" name="remember" class="w-3.5 h-3.5 rounded border-surface-200 text-brand focus:ring-brand/30">
-                        <span class="text-muted">Remember me</span>
-                    </label>
+                <div class="flex items-center justify-end text-[12px]">
                     <a href="#" class="link">Forgot password?</a>
                 </div>
                 <button type="submit" class="btn btn-primary w-full justify-center">Sign In</button>

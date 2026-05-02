@@ -200,7 +200,32 @@ CREATE TABLE `payroll` (
 ) ENGINE=InnoDB;
 
 -- ============================================
--- 8. ACTIVITY LOG (Audit Trail)
+-- 8. SCHEDULES
+-- ============================================
+CREATE TABLE `schedules` (
+    `id`          INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    `user_id`     INT UNSIGNED NOT NULL,
+    `shift_date`  DATE NOT NULL,
+    `start_time`  TIME NOT NULL,
+    `end_time`    TIME NOT NULL,
+    `notes`       VARCHAR(255) NULL,
+    `created_by`  INT UNSIGNED NULL,
+    `created_at`  TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    `updated_at`  TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+
+    CONSTRAINT `fk_schedules_user`
+        FOREIGN KEY (`user_id`) REFERENCES `users`(`id`)
+        ON DELETE CASCADE ON UPDATE CASCADE,
+    CONSTRAINT `fk_schedules_creator`
+        FOREIGN KEY (`created_by`) REFERENCES `users`(`id`)
+        ON DELETE SET NULL ON UPDATE CASCADE,
+
+    INDEX `idx_schedules_date` (`shift_date`),
+    INDEX `idx_schedules_user` (`user_id`)
+) ENGINE=InnoDB;
+
+-- ============================================
+-- 9. ACTIVITY LOG (Audit Trail)
 -- ============================================
 CREATE TABLE `activity_log` (
     `id`          BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
@@ -250,10 +275,10 @@ INSERT INTO `leave_types` (`name`, `description`, `max_days`, `is_paid`, `carry_
 -- emp123    → $2y$10$...
 -- pay123    → $2y$10$...
 INSERT INTO `users` (`full_name`, `username`, `email`, `password`, `role`, `department_id`, `designation`, `basic_salary`, `date_of_join`) VALUES
-('Admin User',    'admin',   'admin@empay.com',   '$2y$10$YxKm3XcGq7rS.V6Wd9Jyqu2E8VlGfNfkM4LKx0Y8bZpIe6aFW',   'admin',    1, 'System Administrator', 80000.00, '2023-01-01'),
-('Priya Sharma',  'hruser',  'hr@empay.com',      '$2y$10$9Kq1LZ3GjFL.ONhA5n3Kf.1r5LbN8yS2M.4s/dK0xb0a.cHPnS',      'hr',       2, 'HR Manager',           55000.00, '2023-08-01'),
-('Arjun Mehta',   'empuser', 'emp@empay.com',     '$2y$10$xS2Lqs.wjYDP1C.GO/8KiO8m6X9FCgvJx8jmDqIbRt0gQ6CIi',     'employee', 1, 'Software Engineer',    60000.00, '2024-03-15'),
-('Vikram Singh',  'payuser', 'payroll@empay.com', '$2y$10$r8t8Ys9I6d7G3FzJhV3SOeNgvEfR8/KQF7vOLmHpY2s2UPQWO', 'payroll',  5, 'Payroll Officer',      65000.00, '2023-11-05'),
+('Admin User',    'admin',   'admin@empay.com',   '$2y$10$YxKm3XcGq7rS.V6Wd9Jyqu2E8VlGfNfkM4LKx0Y8bZpIe6aFWm8J6',   'admin',    1, 'System Administrator', 80000.00, '2023-01-01'),
+('Priya Sharma',  'hruser',  'hr@empay.com',      '$2y$10$9Kq1LZ3GjFL.ONhA5n3Kf.1r5LbN8yS2M.4s/dK0xb0a.cHPnS1qK',      'hr',       2, 'HR Manager',           55000.00, '2023-08-01'),
+('Arjun Mehta',   'empuser', 'emp@empay.com',     '$2y$10$xS2Lqs.wjYDP1C.GO/8KiO8m6X9FCgvJx8jmDqIbRt0gQ6CIi2qK',     'employee', 1, 'Software Engineer',    60000.00, '2024-03-15'),
+('Vikram Singh',  'payuser', 'payroll@empay.com', '$2y$10$r8t8Ys9I6d7G3FzJhV3SOeNgvEfR8/KQF7vOLmHpY2s2UPQWO1qK', 'payroll',  5, 'Payroll Officer',      65000.00, '2023-11-05'),
 ('Ravi Kumar',    'ravi',    'ravi@empay.com',    '$2y$10$xS2Lqs.wjYDP1C.GO/8KiO8m6X9FCgvJx8jmDqIbRt0gQ6CIi',    'employee', 3, 'Marketing Executive',  50000.00, '2025-01-10'),
 ('Sneha Patel',   'sneha',   'sneha@empay.com',   '$2y$10$xS2Lqs.wjYDP1C.GO/8KiO8m6X9FCgvJx8jmDqIbRt0gQ6CIi',   'employee', 4, 'UI Designer',          52000.00, '2024-06-22'),
 ('Ananya Gupta',  'ananya',  'ananya@empay.com',  '$2y$10$xS2Lqs.wjYDP1C.GO/8KiO8m6X9FCgvJx8jmDqIbRt0gQ6CIi',  'employee', 1, 'Backend Developer',    58000.00, '2025-02-18');

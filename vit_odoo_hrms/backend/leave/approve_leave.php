@@ -9,7 +9,7 @@ require_once __DIR__ . '/../../auth/session.php';
 require_once __DIR__ . '/../../auth/login_check.php';
 require_once __DIR__ . '/../../auth/role_check.php';
 
-requireRole(ROLE_ADMIN, ROLE_HR);
+requireRole(ROLE_ADMIN, ROLE_HR, ROLE_PAYROLL);
 
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     header('Location: ' . BASE_URL . 'index.php?page=leave/manage');

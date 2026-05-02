@@ -58,21 +58,38 @@ $totalDed = $pf + $pt + $tds + $otherDeds;
 $net = $gross - $totalDed;
 ?>
 
-<!-- Action Bar & Workflow Pipeline per spec 7.1 and 5.4 -->
+<!-- Action Bar & Workflow Pipeline -->
 <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-4">
     <div class="flex items-center gap-2">
         <?php if (!$isEmployeeSelfService): ?>
-            <button class="btn btn-primary">Confirm Payslip</button>
-            <button class="btn btn-secondary">Cancel</button>
+            <?php if ($status === 'draft'): ?>
+                <form action="<?= BASE_URL ?>../backend/payroll/update_status.php" method="POST" class="inline">
+                    <input type="hidden" name="id" value="<?= $payslipId ?>">
+                    <input type="hidden" name="status" value="generated">
+                    <button type="submit" class="btn btn-primary">Confirm Payslip</button>
+                </form>
+            <?php elseif ($status === 'generated'): ?>
+                <form action="<?= BASE_URL ?>../backend/payroll/update_status.php" method="POST" class="inline">
+                    <input type="hidden" name="id" value="<?= $payslipId ?>">
+                    <input type="hidden" name="status" value="paid">
+                    <button type="submit" class="btn btn-primary">Mark as Paid</button>
+                </form>
+                <form action="<?= BASE_URL ?>../backend/payroll/update_status.php" method="POST" class="inline">
+                    <input type="hidden" name="id" value="<?= $payslipId ?>">
+                    <input type="hidden" name="status" value="draft">
+                    <button type="submit" class="btn btn-secondary">Set to Draft</button>
+                </form>
+            <?php endif; ?>
+            
             <button class="btn btn-secondary">Recompute</button>
         <?php endif; ?>
         <button class="btn btn-secondary" onclick="window.print()"><i data-lucide="printer" class="w-4 h-4"></i> Print</button>
     </div>
     
     <div class="workflow-steps">
-        <div class="workflow-step">Draft</div>
-        <div class="workflow-step active">Confirmed</div>
-        <div class="workflow-step">Done</div>
+        <div class="workflow-step <?= $status === 'draft' ? 'active' : '' ?>">Draft</div>
+        <div class="workflow-step <?= $status === 'generated' ? 'active' : '' ?>">Confirmed</div>
+        <div class="workflow-step <?= $status === 'paid' ? 'active' : '' ?>">Done</div>
     </div>
 </div>
 

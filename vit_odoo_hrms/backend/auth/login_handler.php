@@ -32,38 +32,33 @@ if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
     exit;
 }
 
-/**
- * DATABASE QUERY PLACEHOLDER
- * In production, you would:
- * 1. Query the database for the user by email
- * 2. Verify the password hash using password_verify()
- * 3. Set session data on success
- *
- * Example:
- * $db = getDBConnection();
- * $stmt = $db->prepare("SELECT * FROM users WHERE email = :email AND is_active = 1");
- * $stmt->execute([':email' => $email]);
- * $user = $stmt->fetch();
- *
- * if ($user && password_verify($password, $user['password'])) {
- *     setUserSession($user);
- *     ...
- * }
- */
+$db = getDBConnection();
+if (!$db) {
+    setFlash('error', 'Database connection failed.');
+    header('Location: ' . BASE_URL . 'index.php?page=auth/login');
+    exit;
+}
 
-// Demo: Simulate user lookup for demo accounts
-$demoUsers = [
-    'admin@empay.com'   => ['id' => 1, 'username' => 'admin',   'full_name' => 'Admin User',    'email' => 'admin@empay.com',   'role' => 'admin',    'password' => 'admin123'],
-    'hr@empay.com'      => ['id' => 2, 'username' => 'hruser',  'full_name' => 'Priya Sharma',  'email' => 'hr@empay.com',      'role' => 'hr',       'password' => 'hr123'],
-    'emp@empay.com'     => ['id' => 3, 'username' => 'empuser', 'full_name' => 'Arjun Mehta',   'email' => 'emp@empay.com',     'role' => 'employee', 'password' => 'emp123'],
-    'payroll@empay.com' => ['id' => 4, 'username' => 'payuser', 'full_name' => 'Vikram Singh',  'email' => 'payroll@empay.com', 'role' => 'payroll',  'password' => 'pay123'],
-];
+try {
+    $stmt = $db->prepare("SELECT * FROM users WHERE email = :email AND is_active = 1");
+    $stmt->execute([':email' => $email]);
+    $user = $stmt->fetch();
 
-if (isset($demoUsers[$email]) && $demoUsers[$email]['password'] === $password) {
-    $user = $demoUsers[$email];
-    setUserSession($user);
-    setFlash('success', 'Welcome back, ' . $user['full_name'] . '!');
-    header('Location: ' . BASE_URL . 'index.php?page=dashboard');
+    if ($user && password_verify($password, $user['password'])) {
+        setUserSession($user);
+        
+        // Update last login
+        $updateStmt = $db->prepare("UPDATE users SET last_login = CURRENT_TIMESTAMP WHERE id = ?");
+        $updateStmt->execute([$user['id']]);
+
+        setFlash('success', 'Welcome back, ' . $user['full_name'] . '!');
+        header('Location: ' . BASE_URL . 'index.php?page=dashboard');
+        exit;
+    }
+} catch (Exception $e) {
+    error_log("Login Error: " . $e->getMessage());
+    setFlash('error', 'An error occurred during login.');
+    header('Location: ' . BASE_URL . 'index.php?page=auth/login');
     exit;
 }
 

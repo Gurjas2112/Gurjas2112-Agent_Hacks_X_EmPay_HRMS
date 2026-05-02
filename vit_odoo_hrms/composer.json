@@ -1,0 +1,18 @@
+{
+    "name": "gurjas/empay-hrms",
+    "description": "Smart Human Resource Management System",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Gurjas Gandhi"
+        }
+    ],
+    "minimum-stability": "stable",
+    "require": {
+        "phpmailer/phpmailer": "^7.0",
+        "dompdf/dompdf": "^3.1",
+        "pragmarx/google2fa": "^9.0",
+        "vlucas/phpdotenv": "^5.6",
+        "monolog/monolog": "^3.10"
+    }
+}

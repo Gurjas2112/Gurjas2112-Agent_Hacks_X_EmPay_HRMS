@@ -37,6 +37,16 @@ $dateOfJoin = $_POST['date_of_join'] ?? null;
 
 try {
     $db = getDBConnection();
+    
+    // Check for duplicate email or username
+    $stmt = $db->prepare("SELECT id FROM users WHERE email = :email OR username = :username");
+    $stmt->execute([':email' => $email, ':username' => $username]);
+    if ($stmt->fetch()) {
+        setFlash('error', 'Username or Email already exists.');
+        header('Location: ' . BASE_URL . 'index.php?page=users/form');
+        exit;
+    }
+
     $hashedPassword = password_hash($password, PASSWORD_DEFAULT);
     $stmt = $db->prepare("INSERT INTO users (full_name, email, username, password, role, department_id, designation, date_of_join, phone) VALUES (?,?,?,?,?,?,?,?,?)");
     $stmt->execute([$fullName, $email, $username, $hashedPassword, $role, $departmentId, $designation, $dateOfJoin, $phone]);
