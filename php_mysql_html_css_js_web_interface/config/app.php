@@ -9,9 +9,11 @@ define('APP_NAME', 'EmPay HRMS');
 define('APP_VERSION', '1.0.0');
 define('APP_TAGLINE', 'Human Resource Management System');
 
-// Base URL - adjust based on your environment
-define('BASE_URL', 'http://localhost/Agent_Hacks_X_EmPay_HRMS/php_mysql_html_css_js_web_interface/public/');
-define('ASSET_URL', 'http://localhost/Agent_Hacks_X_EmPay_HRMS/php_mysql_html_css_js_web_interface/public/assets/');
+// Base URL - Detect automatically for ngrok/local support
+$protocol = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on') ? "https" : "http";
+$host = $_SERVER['HTTP_HOST'] ?? 'localhost';
+define('BASE_URL', $protocol . "://" . $host . '/Agent_Hacks_X_EmPay_HRMS/php_mysql_html_css_js_web_interface/public/');
+define('ASSET_URL', BASE_URL . 'assets/');
 
 // Root path
 define('ROOT_PATH', dirname(__DIR__) . DIRECTORY_SEPARATOR);
