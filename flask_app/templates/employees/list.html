@@ -1,0 +1,52 @@
+{% extends "base.html" %}
+{% block title %}Employees — EmPay HRMS{% endblock %}
+{% block page_title %}Employees{% endblock %}
+
+{% block content %}
+<div class="flex items-center justify-between mb-6">
+    <p class="text-sm text-gray-500">{{ employees | length }} employees</p>
+    {% if session.get('role') in ('admin', 'hr_officer') %}
+    <span class="px-3 py-1.5 rounded-lg bg-brand-500/10 text-brand-400 text-xs font-medium border border-brand-500/20">
+        <i class="fa-solid fa-shield-halved mr-1"></i> {{ session.get('role_label') }} Access
+    </span>
+    {% endif %}
+</div>
+
+<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+    {% for emp in employees %}
+    <a href="{{ url_for('employees.detail', emp_id=emp.id) }}" class="stat-card group cursor-pointer hover:border-brand-500/30 transition-all">
+        <div class="flex items-start gap-3">
+            <div class="w-12 h-12 rounded-xl bg-gradient-to-br from-brand-500 to-brand-700 flex items-center justify-center text-white font-bold text-lg flex-shrink-0 group-hover:shadow-lg group-hover:shadow-brand-500/20 transition-shadow">
+                {{ emp.name[0] | upper }}
+            </div>
+            <div class="flex-1 min-w-0">
+                <h3 class="text-sm font-semibold text-white truncate group-hover:text-brand-400 transition-colors">{{ emp.name }}</h3>
+                <p class="text-xs text-gray-500 truncate">{{ emp.job_title or 'Employee' }}</p>
+                {% if emp.department_id %}
+                <p class="text-xs text-gray-600 mt-1">
+                    <i class="fa-solid fa-building text-[10px] mr-1"></i>{{ emp.department_id[1] }}
+                </p>
+                {% endif %}
+            </div>
+        </div>
+        <div class="mt-3 flex items-center justify-between">
+            <span class="text-[10px] font-mono text-brand-400/70 bg-brand-500/5 px-2 py-0.5 rounded">{{ emp.empay_employee_id or 'N/A' }}</span>
+            <span class="px-2 py-0.5 rounded-full text-[10px] font-medium
+                {% if emp.employment_type == 'full_time' %}bg-emerald-500/10 text-emerald-400
+                {% elif emp.employment_type == 'contract' %}bg-amber-500/10 text-amber-400
+                {% elif emp.employment_type == 'intern' %}bg-purple-500/10 text-purple-400
+                {% else %}bg-blue-500/10 text-blue-400{% endif %}">
+                {{ emp.employment_type | replace('_', ' ') | title }}
+            </span>
+        </div>
+    </a>
+    {% endfor %}
+</div>
+
+{% if not employees %}
+<div class="text-center py-16">
+    <i class="fa-solid fa-users-slash text-4xl text-gray-700 mb-4"></i>
+    <p class="text-gray-500">No employees found</p>
+</div>
+{% endif %}
+{% endblock %}

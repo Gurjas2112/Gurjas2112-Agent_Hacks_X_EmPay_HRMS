@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}EmPay HRMS{% endblock %}</title>
+    <meta name="description" content="EmPay — Smart Human Resource Management System">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        brand: { 50:'#eef2ff', 100:'#e0e7ff', 200:'#c7d2fe', 400:'#818cf8', 500:'#6366f1', 600:'#4f46e5', 700:'#4338ca', 800:'#3730a3', 900:'#312e81' },
+                        surface: { 800:'#1e1b2e', 850:'#171427', 900:'#0f0d1a', 950:'#0a0812' },
+                    },
+                    fontFamily: { sans: ['Inter', 'system-ui', 'sans-serif'] },
+                }
+            }
+        }
+    </script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/custom.css') }}">
+</head>
+<body class="bg-surface-950 text-gray-100 font-sans antialiased min-h-screen flex">
+
+    {% if session.get('uid') %}
+    <!-- ═══════════════════════════════════════════ -->
+    <!-- SIDEBAR                                     -->
+    <!-- ═══════════════════════════════════════════ -->
+    <aside id="sidebar" class="sidebar fixed inset-y-0 left-0 z-50 w-64 bg-surface-900 border-r border-white/5 flex flex-col transition-transform duration-300 lg:translate-x-0 -translate-x-full">
+        <!-- Brand -->
+        <div class="p-5 border-b border-white/5">
+            <div class="flex items-center gap-3">
+                <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-brand-500 to-brand-700 flex items-center justify-center text-white font-bold text-lg shadow-lg shadow-brand-500/25">E</div>
+                <div>
+                    <h1 class="text-lg font-bold text-white tracking-tight">EmPay</h1>
+                    <p class="text-xs text-gray-500">Smart HRMS</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Navigation -->
+        <nav class="flex-1 p-3 space-y-1 overflow-y-auto">
+            <a href="{{ url_for('dashboard.index') }}" class="nav-link {{ 'active' if request.endpoint == 'dashboard.index' }}">
+                <i class="fa-solid fa-chart-line w-5 text-center"></i>
+                <span>Dashboard</span>
+            </a>
+            <a href="{{ url_for('employees.list_employees') }}" class="nav-link {{ 'active' if request.endpoint and 'employees' in request.endpoint }}">
+                <i class="fa-solid fa-users w-5 text-center"></i>
+                <span>Employees</span>
+            </a>
+            <a href="{{ url_for('attendance.index') }}" class="nav-link {{ 'active' if request.endpoint and 'attendance' in request.endpoint }}">
+                <i class="fa-solid fa-fingerprint w-5 text-center"></i>
+                <span>Attendance</span>
+            </a>
+            <a href="{{ url_for('leaves.index') }}" class="nav-link {{ 'active' if request.endpoint and 'leaves' in request.endpoint }}">
+                <i class="fa-solid fa-calendar-check w-5 text-center"></i>
+                <span>Leaves</span>
+            </a>
+            {% if session.get('role') in ('admin', 'payroll_officer') %}
+            <div class="pt-3 pb-1">
+                <p class="text-[10px] uppercase tracking-widest text-gray-600 font-semibold px-3">Payroll</p>
+            </div>
+            <a href="{{ url_for('payroll.runs') }}" class="nav-link {{ 'active' if request.endpoint and 'payroll.runs' in request.endpoint or request.endpoint and 'payroll.detail' in request.endpoint }}">
+                <i class="fa-solid fa-money-check-dollar w-5 text-center"></i>
+                <span>Pay Runs</span>
+            </a>
+            {% endif %}
+            <a href="{{ url_for('payroll.my_payslips') }}" class="nav-link {{ 'active' if request.endpoint == 'payroll.my_payslips' }}">
+                <i class="fa-solid fa-file-invoice-dollar w-5 text-center"></i>
+                <span>My Payslips</span>
+            </a>
+        </nav>
+
+        <!-- User Card -->
+        <div class="p-4 border-t border-white/5">
+            <div class="flex items-center gap-3">
+                <div class="w-9 h-9 rounded-lg bg-gradient-to-br from-emerald-500 to-teal-600 flex items-center justify-center text-white text-sm font-bold">
+                    {{ session.get('user_name', 'U')[0] | upper }}
+                </div>
+                <div class="flex-1 min-w-0">
+                    <p class="text-sm font-medium text-white truncate">{{ session.get('user_name', 'User') }}</p>
+                    <p class="text-xs text-gray-500">{{ session.get('role_label', 'Employee') }}</p>
+                </div>
+                <a href="{{ url_for('auth.logout') }}" class="text-gray-500 hover:text-red-400 transition-colors" title="Logout">
+                    <i class="fa-solid fa-right-from-bracket"></i>
+                </a>
+            </div>
+        </div>
+    </aside>
+
+    <!-- ═══════════════════════════════════════════ -->
+    <!-- MAIN CONTENT                                -->
+    <!-- ═══════════════════════════════════════════ -->
+    <main class="flex-1 lg:ml-64 min-h-screen flex flex-col">
+        <!-- Top Bar -->
+        <header class="sticky top-0 z-40 bg-surface-950/80 backdrop-blur-xl border-b border-white/5 px-6 py-4">
+            <div class="flex items-center justify-between">
+                <div class="flex items-center gap-4">
+                    <button id="sidebar-toggle" class="lg:hidden text-gray-400 hover:text-white transition-colors">
+                        <i class="fa-solid fa-bars text-xl"></i>
+                    </button>
+                    <h2 class="text-lg font-semibold text-white">{% block page_title %}Dashboard{% endblock %}</h2>
+                </div>
+                <div class="flex items-center gap-3">
+                    <!-- Clock In/Out quick action -->
+                    <form method="POST" action="{{ url_for('attendance.clock_in') }}" class="inline">
+                        <button type="submit" class="px-3 py-1.5 rounded-lg bg-emerald-500/10 text-emerald-400 text-xs font-medium hover:bg-emerald-500/20 transition-colors border border-emerald-500/20">
+                            <i class="fa-solid fa-clock mr-1"></i> Clock In
+                        </button>
+                    </form>
+                    <form method="POST" action="{{ url_for('attendance.clock_out') }}" class="inline">
+                        <button type="submit" class="px-3 py-1.5 rounded-lg bg-orange-500/10 text-orange-400 text-xs font-medium hover:bg-orange-500/20 transition-colors border border-orange-500/20">
+                            <i class="fa-solid fa-clock mr-1"></i> Clock Out
+                        </button>
+                    </form>
+                    <span class="text-xs text-gray-500" id="live-clock"></span>
+                </div>
+            </div>
+        </header>
+
+        <!-- Flash Messages -->
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+            <div class="px-6 pt-4 space-y-2">
+                {% for category, message in messages %}
+                <div class="flash-msg px-4 py-3 rounded-lg text-sm flex items-center gap-2
+                    {% if category == 'error' %}bg-red-500/10 text-red-400 border border-red-500/20
+                    {% elif category == 'success' %}bg-emerald-500/10 text-emerald-400 border border-emerald-500/20
+                    {% else %}bg-brand-500/10 text-brand-400 border border-brand-500/20{% endif %}">
+                    <i class="fa-solid {% if category == 'error' %}fa-circle-exclamation{% elif category == 'success' %}fa-circle-check{% else %}fa-circle-info{% endif %}"></i>
+                    {{ message }}
+                    <button onclick="this.parentElement.remove()" class="ml-auto text-gray-500 hover:text-white">
+                        <i class="fa-solid fa-xmark"></i>
+                    </button>
+                </div>
+                {% endfor %}
+            </div>
+            {% endif %}
+        {% endwith %}
+
+        <!-- Page Content -->
+        <div class="flex-1 p-6">
+            {% block content %}{% endblock %}
+        </div>
+    </main>
+
+    <!-- Sidebar Overlay (mobile) -->
+    <div id="sidebar-overlay" class="fixed inset-0 bg-black/60 z-40 hidden lg:hidden" onclick="toggleSidebar()"></div>
+
+    {% else %}
+    <!-- If not logged in, just render content (login/signup pages) -->
+    {% block auth_content %}{% endblock %}
+    {% endif %}
+
+    <script src="{{ url_for('static', filename='js/app.js') }}"></script>
+    {% block scripts %}{% endblock %}
+</body>
+</html>

@@ -1,0 +1,172 @@
+{% extends "base.html" %}
+{% block title %}{{ employee.name }} — EmPay HRMS{% endblock %}
+{% block page_title %}Employee Profile{% endblock %}
+
+{% block content %}
+<div class="max-w-5xl mx-auto">
+    <!-- Profile Header -->
+    <div class="glass-panel rounded-xl p-6 mb-6">
+        <div class="flex items-center gap-5">
+            <div class="w-20 h-20 rounded-2xl bg-gradient-to-br from-brand-500 to-brand-700 flex items-center justify-center text-white text-3xl font-bold shadow-lg shadow-brand-500/25">
+                {{ employee.name[0] | upper }}
+            </div>
+            <div>
+                <h2 class="text-xl font-bold text-white">{{ employee.name }}</h2>
+                <p class="text-sm text-gray-400">{{ employee.job_title or 'Employee' }}</p>
+                <div class="flex items-center gap-3 mt-2">
+                    <span class="text-xs font-mono text-brand-400 bg-brand-500/10 px-2 py-0.5 rounded">{{ employee.empay_employee_id or 'N/A' }}</span>
+                    {% if employee.department_id %}
+                    <span class="text-xs text-gray-500"><i class="fa-solid fa-building mr-1"></i>{{ employee.department_id[1] }}</span>
+                    {% endif %}
+                    <span class="px-2 py-0.5 rounded-full text-[10px] font-medium
+                        {% if employee.employment_type == 'full_time' %}bg-emerald-500/10 text-emerald-400
+                        {% else %}bg-amber-500/10 text-amber-400{% endif %}">
+                        {{ (employee.employment_type or 'full_time') | replace('_', ' ') | title }}
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Tabs -->
+    <div class="flex gap-1 mb-4 border-b border-white/5 pb-px">
+        <button onclick="showTab('personal')" class="tab-btn active" data-tab="personal">Personal Info</button>
+        <button onclick="showTab('attendance')" class="tab-btn" data-tab="attendance">Attendance ({{ attendance | length }})</button>
+        <button onclick="showTab('leaves')" class="tab-btn" data-tab="leaves">Leaves ({{ leaves | length }})</button>
+        <button onclick="showTab('payslips')" class="tab-btn" data-tab="payslips">Payslips ({{ payslips | length }})</button>
+    </div>
+
+    <!-- Tab: Personal Info -->
+    <div id="tab-personal" class="tab-content active">
+        <form method="POST" action="{{ url_for('employees.update', emp_id=employee.id) }}">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div class="glass-panel rounded-xl p-5">
+                    <h4 class="text-xs uppercase tracking-widest text-gray-500 font-semibold mb-4">Work Information</h4>
+                    <div class="space-y-3">
+                        <div><label class="block text-xs text-gray-500 mb-1">Job Title</label>
+                            <input name="job_title" value="{{ employee.job_title or '' }}" class="form-input"></div>
+                        <div><label class="block text-xs text-gray-500 mb-1">Work Email</label>
+                            <input name="work_email" value="{{ employee.work_email or '' }}" class="form-input"></div>
+                        <div><label class="block text-xs text-gray-500 mb-1">Work Phone</label>
+                            <input name="work_phone" value="{{ employee.work_phone or '' }}" class="form-input"></div>
+                        <div><label class="block text-xs text-gray-500 mb-1">Employment Type</label>
+                            <select name="employment_type" class="form-input">
+                                <option value="full_time" {{ 'selected' if employee.employment_type == 'full_time' }}>Full-Time</option>
+                                <option value="part_time" {{ 'selected' if employee.employment_type == 'part_time' }}>Part-Time</option>
+                                <option value="contract" {{ 'selected' if employee.employment_type == 'contract' }}>Contract</option>
+                                <option value="intern" {{ 'selected' if employee.employment_type == 'intern' }}>Intern</option>
+                            </select></div>
+                    </div>
+                </div>
+                <div class="glass-panel rounded-xl p-5">
+                    <h4 class="text-xs uppercase tracking-widest text-gray-500 font-semibold mb-4">Personal Details</h4>
+                    <div class="space-y-3">
+                        <div><label class="block text-xs text-gray-500 mb-1">Bank Account</label>
+                            <input name="bank_account_number" value="{{ employee.bank_account_number or '' }}" class="form-input"></div>
+                        <div><label class="block text-xs text-gray-500 mb-1">Emergency Contact</label>
+                            <input name="emergency_contact_name" value="{{ employee.emergency_contact_name or '' }}" class="form-input"></div>
+                        <div><label class="block text-xs text-gray-500 mb-1">Emergency Phone</label>
+                            <input name="emergency_contact_phone" value="{{ employee.emergency_contact_phone or '' }}" class="form-input"></div>
+                        <div><label class="block text-xs text-gray-500 mb-1">Date of Joining</label>
+                            <p class="text-sm text-white">{{ employee.date_of_joining or 'N/A' }}</p></div>
+                    </div>
+                </div>
+            </div>
+            {% if session.get('role') in ('admin', 'hr_officer') %}
+            <div class="mt-4">
+                <button type="submit" class="px-6 py-2 rounded-xl bg-gradient-to-r from-brand-600 to-brand-700 text-white font-medium text-sm hover:from-brand-500 hover:to-brand-600 transition-all shadow-lg shadow-brand-500/20 active:scale-[0.98]">
+                    Save Changes
+                </button>
+            </div>
+            {% endif %}
+        </form>
+    </div>
+
+    <!-- Tab: Attendance -->
+    <div id="tab-attendance" class="tab-content hidden">
+        <div class="glass-panel rounded-xl overflow-hidden">
+            <table class="w-full text-sm">
+                <thead><tr class="border-b border-white/5">
+                    <th class="text-left p-3 text-xs text-gray-500 font-medium">Check In</th>
+                    <th class="text-left p-3 text-xs text-gray-500 font-medium">Check Out</th>
+                    <th class="text-left p-3 text-xs text-gray-500 font-medium">Hours</th>
+                    <th class="text-left p-3 text-xs text-gray-500 font-medium">Status</th>
+                </tr></thead>
+                <tbody>
+                    {% for att in attendance %}
+                    <tr class="border-b border-white/[0.03] hover:bg-white/[0.02] transition-colors">
+                        <td class="p-3 text-gray-300 font-mono text-xs">{{ att.check_in or '—' }}</td>
+                        <td class="p-3 text-gray-300 font-mono text-xs">{{ att.check_out or '—' }}</td>
+                        <td class="p-3 text-white">{{ "%.1f" | format(att.worked_hours or 0) }}h</td>
+                        <td class="p-3">
+                            <span class="status-badge-{{ att.status or 'present' }}">{{ (att.status or 'present') | replace('_',' ') | title }}</span>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- Tab: Leaves -->
+    <div id="tab-leaves" class="tab-content hidden">
+        <div class="glass-panel rounded-xl overflow-hidden">
+            <table class="w-full text-sm">
+                <thead><tr class="border-b border-white/5">
+                    <th class="text-left p-3 text-xs text-gray-500 font-medium">Type</th>
+                    <th class="text-left p-3 text-xs text-gray-500 font-medium">From</th>
+                    <th class="text-left p-3 text-xs text-gray-500 font-medium">To</th>
+                    <th class="text-left p-3 text-xs text-gray-500 font-medium">Days</th>
+                    <th class="text-left p-3 text-xs text-gray-500 font-medium">Status</th>
+                </tr></thead>
+                <tbody>
+                    {% for lv in leaves %}
+                    <tr class="border-b border-white/[0.03] hover:bg-white/[0.02]">
+                        <td class="p-3 text-gray-300">{{ lv.holiday_status_id[1] if lv.holiday_status_id else '—' }}</td>
+                        <td class="p-3 text-gray-300 font-mono text-xs">{{ lv.date_from }}</td>
+                        <td class="p-3 text-gray-300 font-mono text-xs">{{ lv.date_to }}</td>
+                        <td class="p-3 text-white">{{ lv.number_of_days }}</td>
+                        <td class="p-3"><span class="state-badge-{{ lv.state }}">{{ lv.state | title }}</span></td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- Tab: Payslips -->
+    <div id="tab-payslips" class="tab-content hidden">
+        <div class="glass-panel rounded-xl overflow-hidden">
+            <table class="w-full text-sm">
+                <thead><tr class="border-b border-white/5">
+                    <th class="text-left p-3 text-xs text-gray-500 font-medium">Period</th>
+                    <th class="text-left p-3 text-xs text-gray-500 font-medium">Gross</th>
+                    <th class="text-left p-3 text-xs text-gray-500 font-medium">Net</th>
+                    <th class="text-left p-3 text-xs text-gray-500 font-medium">Status</th>
+                </tr></thead>
+                <tbody>
+                    {% for slip in payslips %}
+                    <tr class="border-b border-white/[0.03] hover:bg-white/[0.02]">
+                        <td class="p-3 text-gray-300 text-xs">{{ slip.date_from }} → {{ slip.date_to }}</td>
+                        <td class="p-3 text-white">₹{{ "{:,.0f}".format(slip.gross_salary) }}</td>
+                        <td class="p-3 text-emerald-400 font-semibold">₹{{ "{:,.0f}".format(slip.net_salary) }}</td>
+                        <td class="p-3"><span class="state-badge-{{ slip.state }}">{{ slip.state | title }}</span></td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<script>
+function showTab(name) {
+    document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
+    document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
+    document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active'));
+    document.getElementById('tab-' + name).classList.remove('hidden');
+    document.getElementById('tab-' + name).classList.add('active');
+    document.querySelector('[data-tab="' + name + '"]').classList.add('active');
+}
+</script>
+{% endblock %}

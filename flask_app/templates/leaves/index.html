@@ -1,0 +1,85 @@
+{% extends "base.html" %}
+{% block title %}Leaves — EmPay HRMS{% endblock %}
+{% block page_title %}Leave Management{% endblock %}
+{% block content %}
+<div class="flex items-center justify-between mb-6">
+    <p class="text-sm text-gray-500">{{ leaves|length }} leave requests</p>
+    <button onclick="document.getElementById('applyModal').classList.remove('hidden')" class="px-4 py-2 rounded-xl bg-gradient-to-r from-brand-600 to-brand-700 text-white text-sm font-medium hover:from-brand-500 hover:to-brand-600 transition-all active:scale-[0.98]">
+        <i class="fa-solid fa-plus mr-1"></i> Apply Leave
+    </button>
+</div>
+<div class="glass-panel rounded-xl overflow-hidden">
+    <table class="w-full text-sm">
+        <thead><tr class="border-b border-white/5">
+            <th class="text-left p-3 text-xs text-gray-500 font-medium">Employee</th>
+            <th class="text-left p-3 text-xs text-gray-500 font-medium">Type</th>
+            <th class="text-left p-3 text-xs text-gray-500 font-medium">From</th>
+            <th class="text-left p-3 text-xs text-gray-500 font-medium">To</th>
+            <th class="text-left p-3 text-xs text-gray-500 font-medium">Days</th>
+            <th class="text-left p-3 text-xs text-gray-500 font-medium">Status</th>
+            {% if session.get('role') in ('admin','payroll_officer') %}
+            <th class="text-left p-3 text-xs text-gray-500 font-medium">Actions</th>
+            {% endif %}
+        </tr></thead>
+        <tbody>
+            {% for lv in leaves %}
+            <tr class="border-b border-white/[0.03] hover:bg-white/[0.02]">
+                <td class="p-3 text-white">{{ lv.employee_id[1] if lv.employee_id else '—' }}</td>
+                <td class="p-3 text-gray-300">{{ lv.holiday_status_id[1] if lv.holiday_status_id else '—' }}</td>
+                <td class="p-3 text-gray-300 font-mono text-xs">{{ lv.date_from }}</td>
+                <td class="p-3 text-gray-300 font-mono text-xs">{{ lv.date_to }}</td>
+                <td class="p-3 text-white">{{ lv.number_of_days }}</td>
+                <td class="p-3">
+                    <span class="px-2 py-0.5 rounded-full text-[10px] font-medium
+                        {% if lv.state == 'validate' %}bg-emerald-500/10 text-emerald-400
+                        {% elif lv.state == 'confirm' %}bg-amber-500/10 text-amber-400
+                        {% elif lv.state == 'refuse' %}bg-red-500/10 text-red-400
+                        {% else %}bg-gray-500/10 text-gray-400{% endif %}">
+                        {{ lv.state|replace('validate','Approved')|replace('confirm','Pending')|replace('refuse','Rejected')|replace('draft','Draft') }}
+                    </span>
+                </td>
+                {% if session.get('role') in ('admin','payroll_officer') %}
+                <td class="p-3">
+                    {% if lv.state == 'confirm' %}
+                    <div class="flex gap-1">
+                        <form method="POST" action="{{ url_for('leaves.approve', leave_id=lv.id) }}">
+                            <button class="px-2 py-1 rounded-lg bg-emerald-500/10 text-emerald-400 text-xs hover:bg-emerald-500/20"><i class="fa-solid fa-check"></i></button>
+                        </form>
+                        <form method="POST" action="{{ url_for('leaves.reject', leave_id=lv.id) }}">
+                            <input type="hidden" name="reason" value="Rejected by admin">
+                            <button class="px-2 py-1 rounded-lg bg-red-500/10 text-red-400 text-xs hover:bg-red-500/20"><i class="fa-solid fa-xmark"></i></button>
+                        </form>
+                    </div>
+                    {% else %}—{% endif %}
+                </td>
+                {% endif %}
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% if not leaves %}<div class="text-center py-16"><p class="text-gray-500">No leave requests</p></div>{% endif %}
+
+<!-- Apply Leave Modal -->
+<div id="applyModal" class="hidden fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm">
+    <div class="glass-card rounded-2xl p-6 w-full max-w-md border border-white/10 shadow-2xl m-4">
+        <div class="flex justify-between items-center mb-5">
+            <h3 class="text-lg font-bold text-white">Apply for Leave</h3>
+            <button onclick="document.getElementById('applyModal').classList.add('hidden')" class="text-gray-500 hover:text-white"><i class="fa-solid fa-xmark"></i></button>
+        </div>
+        <form method="POST" action="{{ url_for('leaves.apply_leave') }}" class="space-y-4">
+            <div><label class="block text-xs text-gray-400 mb-1">Leave Type</label>
+                <select name="leave_type_id" required class="form-input">
+                    {% for lt in leave_types %}<option value="{{ lt.id }}">{{ lt.name }}</option>{% endfor %}
+                </select></div>
+            <div><label class="block text-xs text-gray-400 mb-1">From</label>
+                <input type="date" name="date_from" required class="form-input"></div>
+            <div><label class="block text-xs text-gray-400 mb-1">To</label>
+                <input type="date" name="date_to" required class="form-input"></div>
+            <div><label class="block text-xs text-gray-400 mb-1">Reason</label>
+                <textarea name="reason" rows="2" class="form-input" placeholder="Optional reason"></textarea></div>
+            <button type="submit" class="w-full py-2.5 rounded-xl bg-gradient-to-r from-brand-600 to-brand-700 text-white font-semibold text-sm">Submit Request</button>
+        </form>
+    </div>
+</div>
+{% endblock %}

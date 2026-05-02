@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+{% block title %}My Payslips — EmPay HRMS{% endblock %}
+{% block page_title %}My Payslips{% endblock %}
+{% block content %}
+<div class="max-w-4xl mx-auto">
+    {% for s in payslips %}
+    <div class="stat-card mb-4">
+        <div class="flex items-center justify-between mb-3">
+            <div>
+                <h3 class="text-sm font-semibold text-white">{{ s.name }}</h3>
+                <p class="text-xs text-gray-500 font-mono mt-0.5">{{ s.date_from }} → {{ s.date_to }}</p>
+            </div>
+            <span class="px-2 py-0.5 rounded-full text-[10px] font-medium {% if s.state == 'done' %}bg-emerald-500/10 text-emerald-400{% else %}bg-gray-500/10 text-gray-400{% endif %}">{{ s.state|title }}</span>
+        </div>
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-3 text-sm">
+            <div class="p-2 rounded-lg bg-white/[0.02]"><p class="text-[10px] text-gray-500">Basic</p><p class="text-white font-medium">₹{{ "{:,.0f}".format(s.prorated_basic) }}</p></div>
+            <div class="p-2 rounded-lg bg-white/[0.02]"><p class="text-[10px] text-gray-500">HRA</p><p class="text-white font-medium">₹{{ "{:,.0f}".format(s.hra) }}</p></div>
+            <div class="p-2 rounded-lg bg-white/[0.02]"><p class="text-[10px] text-gray-500">Transport</p><p class="text-white font-medium">₹{{ "{:,.0f}".format(s.transport_allowance) }}</p></div>
+            <div class="p-2 rounded-lg bg-white/[0.02]"><p class="text-[10px] text-gray-500">PF Deduction</p><p class="text-red-400 font-medium">-₹{{ "{:,.0f}".format(s.pf_employee) }}</p></div>
+        </div>
+        <div class="flex items-center justify-between mt-3 pt-3 border-t border-white/5">
+            <div><p class="text-xs text-gray-500">Gross</p><p class="text-white font-semibold">₹{{ "{:,.0f}".format(s.gross_salary) }}</p></div>
+            <div class="text-right"><p class="text-xs text-gray-500">Net Pay</p><p class="text-emerald-400 font-bold text-lg">₹{{ "{:,.0f}".format(s.net_salary) }}</p></div>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+{% if not payslips %}<div class="text-center py-16"><p class="text-gray-500">No payslips processed yet</p></div>{% endif %}
+{% endblock %}

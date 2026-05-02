@@ -1,0 +1,51 @@
+{% extends "base.html" %}
+{% block title %}Pay Runs — EmPay HRMS{% endblock %}
+{% block page_title %}Pay Runs{% endblock %}
+{% block content %}
+<div class="flex items-center justify-between mb-6">
+    <p class="text-sm text-gray-500">{{ payruns|length }} pay runs</p>
+    <button onclick="document.getElementById('genModal').classList.remove('hidden')" class="px-4 py-2 rounded-xl bg-gradient-to-r from-brand-600 to-brand-700 text-white text-sm font-medium hover:from-brand-500 hover:to-brand-600 transition-all active:scale-[0.98]">
+        <i class="fa-solid fa-plus mr-1"></i> Generate Pay Run
+    </button>
+</div>
+<div class="grid gap-4">
+    {% for pr in payruns %}
+    <a href="{{ url_for('payroll.detail', run_id=pr.id) }}" class="stat-card group cursor-pointer hover:border-brand-500/30">
+        <div class="flex items-center justify-between">
+            <div>
+                <h3 class="text-sm font-semibold text-white group-hover:text-brand-400 transition-colors">{{ pr.name }}</h3>
+                <p class="text-xs text-gray-500 mt-1 font-mono">{{ pr.date_from }} → {{ pr.date_to }}</p>
+            </div>
+            <div class="text-right">
+                <span class="px-2 py-0.5 rounded-full text-[10px] font-medium
+                    {% if pr.state == 'paid' %}bg-emerald-500/10 text-emerald-400
+                    {% elif pr.state == 'confirmed' %}bg-blue-500/10 text-blue-400
+                    {% else %}bg-gray-500/10 text-gray-400{% endif %}">{{ pr.state|title }}</span>
+                <p class="text-lg font-bold text-white mt-1">₹{{ "{:,.0f}".format(pr.total_net) }}</p>
+                <p class="text-xs text-gray-500">{{ pr.total_employees }} employees</p>
+            </div>
+        </div>
+    </a>
+    {% endfor %}
+</div>
+{% if not payruns %}<div class="text-center py-16"><p class="text-gray-500">No pay runs yet</p></div>{% endif %}
+
+<!-- Generate Modal -->
+<div id="genModal" class="hidden fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm">
+    <div class="glass-card rounded-2xl p-6 w-full max-w-md border border-white/10 shadow-2xl m-4">
+        <div class="flex justify-between items-center mb-5">
+            <h3 class="text-lg font-bold text-white">Generate Pay Run</h3>
+            <button onclick="document.getElementById('genModal').classList.add('hidden')" class="text-gray-500 hover:text-white"><i class="fa-solid fa-xmark"></i></button>
+        </div>
+        <form method="POST" action="{{ url_for('payroll.generate') }}" class="space-y-4">
+            <div><label class="block text-xs text-gray-400 mb-1">Pay Run Name</label>
+                <input type="text" name="name" required class="form-input" placeholder="May 2026 Payrun"></div>
+            <div><label class="block text-xs text-gray-400 mb-1">Period Start</label>
+                <input type="date" name="date_from" required class="form-input"></div>
+            <div><label class="block text-xs text-gray-400 mb-1">Period End</label>
+                <input type="date" name="date_to" required class="form-input"></div>
+            <button type="submit" class="w-full py-2.5 rounded-xl bg-gradient-to-r from-brand-600 to-brand-700 text-white font-semibold text-sm">Generate & Compute</button>
+        </form>
+    </div>
+</div>
+{% endblock %}

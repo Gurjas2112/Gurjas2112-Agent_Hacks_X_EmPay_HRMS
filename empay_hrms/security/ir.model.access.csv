@@ -18,6 +18,8 @@ access_hr_leave_allocation_admin,empay.hr.leave.allocation.admin,hr_holidays.mod
 access_empay_payslip_employee,empay.payslip.employee,empay_hrms.model_empay_payslip,empay_hrms.group_employee,1,0,0,0
 access_empay_payslip_payroll_officer,empay.payslip.payroll_officer,empay_hrms.model_empay_payslip,empay_hrms.group_payroll_officer,1,1,1,0
 access_empay_payslip_admin,empay.payslip.admin,empay_hrms.model_empay_payslip,empay_hrms.group_admin,1,1,1,1
+access_empay_payrun_employee,empay.payrun.employee,empay_hrms.model_empay_payrun,empay_hrms.group_employee,1,0,0,0
+access_empay_payrun_hr_officer,empay.payrun.hr_officer,empay_hrms.model_empay_payrun,empay_hrms.group_hr_officer,1,0,0,0
 access_empay_payrun_payroll_officer,empay.payrun.payroll_officer,empay_hrms.model_empay_payrun,empay_hrms.group_payroll_officer,1,1,1,1
 access_empay_payrun_admin,empay.payrun.admin,empay_hrms.model_empay_payrun,empay_hrms.group_admin,1,1,1,1
 access_empay_payrun_wizard_payroll,empay.payrun.wizard.payroll,empay_hrms.model_empay_generate_payrun_wizard,empay_hrms.group_payroll_officer,1,1,1,1

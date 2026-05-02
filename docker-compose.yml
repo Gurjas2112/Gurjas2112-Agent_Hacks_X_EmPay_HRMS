@@ -69,6 +69,28 @@ services:
     networks:
       - empay_network
 
+  # ============================================================
+  # Flask Frontend (Custom UI)
+  # ============================================================
+  flask_app:
+    build:
+      context: ./flask_app
+      dockerfile: Dockerfile
+    container_name: empay_flask
+    restart: unless-stopped
+    depends_on:
+      - odoo
+    ports:
+      - "5000:5000"
+    environment:
+      - ODOO_URL=http://odoo:8069
+      - ODOO_DB=empay
+      - SECRET_KEY=empay-secret-key-2026
+    volumes:
+      - ./flask_app:/app
+    networks:
+      - empay_network
+
 # ============================================================
 # Volumes
 # ============================================================

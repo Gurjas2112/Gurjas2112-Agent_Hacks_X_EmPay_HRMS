@@ -210,7 +210,8 @@ class EmpayPayrun(models.Model):
             payroll_trend.append({'month': d.strftime('%b %Y'), 'total': sum(runs.mapped('total_net'))})
 
         # User Role and Employee Specific Data
-        is_admin = self.env.user.has_group('empay_hrms.group_admin') or \
+        is_admin = self.env.is_admin() or \
+                   self.env.user.has_group('empay_hrms.group_admin') or \
                    self.env.user.has_group('empay_hrms.group_hr_officer') or \
                    self.env.user.has_group('empay_hrms.group_payroll_officer')
         
