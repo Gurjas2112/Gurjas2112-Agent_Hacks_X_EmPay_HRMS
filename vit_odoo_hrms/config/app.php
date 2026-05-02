@@ -10,8 +10,8 @@ define('APP_VERSION', '1.0.0');
 define('APP_TAGLINE', 'Human Resource Management System');
 
 // Base URL - adjust based on your environment
-define('BASE_URL', '/vit_odoo_hrms/public/');
-define('ASSET_URL', '/vit_odoo_hrms/public/assets/');
+define('BASE_URL', 'http://localhost/Agent_Hacks_X_EmPay_HRMS/vit_odoo_hrms/public/');
+define('ASSET_URL', 'http://localhost/Agent_Hacks_X_EmPay_HRMS/vit_odoo_hrms/public/assets/');
 
 // Root path
 define('ROOT_PATH', dirname(__DIR__) . DIRECTORY_SEPARATOR);
