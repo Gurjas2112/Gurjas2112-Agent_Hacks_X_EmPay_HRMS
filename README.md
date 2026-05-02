@@ -1,52 +1,18 @@
-# EmPay – Smart Human Resource Management System 🚀
+# EmPay HRMS 🚀
 
-> **Simplifying HR & Payroll Operations for Smarter Workplaces**
-
----
-
-## 👥 Team
-
-**Team: Agent Hacks** — [Odoo × VIT Pune Hackathon 2026](https://hackathon.odoo.com/event/odoo-x-vit-pune-hackathon-26-18/register)
-
-| Photo | Name | Role | GitHub |
-| :---: | --- | --- | --- |
-| <img src="team_member_details/team_member_1.jpg" width="100" style="border-radius: 50%;"> | **Gurjas Singh Gandhi** | Team Leader | [Gurjas2112](https://github.com/Gurjas2112) |
-| <img src="team_member_details/team_member_2.jpeg" width="100" style="border-radius: 50%;"> | **Joy Kujur** | Developer | [joyboy-pega](https://github.com/joyboy-pega) |
-| <img src="team_member_details/team_member_4.jpeg" width="100" style="border-radius: 50%;"> | **Sarvesh Varode** | Developer | [sarveshvarode092704](https://github.com/sarveshvarode092704) |
-| <img src="team_member_details/team_member_3.jpeg" width="100" style="border-radius: 50%;"> | **Prathamesh Nibandhe** | Developer | [prathamesh-coding](https://github.com/prathamesh-coding) |
-
----
-
-## 🌟 Vision and Mission
-
-**EmPay** aims to modernize and simplify how organizations manage people, processes, and payroll through a comprehensive, all-in-one Human Resource Management System (HRMS). 
-
----
-
-## 🎯 Problem Statement
-
-The challenge was to develop a working HRMS system focusing on the following core modules and flows:
-1.  **User & Role Management**: Multi-tier RBAC (Admin, HR, Payroll, Employee).
-2.  **Attendance & Leave**: Real-time tracking and approval workflows.
-3.  **Payroll Management**: Attendance-linked salary calculation with PF and Tax deductions.
-4.  **Dashboard & Analytics**: High-fidelity overview of HR metrics and company health.
-
----
+**Human Resource Management System** built with Core PHP, PDO, and Tailwind CSS.
 
 ## ⚡ Tech Stack
 
-The application has been modernized from its original framework to a fast, lightweight PHP architecture:
 - **Backend:** Core PHP (no framework)
-- **Database:** PDO (MySQL) for secure database interactions
-- **Frontend:** Tailwind CSS (CDN) + Custom CSS + Vanilla JS
+- **Database:** PDO (MySQL) — structure only, queries as placeholders
+- **Frontend:** Tailwind CSS (CDN) + Custom CSS
 - **Icons:** Lucide Icons
 - **Font:** Inter (Google Fonts)
 
----
-
 ## 📁 Project Structure
 
-```text
+```
 /vit_odoo_hrms
 ├── /config
 │   ├── app.php              → App constants, paths, roles
@@ -57,70 +23,67 @@ The application has been modernized from its original framework to a fast, light
 │   ├── login_check.php      → Auth guard (protect pages)
 │   └── role_check.php       → Role-based access control
 │
-├── /backend                 → API endpoints and action handlers
+├── /backend
 │   ├── /auth
+│   │   ├── login_handler.php
+│   │   ├── register_handler.php
+│   │   └── logout.php
 │   ├── /users
+│   │   ├── create_user.php
+│   │   └── update_user.php
 │   ├── /attendance
+│   │   └── mark_attendance.php
 │   ├── /leave
-│   ├── /payroll
-│   └── /schedule
+│   │   ├── apply_leave.php
+│   │   └── approve_leave.php
+│   └── /payroll
+│       └── generate_salary.php
 │
-├── /frontend                → View templates (HTML/PHP mix)
-│   ├── /auth          
-│   ├── /dashboard     
-│   ├── /users         
-│   ├── /attendance    
-│   ├── /leave         
-│   ├── /payroll       
-│   ├── /reports
-│   └── /schedule
+├── /frontend
+│   ├── /auth          → login.php, register.php
+│   ├── /dashboard     → index.php
+│   ├── /users         → index.php, form.php
+│   ├── /attendance    → mark.php, history.php
+│   ├── /leave         → apply.php, manage.php
+│   └── /payroll       → index.php, payslip.php
 │
-├── /components              → Reusable UI components
-│   ├── header.php     
-│   ├── sidebar.php    
-│   ├── navbar.php     
-│   └── footer.php     
+├── /components
+│   ├── header.php     → HTML head, Tailwind, icons
+│   ├── sidebar.php    → Fixed sidebar navigation
+│   ├── navbar.php     → Top bar with breadcrumbs
+│   └── footer.php     → Footer + Lucide init
 │
-├── /public                  → Web root
-│   ├── index.php      
-│   ├── router.php     
-│   └── /assets
+├── /public
+│   ├── index.php      → Main entry point
+│   ├── router.php     → Simple ?page= routing
+│   └── /assets/css/custom.css
 │
-└── seed.sql                 → Database schema and initial data
+└── README.md
 ```
-
----
 
 ## 🚀 Getting Started
 
 ### Prerequisites
 - XAMPP / WAMP / PHP 8.0+
-- MySQL Server
+- MySQL (optional for demo mode)
 
 ### Installation
 
 1. Clone/place the project in your web server root:
-   ```bash
-   C:\xampp\htdocs\Agent_Hacks_X_EmPay_HRMS
    ```
-   *(Ensure the working directory points to `vit_odoo_hrms` inside if you are running it locally)*
-
-2. Setup the Database:
-   - Create a new MySQL database named `empay_hrms`
-   - Import the `seed.sql` file (located in `/vit_odoo_hrms/seed.sql`) to set up the tables and demo data.
-
-3. Start Apache & MySQL from XAMPP Control Panel.
-
-4. Open in browser:
-   ```text
-   http://localhost/Agent_Hacks_X_EmPay_HRMS/vit_odoo_hrms/public/
+   C:\xampp\htdocs\vit_odoo_hrms
    ```
 
-5. You'll be redirected to the login page.
+2. Start Apache from XAMPP Control Panel
 
----
+3. Open in browser:
+   ```
+   http://localhost/vit_odoo_hrms/public/
+   ```
 
-## 👥 Demo Accounts
+4. You'll be redirected to the login page.
+
+### Demo Accounts
 
 | Role     | Email              | Password  |
 |----------|--------------------|-----------|
@@ -129,7 +92,15 @@ The application has been modernized from its original framework to a fast, light
 | Employee | emp@empay.com      | emp123    |
 | Payroll  | payroll@empay.com  | pay123    |
 
----
+## 🔁 Routing
+
+Simple query-parameter routing via `public/index.php`:
+
+```
+index.php?page=dashboard        → /frontend/dashboard/index.php
+index.php?page=attendance/mark  → /frontend/attendance/mark.php
+index.php?page=users/form       → /frontend/users/form.php
+```
 
 ## 🔐 Role-Based Access
 
@@ -142,25 +113,20 @@ The application has been modernized from its original framework to a fast, light
 | Leave Approve   | ✅    | ✅  | ❌       | ❌      |
 | Payroll         | ✅    | ❌  | ❌       | ✅      |
 
----
+## 🎨 Design
 
-## 🎨 Design System
-
-- **Modern Aesthetic** with primary plum purple accents (#714B67)
-- **Glassmorphism & Gradients** implemented through Tailwind for a premium feel
-- **Responsive Navigation** with a collapsible sidebar and mobile toggle
-- **Micro-interactions** on hover/focus states to make the UI feel alive
-
----
+- **Odoo-Inspired Light Theme** with primary plum purple accents (#714B67)
+- **Clinical clarity** with information-dense, data-driven layouts
+- **Neutral canvas** using white and near-white surfaces
+- **Responsive** sidebar with mobile toggle
+- **Micro-interactions** on hover/focus (subtle background changes)
 
 ## 📝 Notes
 
-- Flash messages automatically dismiss after a few seconds.
-- Session timeout is strictly enforced for security.
-- Comprehensive backend validation is present on all form submissions.
-- Passwords are conventionally hashed using `password_hash()` in the database.
-
----
+- All database queries are **PDO placeholders** — structure only, no active database required
+- Demo mode uses hardcoded user accounts in `login_handler.php`
+- Flash messages auto-dismiss after 5 seconds
+- Session timeout set to 30 minutes
 
 ## 📜 License
 
