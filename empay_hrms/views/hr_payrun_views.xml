@@ -1,0 +1,181 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- ============================================================ -->
+    <!-- Payrun Form View                                              -->
+    <!-- ============================================================ -->
+    <record id="view_empay_payrun_form" model="ir.ui.view">
+        <field name="name">empay.payrun.form</field>
+        <field name="model">empay.payrun</field>
+        <field name="arch" type="xml">
+            <form string="Pay Run">
+                <header>
+                    <button name="action_generate_payslips" string="Generate Payslips"
+                            type="object" class="btn-primary"
+                            invisible="state != 'draft'"
+                            groups="empay_hrms.group_payroll_officer,empay_hrms.group_admin"/>
+                    <button name="action_mark_paid" string="Mark as Paid"
+                            type="object" class="btn-success"
+                            invisible="state != 'confirmed'"
+                            groups="empay_hrms.group_payroll_officer,empay_hrms.group_admin"/>
+                    <button name="action_reset_draft" string="Reset to Draft"
+                            type="object" class="btn-warning"
+                            invisible="state != 'confirmed'"
+                            groups="empay_hrms.group_admin"
+                            confirm="This will delete all generated payslips. Continue?"/>
+                    <field name="state" widget="statusbar"
+                           statusbar_visible="draft,confirmed,paid"/>
+                </header>
+                <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button class="oe_stat_button" icon="fa-users"
+                                type="object" name="action_view_payslips">
+                            <field name="total_employees" string="Employees"
+                                   widget="statinfo"/>
+                        </button>
+                        <button class="oe_stat_button" icon="fa-money"
+                                type="object" name="action_view_payslips">
+                            <field name="total_net" string="Net Pay"
+                                   widget="statinfo"/>
+                        </button>
+                    </div>
+                    <div class="oe_title">
+                        <h1>
+                            <field name="name" placeholder="e.g. April 2026 Payrun"/>
+                        </h1>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="date_from"/>
+                            <field name="date_to"/>
+                        </group>
+                        <group>
+                            <field name="company_id" groups="base.group_multi_company"/>
+                            <field name="total_gross" readonly="1"/>
+                            <field name="total_pf" readonly="1"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Payslips" name="payslips">
+                            <field name="payslip_ids" readonly="state != 'draft'">
+                                <list>
+                                    <field name="employee_id"/>
+                                    <field name="name"/>
+                                    <field name="date_from"/>
+                                    <field name="date_to"/>
+                                    <field name="present_days"/>
+                                    <field name="leave_days"/>
+                                    <field name="absent_days"/>
+                                    <field name="gross_salary"/>
+                                    <field name="net_salary"/>
+                                    <field name="state"/>
+                                </list>
+                            </field>
+                        </page>
+                    </notebook>
+                </sheet>
+                <div class="oe_chatter">
+                    <field name="message_follower_ids"/>
+                    <field name="activity_ids"/>
+                    <field name="message_ids"/>
+                </div>
+            </form>
+        </field>
+    </record>
+
+    <!-- ============================================================ -->
+    <!-- Payrun List View                                              -->
+    <!-- ============================================================ -->
+    <record id="view_empay_payrun_tree" model="ir.ui.view">
+        <field name="name">empay.payrun.tree</field>
+        <field name="model">empay.payrun</field>
+        <field name="arch" type="xml">
+            <list string="Pay Runs"
+                  decoration-info="state == 'draft'"
+                  decoration-success="state == 'paid'"
+                  decoration-warning="state == 'confirmed'">
+                <field name="name"/>
+                <field name="date_from"/>
+                <field name="date_to"/>
+                <field name="total_employees"/>
+                <field name="total_gross"/>
+                <field name="total_net"/>
+                <field name="state"
+                       decoration-info="state == 'draft'"
+                       decoration-success="state == 'paid'"
+                       decoration-warning="state == 'confirmed'"
+                       widget="badge"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- ============================================================ -->
+    <!-- Payrun Kanban View                                            -->
+    <!-- ============================================================ -->
+    <record id="view_empay_payrun_kanban" model="ir.ui.view">
+        <field name="name">empay.payrun.kanban</field>
+        <field name="model">empay.payrun</field>
+        <field name="arch" type="xml">
+            <kanban class="o_kanban_mobile" default_group_by="state">
+                <field name="name"/>
+                <field name="state"/>
+                <field name="date_from"/>
+                <field name="date_to"/>
+                <field name="total_employees"/>
+                <field name="total_net"/>
+                <templates>
+                    <t t-name="card">
+                        <div class="oe_kanban_content">
+                            <strong><field name="name"/></strong>
+                            <div class="text-muted">
+                                <field name="date_from"/> - <field name="date_to"/>
+                            </div>
+                            <div>
+                                <span class="badge rounded-pill">
+                                    <field name="total_employees"/> employees
+                                </span>
+                            </div>
+                            <div class="mt-1">
+                                <strong>Net: ₹<field name="total_net"/></strong>
+                            </div>
+                        </div>
+                    </t>
+                </templates>
+            </kanban>
+        </field>
+    </record>
+
+    <!-- ============================================================ -->
+    <!-- Payrun Search View                                            -->
+    <!-- ============================================================ -->
+    <record id="view_empay_payrun_search" model="ir.ui.view">
+        <field name="name">empay.payrun.search</field>
+        <field name="model">empay.payrun</field>
+        <field name="arch" type="xml">
+            <search string="Search Pay Runs">
+                <field name="name"/>
+                <filter string="Draft" name="filter_draft"
+                        domain="[('state', '=', 'draft')]"/>
+                <filter string="Confirmed" name="filter_confirmed"
+                        domain="[('state', '=', 'confirmed')]"/>
+                <filter string="Paid" name="filter_paid"
+                        domain="[('state', '=', 'paid')]"/>
+            </search>
+        </field>
+    </record>
+
+    <!-- ============================================================ -->
+    <!-- Payrun Actions                                                -->
+    <!-- ============================================================ -->
+    <record id="action_empay_payruns" model="ir.actions.act_window">
+        <field name="name">Pay Runs</field>
+        <field name="res_model">empay.payrun</field>
+        <field name="view_mode">list,kanban,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Create your first pay run to process employee payroll!
+            </p>
+        </field>
+    </record>
+
+</odoo>

@@ -1,0 +1,155 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- ============================================================ -->
+    <!--                   TOP-LEVEL MENU                              -->
+    <!-- ============================================================ -->
+    <menuitem id="menu_empay_root"
+              name="EmPay"
+              web_icon="empay_hrms,static/src/img/empay_logo.png"
+              sequence="5"/>
+
+    <!-- ============================================================ -->
+    <!--                   DASHBOARD                                   -->
+    <!-- ============================================================ -->
+    <menuitem id="menu_empay_dashboard"
+              name="Dashboard"
+              parent="menu_empay_root"
+              action="action_empay_dashboard"
+              groups="empay_hrms.group_hr_officer,empay_hrms.group_payroll_officer,empay_hrms.group_admin"
+              sequence="1"/>
+
+    <!-- ============================================================ -->
+    <!--                   EMPLOYEES                                   -->
+    <!-- ============================================================ -->
+    <menuitem id="menu_empay_employees"
+              name="Employees"
+              parent="menu_empay_root"
+              sequence="10"/>
+
+    <menuitem id="menu_empay_employee_directory"
+              name="Employee Directory"
+              parent="menu_empay_employees"
+              action="action_empay_employee_directory"
+              groups="empay_hrms.group_employee,empay_hrms.group_hr_officer,empay_hrms.group_payroll_officer,empay_hrms.group_admin"
+              sequence="1"/>
+
+    <menuitem id="menu_empay_employee_profiles"
+              name="Employee Profiles"
+              parent="menu_empay_employees"
+              action="action_empay_employee_profiles"
+              groups="empay_hrms.group_hr_officer,empay_hrms.group_admin"
+              sequence="2"/>
+
+    <!-- ============================================================ -->
+    <!--                   ATTENDANCE                                  -->
+    <!-- ============================================================ -->
+    <menuitem id="menu_empay_attendance"
+              name="Attendance"
+              parent="menu_empay_root"
+              sequence="20"/>
+
+    <menuitem id="menu_empay_my_attendance"
+              name="My Attendance"
+              parent="menu_empay_attendance"
+              action="action_empay_my_attendance"
+              groups="empay_hrms.group_employee,empay_hrms.group_hr_officer,empay_hrms.group_payroll_officer,empay_hrms.group_admin"
+              sequence="1"/>
+
+    <menuitem id="menu_empay_all_attendance"
+              name="All Attendance"
+              parent="menu_empay_attendance"
+              action="action_empay_all_attendance"
+              groups="empay_hrms.group_hr_officer,empay_hrms.group_payroll_officer,empay_hrms.group_admin"
+              sequence="2"/>
+
+    <menuitem id="menu_empay_attendance_reports"
+              name="Attendance Reports"
+              parent="menu_empay_attendance"
+              action="action_empay_attendance_reports"
+              groups="empay_hrms.group_hr_officer,empay_hrms.group_admin"
+              sequence="3"/>
+
+    <!-- ============================================================ -->
+    <!--                   TIME OFF                                    -->
+    <!-- ============================================================ -->
+    <menuitem id="menu_empay_timeoff"
+              name="Time Off"
+              parent="menu_empay_root"
+              sequence="30"/>
+
+    <menuitem id="menu_empay_my_timeoff"
+              name="My Time Off"
+              parent="menu_empay_timeoff"
+              action="action_empay_my_leaves"
+              groups="empay_hrms.group_employee,empay_hrms.group_hr_officer,empay_hrms.group_payroll_officer,empay_hrms.group_admin"
+              sequence="1"/>
+
+    <menuitem id="menu_empay_leave_requests"
+              name="Leave Requests"
+              parent="menu_empay_timeoff"
+              action="action_empay_leave_requests"
+              groups="empay_hrms.group_payroll_officer,empay_hrms.group_admin"
+              sequence="2"/>
+
+    <menuitem id="menu_empay_leave_allocations"
+              name="Leave Allocations"
+              parent="menu_empay_timeoff"
+              action="action_empay_leave_allocations"
+              groups="empay_hrms.group_hr_officer,empay_hrms.group_admin"
+              sequence="3"/>
+
+    <!-- ============================================================ -->
+    <!--                   PAYROLL                                     -->
+    <!-- ============================================================ -->
+    <menuitem id="menu_empay_payroll"
+              name="Payroll"
+              parent="menu_empay_root"
+              groups="empay_hrms.group_payroll_officer,empay_hrms.group_admin"
+              sequence="40"/>
+
+    <menuitem id="menu_empay_payruns"
+              name="Pay Runs"
+              parent="menu_empay_payroll"
+              action="action_empay_payruns"
+              groups="empay_hrms.group_payroll_officer,empay_hrms.group_admin"
+              sequence="1"/>
+
+    <menuitem id="menu_empay_payslips"
+              name="Payslips"
+              parent="menu_empay_payroll"
+              action="action_empay_payslips"
+              groups="empay_hrms.group_payroll_officer,empay_hrms.group_admin"
+              sequence="2"/>
+
+    <!-- ============================================================ -->
+    <!--                   REPORTS                                     -->
+    <!-- ============================================================ -->
+    <menuitem id="menu_empay_reports"
+              name="Reports"
+              parent="menu_empay_root"
+              groups="empay_hrms.group_hr_officer,empay_hrms.group_payroll_officer,empay_hrms.group_admin"
+              sequence="50"/>
+
+    <menuitem id="menu_empay_report_attendance"
+              name="Attendance Report"
+              parent="menu_empay_reports"
+              action="action_empay_attendance_reports"
+              groups="empay_hrms.group_hr_officer,empay_hrms.group_admin"
+              sequence="1"/>
+
+    <menuitem id="menu_empay_report_leave"
+              name="Leave Report"
+              parent="menu_empay_reports"
+              action="action_empay_leave_requests"
+              groups="empay_hrms.group_payroll_officer,empay_hrms.group_admin"
+              sequence="2"/>
+
+    <menuitem id="menu_empay_report_payroll"
+              name="Payroll Summary Report"
+              parent="menu_empay_reports"
+              action="action_empay_payruns"
+              groups="empay_hrms.group_payroll_officer,empay_hrms.group_admin"
+              sequence="3"/>
+
+</odoo>

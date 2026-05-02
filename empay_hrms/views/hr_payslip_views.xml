@@ -1,0 +1,157 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- ============================================================ -->
+    <!-- Payslip Form View (Standalone — no Enterprise inheritance)    -->
+    <!-- ============================================================ -->
+    <record id="view_empay_payslip_form" model="ir.ui.view">
+        <field name="name">empay.payslip.form</field>
+        <field name="model">empay.payslip</field>
+        <field name="arch" type="xml">
+            <form string="Payslip">
+                <header>
+                    <button name="action_confirm" string="Confirm"
+                            type="object" class="btn-primary"
+                            invisible="state != 'draft'"
+                            groups="empay_hrms.group_payroll_officer,empay_hrms.group_admin"/>
+                    <button name="action_cancel" string="Cancel"
+                            type="object"
+                            invisible="state != 'draft'"
+                            groups="empay_hrms.group_payroll_officer,empay_hrms.group_admin"/>
+                    <button name="action_reset_draft" string="Reset to Draft"
+                            type="object"
+                            invisible="state != 'cancelled'"
+                            groups="empay_hrms.group_admin"/>
+                    <button name="compute_sheet" string="Recompute"
+                            type="object" class="btn-secondary"
+                            invisible="state != 'draft'"
+                            groups="empay_hrms.group_payroll_officer,empay_hrms.group_admin"/>
+                    <button name="%(empay_hrms.action_report_payslip_empay)d"
+                            string="Print Payslip" type="action"
+                            class="btn-primary"
+                            groups="empay_hrms.group_payroll_officer,empay_hrms.group_admin"/>
+                    <field name="state" widget="statusbar"
+                           statusbar_visible="draft,done"/>
+                </header>
+                <sheet>
+                    <div class="oe_title">
+                        <h1><field name="name"/></h1>
+                    </div>
+                    <group>
+                        <group string="Employee Details">
+                            <field name="employee_id"/>
+                            <field name="contract_id"/>
+                            <field name="payrun_id" readonly="1"/>
+                        </group>
+                        <group string="Pay Period">
+                            <field name="date_from"/>
+                            <field name="date_to"/>
+                            <field name="company_id" groups="base.group_multi_company"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Attendance Summary" name="attendance">
+                            <group>
+                                <group>
+                                    <field name="present_days" readonly="1"/>
+                                    <field name="half_days" readonly="1"/>
+                                    <field name="leave_days" readonly="1"/>
+                                </group>
+                                <group>
+                                    <field name="absent_days" readonly="1"/>
+                                    <field name="total_working_days" readonly="1"/>
+                                </group>
+                            </group>
+                        </page>
+                        <page string="Salary Breakdown" name="salary">
+                            <group>
+                                <group string="Earnings">
+                                    <field name="basic_wage" readonly="1"/>
+                                    <field name="prorated_basic" readonly="1"/>
+                                    <field name="hra" readonly="1"/>
+                                    <field name="transport_allowance" readonly="1"/>
+                                    <separator/>
+                                    <field name="gross_salary" readonly="1"
+                                           class="oe_subtotal_footer_separator"/>
+                                </group>
+                                <group string="Deductions">
+                                    <field name="pf_employee" readonly="1"/>
+                                    <field name="pf_employer" readonly="1"/>
+                                    <field name="professional_tax" readonly="1"/>
+                                    <separator/>
+                                    <field name="net_salary" readonly="1"
+                                           class="oe_subtotal_footer_separator"/>
+                                </group>
+                            </group>
+                        </page>
+                    </notebook>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <!-- ============================================================ -->
+    <!-- Payslip List View                                             -->
+    <!-- ============================================================ -->
+    <record id="view_empay_payslip_tree" model="ir.ui.view">
+        <field name="name">empay.payslip.list</field>
+        <field name="model">empay.payslip</field>
+        <field name="arch" type="xml">
+            <list string="Payslips"
+                  decoration-success="state == 'done'"
+                  decoration-muted="state == 'cancelled'">
+                <field name="name"/>
+                <field name="employee_id"/>
+                <field name="date_from"/>
+                <field name="date_to"/>
+                <field name="present_days"/>
+                <field name="total_working_days"/>
+                <field name="gross_salary" sum="Total Gross"/>
+                <field name="net_salary" sum="Total Net"/>
+                <field name="payrun_id" optional="show"/>
+                <field name="state" widget="badge"
+                       decoration-success="state == 'done'"
+                       decoration-info="state == 'draft'"
+                       decoration-danger="state == 'cancelled'"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- ============================================================ -->
+    <!-- Payslip Search View                                           -->
+    <!-- ============================================================ -->
+    <record id="view_empay_payslip_search" model="ir.ui.view">
+        <field name="name">empay.payslip.search</field>
+        <field name="model">empay.payslip</field>
+        <field name="arch" type="xml">
+            <search string="Search Payslips">
+                <field name="name"/>
+                <field name="employee_id"/>
+                <field name="payrun_id"/>
+                <filter string="Draft" name="filter_draft"
+                        domain="[('state', '=', 'draft')]"/>
+                <filter string="Done" name="filter_done"
+                        domain="[('state', '=', 'done')]"/>
+                <separator/>
+                <filter string="Current Month" name="filter_current_month"
+                        domain="[('date_from', '&gt;=', (context_today()).strftime('%Y-%m-01'))]"/>
+            </search>
+        </field>
+    </record>
+
+    <!-- ============================================================ -->
+    <!-- Payslip Actions                                               -->
+    <!-- ============================================================ -->
+    <record id="action_empay_payslips" model="ir.actions.act_window">
+        <field name="name">Payslips</field>
+        <field name="res_model">empay.payslip</field>
+        <field name="view_mode">list,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                No payslips yet. Generate them from a Pay Run!
+            </p>
+        </field>
+    </record>
+
+</odoo>

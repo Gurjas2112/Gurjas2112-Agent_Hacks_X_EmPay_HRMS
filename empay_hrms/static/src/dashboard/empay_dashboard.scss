@@ -1,0 +1,811 @@
+/* ============================================================
+   EmPay Dashboard - SCSS Styles
+   Color Scheme: Teal/Navy (#1a4a5e primary, #00b9a1 accent)
+   ============================================================ */
+
+$empay-primary: #1a4a5e;
+$empay-accent: #00b9a1;
+$empay-accent-light: #e0f7f3;
+$empay-bg: #f4f6f9;
+$empay-card-bg: #ffffff;
+$empay-text: #2d3748;
+$empay-text-muted: #718096;
+$empay-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
+$empay-shadow-hover: 0 6px 20px rgba(0, 0, 0, 0.12);
+$empay-radius: 12px;
+
+.empay-dashboard {
+    padding: 24px 32px;
+    background: $empay-bg;
+    min-height: 100vh;
+    font-family: 'Inter', 'Segoe UI', sans-serif;
+}
+
+/* Header */
+.empay-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 28px;
+}
+
+.empay-title {
+    font-size: 28px;
+    font-weight: 700;
+    color: $empay-primary;
+    margin: 0;
+}
+
+.empay-subtitle {
+    font-size: 14px;
+    color: $empay-text-muted;
+    margin: 4px 0 0;
+}
+
+.empay-refresh-btn {
+    background: $empay-primary;
+    color: #fff;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: 500;
+    transition: all 0.2s ease;
+
+    &:hover {
+        background: darken($empay-primary, 8%);
+        transform: translateY(-1px);
+    }
+
+    i {
+        margin-right: 6px;
+    }
+}
+
+/* Real-Time Status Indicators */
+.empay-subtitle-row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-top: 4px;
+}
+
+.empay-live-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: rgba(#38a169, 0.12);
+    color: #38a169;
+    padding: 3px 12px;
+    border-radius: 20px;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+}
+
+.empay-live-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: #38a169;
+    animation: empay-pulse 1.5s ease-in-out infinite;
+}
+
+@keyframes empay-pulse {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50% { opacity: 0.4; transform: scale(0.7); }
+}
+
+.empay-paused-badge {
+    display: inline-flex;
+    align-items: center;
+    background: rgba(#f59e0b, 0.12);
+    color: #d97706;
+    padding: 3px 12px;
+    border-radius: 20px;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+}
+
+.empay-header-right {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.empay-last-updated {
+    font-size: 12px;
+    color: $empay-text-muted;
+    white-space: nowrap;
+
+    i {
+        margin-right: 4px;
+    }
+}
+
+.empay-auto-refresh-btn {
+    background: #e2e8f0;
+    color: #4a5568;
+    border: none;
+    padding: 8px 16px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 13px;
+    font-weight: 500;
+    transition: all 0.2s ease;
+
+    &.active {
+        background: rgba(#38a169, 0.12);
+        color: #38a169;
+    }
+
+    &:hover {
+        transform: translateY(-1px);
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    }
+
+    i {
+        margin-right: 4px;
+    }
+}
+
+/* Loading State */
+.empay-loading {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 80px 0;
+    color: $empay-text-muted;
+
+    p {
+        margin-top: 16px;
+        font-size: 16px;
+    }
+}
+
+.empay-spinner {
+    width: 48px;
+    height: 48px;
+    border: 4px solid $empay-accent-light;
+    border-top-color: $empay-accent;
+    border-radius: 50%;
+    animation: empay-spin 0.8s linear infinite;
+}
+
+@keyframes empay-spin {
+    to { transform: rotate(360deg); }
+}
+
+/* Error State */
+.empay-error {
+    text-align: center;
+    padding: 60px 20px;
+    color: $empay-text-muted;
+
+    i {
+        font-size: 48px;
+        color: #e53e3e;
+        margin-bottom: 16px;
+    }
+
+    h3 {
+        color: $empay-text;
+        margin-bottom: 8px;
+    }
+}
+
+.empay-retry-btn {
+    background: $empay-accent;
+    color: #fff;
+    border: none;
+    padding: 10px 24px;
+    border-radius: 8px;
+    cursor: pointer;
+    margin-top: 16px;
+    font-size: 14px;
+
+    &:hover {
+        background: darken($empay-accent, 8%);
+    }
+}
+
+/* Stat Cards Grid (Matching Mock - Top Row) */
+.empay-stats-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 20px;
+    margin-bottom: 20px;
+
+    @media (max-width: 1200px) {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    @media (max-width: 640px) {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* Secondary Stats Row (Small Cards) */
+.empay-stats-grid-secondary {
+    display: flex;
+    gap: 16px;
+    margin-bottom: 28px;
+    flex-wrap: wrap;
+}
+
+.empay-stat-card-small {
+    background: $empay-card-bg;
+    border-radius: 8px;
+    padding: 8px 16px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    box-shadow: $empay-shadow;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    border-bottom: 2px solid transparent;
+
+    &:hover {
+        transform: translateY(-1px);
+        box-shadow: $empay-shadow-hover;
+    }
+
+    i {
+        font-size: 14px;
+        opacity: 0.8;
+    }
+
+    .empay-stat-small-label {
+        font-size: 12px;
+        color: $empay-text-muted;
+    }
+
+    .empay-stat-small-value {
+        font-size: 14px;
+        font-weight: 700;
+        color: $empay-text;
+    }
+
+    &.empay-card-present { border-bottom-color: #38a169; i { color: #38a169; } }
+    &.empay-card-pending { border-bottom-color: #f59e0b; i { color: #f59e0b; } }
+    &.empay-card-payroll { border-bottom-color: $empay-accent; i { color: $empay-accent; } }
+}
+
+.empay-stat-card {
+    background: $empay-card-bg;
+    border-radius: $empay-radius;
+    padding: 24px;
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    box-shadow: $empay-shadow;
+    cursor: pointer;
+    transition: all 0.25s ease;
+    border-top: 4px solid transparent; /* Changed from border-left to border-top for premium feel */
+
+    &:hover {
+        box-shadow: $empay-shadow-hover;
+        transform: translateY(-3px);
+    }
+}
+
+.empay-card-employees {
+    border-top-color: $empay-primary;
+    .empay-stat-icon { background: rgba($empay-primary, 0.1); color: $empay-primary; }
+}
+
+.empay-card-on-leave {
+    border-top-color: #e53e3e; /* Red for leave/absence */
+    .empay-stat-icon { background: rgba(#e53e3e, 0.1); color: #e53e3e; }
+}
+
+.empay-card-late {
+    border-top-color: #f6ad55; /* Orange for warning */
+    .empay-stat-icon { background: rgba(#f6ad55, 0.1); color: #f6ad55; }
+}
+
+.empay-card-early {
+    border-top-color: #ecc94b; /* Yellow for early departure */
+    .empay-stat-icon { background: rgba(#ecc94b, 0.1); color: #ecc94b; }
+}
+
+/* Table Section (Matching Mock) */
+.empay-dashboard-main-content {
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    gap: 24px;
+    margin-bottom: 28px;
+
+    @media (max-width: 1024px) {
+        grid-template-columns: 1fr;
+    }
+}
+
+.empay-activities-card {
+    background: $empay-card-bg;
+    border-radius: $empay-radius;
+    padding: 24px;
+    box-shadow: $empay-shadow;
+
+    h3 {
+        font-size: 16px;
+        font-weight: 600;
+        color: $empay-primary;
+        margin: 0 0 20px;
+    }
+}
+
+.empay-table {
+    width: 100%;
+    border-collapse: collapse;
+
+    th {
+        text-align: left;
+        font-size: 12px;
+        font-weight: 600;
+        color: $empay-text-muted;
+        padding: 12px 16px;
+        border-bottom: 1px solid #edf2f7;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+
+    td {
+        padding: 14px 16px;
+        border-bottom: 1px solid #f7fafc;
+        font-size: 14px;
+        color: $empay-text;
+    }
+
+    tr:last-child td {
+        border-bottom: none;
+    }
+
+    .empay-avatar {
+        width: 32px;
+        height: 32px;
+        background: $empay-accent-light;
+        color: $empay-accent;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: 600;
+        font-size: 12px;
+    }
+
+    .empay-user-info {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+    }
+}
+
+.empay-stat-icon {
+    width: 56px;
+    height: 56px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+
+    i {
+        font-size: 24px;
+    }
+}
+
+.empay-stat-info {
+    display: flex;
+    flex-direction: column;
+}
+
+.empay-stat-value {
+    font-size: 28px;
+    font-weight: 700;
+    color: $empay-text;
+    line-height: 1.2;
+}
+
+.empay-stat-value-sm {
+    font-size: 16px;
+}
+
+.empay-stat-label {
+    font-size: 13px;
+    color: $empay-text-muted;
+    margin-top: 4px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+/* Badges */
+.empay-badge {
+    display: inline-block;
+    padding: 2px 10px;
+    border-radius: 12px;
+    font-size: 11px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.badge-draft {
+    background: #e2e8f0;
+    color: #4a5568;
+}
+
+.badge-confirmed {
+    background: #fef3c7;
+    color: #d97706;
+}
+
+.badge-paid {
+    background: #d1fae5;
+    color: #059669;
+}
+
+.badge-default {
+    background: #e2e8f0;
+    color: #718096;
+}
+
+/* Charts Grid */
+.empay-charts-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+
+    @media (max-width: 1200px) {
+        grid-template-columns: 1fr 1fr;
+    }
+
+    @media (max-width: 768px) {
+        grid-template-columns: 1fr;
+    }
+}
+
+.empay-chart-card {
+    background: $empay-card-bg;
+    border-radius: $empay-radius;
+    padding: 24px;
+    box-shadow: $empay-shadow;
+}
+
+.empay-chart-title {
+    font-size: 16px;
+    font-weight: 600;
+    color: $empay-primary;
+    margin: 0 0 20px;
+
+    i {
+        margin-right: 8px;
+        opacity: 0.7;
+    }
+}
+
+/* Bar Chart */
+.empay-bar-chart {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-around;
+    height: 200px;
+    gap: 8px;
+}
+
+.empay-bar-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    flex: 1;
+    height: 100%;
+}
+
+.empay-bar-value {
+    font-size: 11px;
+    font-weight: 600;
+    color: $empay-text;
+    margin-bottom: 4px;
+    white-space: nowrap;
+}
+
+.empay-bar-track {
+    flex: 1;
+    width: 100%;
+    max-width: 40px;
+    background: #f0f4f8;
+    border-radius: 6px 6px 0 0;
+    display: flex;
+    align-items: flex-end;
+    overflow: hidden;
+}
+
+.empay-bar-fill {
+    width: 100%;
+    border-radius: 6px 6px 0 0;
+    transition: height 0.6s ease;
+    min-height: 4px;
+}
+
+.empay-bar-attendance {
+    background: linear-gradient(180deg, $empay-accent, darken($empay-accent, 12%));
+}
+
+.empay-bar-payroll {
+    background: linear-gradient(180deg, $empay-primary, darken($empay-primary, 12%));
+}
+
+.empay-bar-label {
+    font-size: 10px;
+    color: $empay-text-muted;
+    margin-top: 8px;
+    text-align: center;
+    white-space: nowrap;
+}
+
+/* Donut / Horizontal Bar Chart for Leaves */
+.empay-donut-chart {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+}
+
+.empay-donut-item {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.empay-donut-bar-track {
+    height: 10px;
+    background: #f0f4f8;
+    border-radius: 5px;
+    overflow: hidden;
+}
+
+.empay-donut-bar-fill {
+    height: 100%;
+    border-radius: 5px;
+    transition: width 0.6s ease;
+    min-width: 4px;
+}
+
+.empay-donut-label {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 13px;
+    color: $empay-text;
+}
+
+.empay-donut-color {
+    width: 12px;
+    height: 12px;
+    border-radius: 3px;
+    flex-shrink: 0;
+}
+
+.empay-donut-count {
+    margin-left: auto;
+    font-weight: 600;
+    color: $empay-text-muted;
+}
+
+/* No Data */
+.empay-no-data {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    width: 100%;
+    color: $empay-text-muted;
+    font-size: 14px;
+    font-style: italic;
+}
+
+/* Employee Dashboard View Styles */
+.empay-employee-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 24px;
+    margin-top: 12px;
+
+    @media (max-width: 1024px) {
+        grid-template-columns: 1fr;
+    }
+}
+
+.empay-employee-col {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+}
+
+/* Profile Card */
+.empay-profile-card {
+    background: $empay-card-bg;
+    border-radius: $empay-radius;
+    padding: 32px;
+    box-shadow: $empay-shadow;
+}
+
+.empay-profile-header {
+    display: flex;
+    align-items: center;
+    gap: 24px;
+}
+
+.empay-profile-avatar {
+    width: 80px;
+    height: 80px;
+    background: linear-gradient(135deg, $empay-primary, $empay-accent);
+    color: #fff;
+    border-radius: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 32px;
+    font-weight: 700;
+}
+
+.empay-profile-info {
+    h2 { margin: 0; font-size: 24px; color: $empay-primary; }
+    p { margin: 4px 0 8px; color: $empay-text-muted; font-size: 16px; }
+}
+
+.empay-badge-outline {
+    display: inline-block;
+    padding: 2px 12px;
+    border: 1px solid $empay-accent;
+    color: $empay-accent;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 600;
+}
+
+/* Attendance Widget */
+.empay-attendance-widget {
+    background: $empay-card-bg;
+    border-radius: $empay-radius;
+    padding: 24px;
+    box-shadow: $empay-shadow;
+
+    h3 { margin: 0 0 16px; font-size: 16px; color: $empay-primary; }
+}
+
+.empay-attendance-status-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 16px;
+    background: #f8fafc;
+    border-radius: 12px;
+}
+
+.empay-status-indicator {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-size: 14px;
+}
+
+.empay-attendance-actions {
+    display: flex;
+    gap: 12px;
+}
+
+.empay-btn-primary {
+    background: $empay-accent;
+    color: #fff;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: 600;
+    transition: background 0.2s;
+    &:hover { background: darken($empay-accent, 5%); }
+}
+
+.empay-btn-secondary {
+    background: #edf2f7;
+    color: #4a5568;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: 600;
+    transition: background 0.2s;
+    &:hover { background: #e2e8f0; }
+}
+
+.empay-attendance-history-link {
+    margin-top: 16px;
+    font-size: 13px;
+    color: $empay-accent;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-weight: 600;
+    &:hover { text-decoration: underline; }
+}
+
+/* Salary Card */
+.empay-salary-card {
+    background: $empay-card-bg;
+    border-radius: $empay-radius;
+    padding: 24px;
+    box-shadow: $empay-shadow;
+    h3 { margin: 0 0 20px; font-size: 16px; color: $empay-primary; }
+}
+
+.empay-salary-breakdown {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.empay-salary-item {
+    display: flex;
+    justify-content: space-between;
+    font-size: 14px;
+    color: $empay-text;
+    &.deduction strong { color: #e53e3e; }
+}
+
+.empay-salary-total {
+    margin-top: 12px;
+    padding-top: 12px;
+    border-top: 2px dashed #edf2f7;
+    display: flex;
+    justify-content: space-between;
+    font-size: 18px;
+    font-weight: 700;
+    color: $empay-primary;
+}
+
+/* Leave Balances */
+.empay-leaves-card {
+    background: $empay-card-bg;
+    border-radius: $empay-radius;
+    padding: 24px;
+    box-shadow: $empay-shadow;
+    h3 { margin: 0 0 20px; font-size: 16px; color: $empay-primary; }
+}
+
+.empay-leave-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+    gap: 16px;
+}
+
+.empay-leave-item {
+    background: #f8fafc;
+    padding: 16px;
+    border-radius: 12px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    text-align: center;
+    transition: transform 0.2s;
+    &:hover { transform: translateY(-2px); }
+}
+
+.empay-leave-count {
+    font-size: 24px;
+    font-weight: 700;
+    color: $empay-accent;
+}
+
+.empay-leave-name {
+    font-size: 12px;
+    color: $empay-text-muted;
+    font-weight: 600;
+}

@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- ============================================================ -->
+    <!-- Generate Payrun Wizard Form View                              -->
+    <!-- ============================================================ -->
+    <record id="view_generate_payrun_wizard_form" model="ir.ui.view">
+        <field name="name">empay.generate.payrun.wizard.form</field>
+        <field name="model">empay.generate.payrun.wizard</field>
+        <field name="arch" type="xml">
+            <form string="Generate Pay Run">
+                <group>
+                    <group string="Pay Run Details">
+                        <field name="name" placeholder="e.g., May 2026 Payrun"/>
+                        <field name="date_from"/>
+                        <field name="date_to"/>
+                    </group>
+                    <group string="Employee Selection">
+                        <field name="employee_ids" widget="many2many_tags"
+                               placeholder="Leave empty for all employees..."
+                               options="{'no_create': True}"/>
+                        <div class="text-muted" colspan="2">
+                            <i class="fa fa-info-circle"/>
+                            If no employees are selected, payslips will be
+                            generated for all active employees with open contracts.
+                        </div>
+                    </group>
+                </group>
+                <footer>
+                    <button name="action_generate" type="object"
+                            string="Generate Pay Run" class="btn-primary"/>
+                    <button string="Cancel" class="btn-secondary" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <!-- ============================================================ -->
+    <!-- Wizard Action                                                 -->
+    <!-- ============================================================ -->
+    <record id="action_generate_payrun_wizard" model="ir.actions.act_window">
+        <field name="name">Generate Pay Run</field>
+        <field name="res_model">empay.generate.payrun.wizard</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+    </record>
+
+</odoo>

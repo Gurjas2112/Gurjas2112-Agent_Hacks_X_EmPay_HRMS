@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+
+        <!-- ============================================================ -->
+        <!--              EMPAY SALARY STRUCTURE                          -->
+        <!-- ============================================================ -->
+
+        <!-- Salary Structure: EmPay Standard -->
+        <record id="empay_salary_structure" model="hr.payroll.structure">
+            <field name="name">EmPay Standard</field>
+            <field name="code">EMPAY_STD</field>
+            <field name="type_id" ref="hr_payroll.structure_type_employee"/>
+        </record>
+
+        <!-- ============================================================ -->
+        <!--              SALARY RULES                                    -->
+        <!-- ============================================================ -->
+
+        <!-- BASIC: Employee contract wage (prorated by attendance) -->
+        <record id="salary_rule_basic" model="hr.salary.rule">
+            <field name="name">Basic Salary</field>
+            <field name="code">BASIC</field>
+            <field name="category_id" ref="hr_payroll.BASIC"/>
+            <field name="struct_id" ref="empay_salary_structure"/>
+            <field name="sequence">1</field>
+            <field name="amount_select">code</field>
+            <field name="amount_python_compute">
+# Basic salary prorated by attendance
+result = payslip.prorated_basic if hasattr(payslip, 'prorated_basic') else contract.wage
+            </field>
+        </record>
+
+        <!-- HRA: 40% of Basic (Housing Rent Allowance) -->
+        <record id="salary_rule_hra" model="hr.salary.rule">
+            <field name="name">Housing Rent Allowance (HRA)</field>
+            <field name="code">HRA</field>
+            <field name="category_id" ref="hr_payroll.ALW"/>
+            <field name="struct_id" ref="empay_salary_structure"/>
+            <field name="sequence">5</field>
+            <field name="amount_select">code</field>
+            <field name="amount_python_compute">
+# HRA = 40% of Basic
+result = payslip.hra if hasattr(payslip, 'hra') else (contract.wage * 0.40)
+            </field>
+        </record>
+
+        <!-- TRANSPORT: Fixed Rs 1,600/month -->
+        <record id="salary_rule_transport" model="hr.salary.rule">
+            <field name="name">Transport Allowance</field>
+            <field name="code">TRANSPORT</field>
+            <field name="category_id" ref="hr_payroll.ALW"/>
+            <field name="struct_id" ref="empay_salary_structure"/>
+            <field name="sequence">10</field>
+            <field name="amount_select">code</field>
+            <field name="amount_python_compute">
+# Fixed transport allowance
+result = payslip.transport_allowance if hasattr(payslip, 'transport_allowance') else 1600.0
+            </field>
+        </record>
+
+        <!-- GROSS: Basic + HRA + Transport -->
+        <record id="salary_rule_gross" model="hr.salary.rule">
+            <field name="name">Gross Salary</field>
+            <field name="code">GROSS</field>
+            <field name="category_id" ref="hr_payroll.GROSS"/>
+            <field name="struct_id" ref="empay_salary_structure"/>
+            <field name="sequence">20</field>
+            <field name="amount_select">code</field>
+            <field name="amount_python_compute">
+# Gross = Basic + HRA + Transport
+result = payslip.gross_salary if hasattr(payslip, 'gross_salary') else (categories['BASIC'] + categories['ALW'])
+            </field>
+        </record>
+
+        <!-- PF Employee: 12% of Basic (deduction) -->
+        <record id="salary_rule_pf_employee" model="hr.salary.rule">
+            <field name="name">Provident Fund (Employee)</field>
+            <field name="code">PF_EMP</field>
+            <field name="category_id" ref="hr_payroll.DED"/>
+            <field name="struct_id" ref="empay_salary_structure"/>
+            <field name="sequence">30</field>
+            <field name="amount_select">code</field>
+            <field name="amount_python_compute">
+# PF Employee Contribution = 12% of prorated basic
+result = -(payslip.pf_employee if hasattr(payslip, 'pf_employee') else (categories['BASIC'] * 0.12))
+            </field>
+        </record>
+
+        <!-- Professional Tax: Slab-based deduction -->
+        <record id="salary_rule_prof_tax" model="hr.salary.rule">
+            <field name="name">Professional Tax</field>
+            <field name="code">PROF_TAX</field>
+            <field name="category_id" ref="hr_payroll.DED"/>
+            <field name="struct_id" ref="empay_salary_structure"/>
+            <field name="sequence">35</field>
+            <field name="amount_select">code</field>
+            <field name="amount_python_compute">
+# Professional Tax slab-based deduction
+if hasattr(payslip, 'professional_tax'):
+    result = -payslip.professional_tax
+else:
+    gross = categories.get('GROSS', 0)
+    if gross &lt;= 10000:
+        result = 0
+    elif gross &lt;= 15000:
+        result = -150
+    elif gross &lt;= 25000:
+        result = -200
+    else:
+        result = -300
+            </field>
+        </record>
+
+        <!-- NET: Gross - Deductions -->
+        <record id="salary_rule_net" model="hr.salary.rule">
+            <field name="name">Net Salary</field>
+            <field name="code">NET</field>
+            <field name="category_id" ref="hr_payroll.NET"/>
+            <field name="struct_id" ref="empay_salary_structure"/>
+            <field name="sequence">100</field>
+            <field name="amount_select">code</field>
+            <field name="amount_python_compute">
+# Net = Gross + Deductions (deductions are negative)
+result = payslip.net_salary if hasattr(payslip, 'net_salary') else (categories['GROSS'] + categories['DED'])
+            </field>
+        </record>
+
+    </data>
+</odoo>

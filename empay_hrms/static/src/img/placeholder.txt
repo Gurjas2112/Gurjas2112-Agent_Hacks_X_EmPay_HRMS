@@ -1,0 +1,2 @@
+Place the empay_logo.png file (256x256) here.
+You can use the generated logo from the artifacts directory.
