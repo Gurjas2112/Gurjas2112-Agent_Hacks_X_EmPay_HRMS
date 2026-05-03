@@ -1,0 +1,6 @@
+full_name,email,username,phone,department,designation,role,date_of_join,date_of_birth,gender,address,basic_salary
+"Aditi Rao Hydari",aditi.rao@example.demo,aditirao,+91 9234567890,Engineering,"Frontend Developer",employee,2026-06-20,1986-10-28,female,"Gachibowli, Hyderabad",70000.00
+"Ayushmann Khurrana",ayushmann.k@example.demo,ayushk,+91 8345678901,"Human Resources","HR Specialist",hr,2026-06-25,1984-09-14,male,"Sector 35, Chandigarh",62000.00
+"Vicky Kaushal",vicky.k@example.demo,vickyk,+91 7456789012,Marketing,"Marketing Executive",employee,2026-07-01,1988-05-16,male,"Andheri West, Mumbai",68000.00
+"Katrina Kaif",katrina.k@example.demo,katrinak,+91 6567890123,Finance,"Financial Analyst",payroll,2026-07-05,1983-07-16,female,"Bandra West, Mumbai",95000.00
+"Rajkummar Rao",rajkummar.r@example.demo,rajkummar,+91 5678901234,Operations,"Operations Manager",employee,2026-07-10,1984-08-31,male,"Civil Lines, Gurgaon",82000.00

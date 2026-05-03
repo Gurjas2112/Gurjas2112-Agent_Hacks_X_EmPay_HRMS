@@ -1,0 +1,6 @@
+full_name,email,username,phone,department,designation,role,date_of_join,date_of_birth,gender,address,basic_salary
+"Hrithik Roshan",hrithik.roshan@example.demo,hrithikr,+91 9111122222,Engineering,"Tech Lead",employee,2026-08-01,1974-01-10,male,"Juhu, Mumbai",150000.00
+"Alia Bhatt",alia.bhatt@example.demo,aliab,+91 8222233333,Marketing,"Brand Manager",employee,2026-08-05,1993-03-15,female,"Bandra, Mumbai",88000.00
+"Varun Dhawan",varun.d@example.demo,varund,+91 7333344444,"Human Resources","HR Generalist",hr,2026-08-10,1987-04-24,male,"Juhu, Mumbai",55000.00
+"Kareena Kapoor",kareena.k@example.demo,kareenak,+91 6444455555,Design,"Creative Director",admin,2026-08-15,1980-09-21,female,"Bandra, Mumbai",130000.00
+"Saif Ali Khan",saif.k@example.demo,saifak,+91 5555566666,Finance,"Finance Head",payroll,2026-08-20,1970-08-16,male,"Bandra, Mumbai",140000.00

@@ -1,0 +1,6 @@
+full_name,email,username,phone,department,designation,role,date_of_join,date_of_birth,gender,address,basic_salary
+"Shah Rukh Khan",shahrukh.khan@example.demo,srk,+91 9000000001,Engineering,"CTO",admin,2026-09-01,1965-11-02,male,"Mannat, Bandra, Mumbai",250000.00
+"Salman Khan",salman.khan@example.demo,salmank,+91 8000000002,Operations,"Security Head",employee,2026-09-05,1965-12-27,male,"Galaxy Apt, Bandra, Mumbai",110000.00
+"Aamir Khan",aamir.khan@example.demo,aamirk,+91 7000000003,"Human Resources","Training Head",hr,2026-09-10,1965-03-14,male,"Pali Hill, Mumbai",105000.00
+"Anushka Sharma",anushka.s@example.demo,anushkas,+91 6000000004,Marketing,"Social Media Manager",employee,2026-09-15,1988-05-01,female,"Versova, Mumbai",75000.00
+"Ranveer Singh",ranveer.s@example.demo,ranveers,+91 5000000005,Design,"Visual Artist",employee,2026-09-20,1985-07-06,male,"Prabhadevi, Mumbai",92000.00
