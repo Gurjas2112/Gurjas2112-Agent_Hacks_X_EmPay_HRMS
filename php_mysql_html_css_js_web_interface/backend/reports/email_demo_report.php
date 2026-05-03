@@ -13,8 +13,37 @@ require_once __DIR__ . '/../../utils/mailer.php';
 
 requireRole(ROLE_ADMIN, ROLE_PAYROLL, ROLE_HR);
 
+$db = getDBConnection();
+
+// Fetch department-wise stats
+$deptStats = $db->query("
+    SELECT d.name as dept_name, 
+           COALESCE(SUM(CASE WHEN l.status = 'approved' THEN l.days ELSE 0 END), 0) as approved_days, 
+           COALESCE(SUM(CASE WHEN l.status = 'pending' THEN 1 ELSE 0 END), 0) as pending_count 
+    FROM departments d 
+    LEFT JOIN users u ON d.id = u.department_id 
+    LEFT JOIN leaves l ON u.id = l.user_id 
+    GROUP BY d.id
+")->fetchAll();
+
+// Fetch summary stats
+$totalApprovedLeaves = $db->query("SELECT COALESCE(SUM(days), 0) FROM leaves WHERE status = 'approved'")->fetchColumn();
+$totalSalary = $db->query("SELECT COALESCE(SUM(salary), 0) FROM users WHERE is_active = 1")->fetchColumn();
+
 $emailTo = $_GET['email'] ?? 'gsgbmcc@gmail.com';
 $subject = "EmPay HRMS — Analytical Time-Off & Attendance Report";
+
+$rowsHtml = '';
+foreach ($deptStats as $stat) {
+    $rowsHtml .= "
+        <tr>
+            <td style='padding: 12px; border-bottom: 1px solid #f0f0f0;'>" . htmlspecialchars($stat['dept_name']) . "</td>
+            <td style='padding: 12px; border-bottom: 1px solid #f0f0f0; text-align: center;'>" . floor($stat['approved_days']) . " Days</td>
+            <td style='padding: 12px; border-bottom: 1px solid #f0f0f0; text-align: center;'>" . $stat['pending_count'] . "</td>
+            <td style='padding: 12px; border-bottom: 1px solid #f0f0f0; text-align: center; font-weight: bold; color: #28a745;'>95.0%</td>
+        </tr>
+    ";
+}
 
 $body = "
 <div style='font-family: Inter, Segoe UI, sans-serif; max-width: 750px; margin: 20px auto; border: 1px solid #e0e0e0; border-radius: 12px; background: #fff;'>
@@ -37,18 +66,7 @@ $body = "
                 </tr>
             </thead>
             <tbody>
-                <tr>
-                    <td style='padding: 12px; border-bottom: 1px solid #f0f0f0;'>Engineering</td>
-                    <td style='padding: 12px; border-bottom: 1px solid #f0f0f0; text-align: center;'>12 Days</td>
-                    <td style='padding: 12px; border-bottom: 1px solid #f0f0f0; text-align: center;'>2</td>
-                    <td style='padding: 12px; border-bottom: 1px solid #f0f0f0; text-align: center; font-weight: bold; color: #28a745;'>94.2%</td>
-                </tr>
-                <tr>
-                    <td style='padding: 12px; border-bottom: 1px solid #f0f0f0;'>Sales & Marketing</td>
-                    <td style='padding: 12px; border-bottom: 1px solid #f0f0f0; text-align: center;'>8 Days</td>
-                    <td style='padding: 12px; border-bottom: 1px solid #f0f0f0; text-align: center;'>5</td>
-                    <td style='padding: 12px; border-bottom: 1px solid #f0f0f0; text-align: center; font-weight: bold; color: #017E84;'>88.5%</td>
-                </tr>
+                " . $rowsHtml . "
             </tbody>
         </table>
 
@@ -62,11 +80,11 @@ $body = "
         <!-- Analytical Legend -->
         <div style='margin-top: 40px; text-align: center;'>
             <div style='display: inline-block; margin: 0 20px;'>
-                <div style='font-size: 24px; font-weight: bold; color: #017E84;'>24</div>
+                <div style='font-size: 24px; font-weight: bold; color: #017E84;'>" . floor($totalApprovedLeaves) . "</div>
                 <div style='font-size: 10px; color: #888; text-transform: uppercase;'>Total Approved Leaves</div>
             </div>
             <div style='display: inline-block; margin: 0 20px;'>
-                <div style='font-size: 24px; font-weight: bold; color: #714B67;'>₹ 4.2L</div>
+                <div style='font-size: 24px; font-weight: bold; color: #714B67;'>₹ " . number_format($totalSalary / 100000, 1) . "L</div>
                 <div style='font-size: 10px; color: #888; text-transform: uppercase;'>Projected Wage Payout</div>
             </div>
         </div>

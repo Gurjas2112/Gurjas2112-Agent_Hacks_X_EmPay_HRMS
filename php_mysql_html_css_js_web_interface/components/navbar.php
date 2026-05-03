@@ -25,19 +25,25 @@ $userRole = getUserRole();
 <nav class="h-10 bg-brand flex items-center justify-between px-4 text-white text-[13px]">
     <!-- Left: Logo + Nav Links -->
     <div class="flex items-center gap-1">
+        <button onclick="toggleMobileSidebar()" class="lg:hidden w-8 h-8 flex items-center justify-center mr-1 text-white hover:bg-white/10 rounded-md">
+            <i data-lucide="menu" class="w-5 h-5"></i>
+        </button>
         <a href="<?= BASE_URL ?>index.php?page=dashboard" class="flex items-center gap-2 mr-4 font-medium">
             <i data-lucide="hexagon" class="w-4 h-4"></i>
-            <span>EmPay</span>
+            <span class="hidden sm:inline">EmPay</span>
         </a>
-        <?php foreach ($navLinks as $nav):
-            if (!in_array($userRole, $nav['roles'])) continue;
-            $isActive = str_starts_with($currentPage, explode('/', $nav['page'])[0]);
-        ?>
-        <a href="<?= BASE_URL ?>index.php?page=<?= $nav['page'] ?>" 
-           class="px-3 py-1 rounded <?= $isActive ? 'text-white font-medium' : 'text-white/75 hover:text-white' ?> transition-colors text-[12px]">
-            <?= $nav['label'] ?>
-        </a>
-        <?php endforeach; ?>
+        <div class="hidden lg:flex items-center gap-1">
+            <?php foreach ($navLinks as $nav):
+                if (!in_array($userRole, $nav['roles'])) continue;
+                $navRoot = explode('/', $nav['page'])[0];
+                $isActive = (substr($currentPage, 0, strlen($navRoot)) === $navRoot);
+            ?>
+            <a href="<?= BASE_URL ?>index.php?page=<?= $nav['page'] ?>" 
+               class="px-3 py-1 rounded <?= $isActive ? 'text-white font-medium' : 'text-white/75 hover:text-white' ?> transition-colors text-[12px]">
+                <?= $nav['label'] ?>
+            </a>
+            <?php endforeach; ?>
+        </div>
     </div>
 
     <!-- Right: Notifications + Avatar -->

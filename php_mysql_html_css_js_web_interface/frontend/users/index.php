@@ -129,30 +129,35 @@ $endRange = min($offset + $limit, $totalEmployees);
             default   => 'badge-employee',
         };
     ?>
-    <div class="kanban-card">
+    <a href="<?= BASE_URL ?>index.php?page=users/form&id=<?= $emp['id'] ?>" class="kanban-card hover:border-brand/40 hover:shadow-md transition-all block group">
         <div class="flex items-start gap-3">
-            <div class="kanban-avatar"><?= strtoupper(substr($emp['name'],0,2)) ?></div>
+            <div class="kanban-avatar group-hover:bg-brand group-hover:text-white transition-colors"><?= strtoupper(substr($emp['name'],0,2)) ?></div>
             <div class="flex-1 min-w-0">
                 <div class="flex items-center justify-between">
-                    <a href="<?= BASE_URL ?>index.php?page=users/form&id=<?= $emp['id'] ?>" class="text-[13px] font-medium link truncate"><?= $emp['name'] ?></a>
+                    <span class="text-[13px] font-medium text-txt group-hover:text-brand truncate transition-colors"><?= $emp['name'] ?></span>
                     <span class="<?= $presenceIcon[1] ?> flex-shrink-0" title="<?= $presenceIcon[2] ?>">
                         <i data-lucide="<?= $presenceIcon[0] ?>" class="w-4 h-4"></i>
                     </span>
                 </div>
-                <p class="caption"><?= $emp['dept'] ?></p>
+                <p class="caption"><?= htmlspecialchars($emp['dept'] ?? 'Unassigned') ?></p>
                 <div class="mt-2 space-y-1">
-                    <p class="caption flex items-center gap-1"><i data-lucide="mail" class="w-3 h-3"></i> <?= $emp['email'] ?></p>
-                    <p class="caption flex items-center gap-1"><i data-lucide="phone" class="w-3 h-3"></i> <?= $emp['phone'] ?></p>
-                </div>
-                <div class="mt-3 flex items-center gap-1.5">
-                    <span class="badge <?= $chipClass ?> capitalize"><?= htmlspecialchars($emp['role']) ?></span>
-                    <?php if (!$emp['is_active']): ?>
-                    <span class="badge badge-cancelled">Archived</span>
+                    <p class="caption flex items-center gap-1"><i data-lucide="mail" class="w-3 h-3 text-muted/60"></i> <?= htmlspecialchars($emp['email']) ?></p>
+                    <?php if ($emp['phone']): ?>
+                    <p class="caption flex items-center gap-1"><i data-lucide="phone" class="w-3 h-3 text-muted/60"></i> <?= htmlspecialchars($emp['phone']) ?></p>
                     <?php endif; ?>
+                </div>
+                <div class="mt-3 flex items-center justify-between">
+                    <div class="flex items-center gap-1.5">
+                        <span class="badge <?= $chipClass ?> capitalize"><?= htmlspecialchars($emp['role']) ?></span>
+                        <?php if (!$emp['is_active']): ?>
+                        <span class="badge badge-cancelled">Archived</span>
+                        <?php endif; ?>
+                    </div>
+                    <i data-lucide="chevron-right" class="w-3 h-3 text-muted opacity-0 group-hover:opacity-100 transition-opacity"></i>
                 </div>
             </div>
         </div>
-    </div>
+    </a>
     <?php endforeach; ?>
 </div>
 

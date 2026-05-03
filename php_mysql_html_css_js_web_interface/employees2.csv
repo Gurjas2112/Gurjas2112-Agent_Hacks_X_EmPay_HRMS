@@ -1,0 +1,6 @@
+full_name,email,username,phone,department,designation,role,date_of_join,date_of_birth,gender,address,basic_salary
+"Arjun Singh",arjun.singh@example.demo,arjunsingh,+91 9123456780,Engineering,"Lead Developer",employee,2026-05-25,1990-11-12,male,"Sector 44, Chandigarh",85000.00
+"Meera Rao",meera.rao@example.demo,meera.rao,+91 8234567891,"Human Resources","HR Manager",hr,2026-05-30,1988-06-15,female,"Indiranagar, Bangalore",78000.00
+"Karan Johar",karan.j@example.demo,karanj,+91 7345678902,Marketing,"Content Creator",employee,2026-06-05,1982-05-25,male,"Bandra, Mumbai",90000.00
+"Deepika Padukone",deepika.p@example.demo,deepikap,+91 6456789013,Design,"UI/UX Designer",employee,2026-06-10,1986-01-05,female,"Prabhadevi, Mumbai",120000.00
+"Ranbir Kapoor",ranbir.k@example.demo,ranbirk,+91 5567890124,Engineering,"Backend Developer",employee,2026-06-15,1982-09-28,male,"Pali Hill, Mumbai",110000.00

@@ -1,0 +1,6 @@
+full_name,email,username,phone,department,designation,role,date_of_join,date_of_birth,gender,address,basic_salary
+"Rahul Sharma",rahul.sharma@example.demo,rahuls,+91 9876543210,Engineering,"Software Engineer",employee,2026-05-10,1995-08-15,male,"Sector 15, Gurgaon",65000.00
+"Sneha Reddy",sneha.reddy@example.demo,snehareddy,+91 8765432109,"Human Resources","HR Executive",hr,2026-05-12,1998-03-22,female,"Hitech City, Hyderabad",52000.00
+"Amitabh Bachchan",amitabh@example.demo,bigb,+91 9999999999,Marketing,"Marketing Head",admin,2026-06-01,1942-10-11,male,"Jalsa, Juhu, Mumbai",150000.00
+"Priya Patel",priya.patel@example.demo,priyap,+91 7654321098,Finance,"Accountant",payroll,2026-05-15,1996-12-05,female,"Navrangpura, Ahmedabad",58000.00
+"Vikram Malhotra",vikram.m@example.demo,vikramm,+91 6543210987,Engineering,"DevOps Engineer",employee,2026-05-20,1994-05-18,male,"Whitefield, Bangalore",72000.00

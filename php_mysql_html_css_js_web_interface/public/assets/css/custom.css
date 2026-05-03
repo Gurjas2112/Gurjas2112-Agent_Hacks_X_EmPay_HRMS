@@ -300,8 +300,26 @@ select.form-input {
     background: var(--white);
     border: 0.5px solid var(--border);
     border-radius: var(--radius-lg);
-    padding: 24px;
+    padding: 16px;
 }
+
+@media (min-width: 1024px) {
+    .card {
+        padding: 24px;
+    }
+}
+
+/* Responsive Table Wrapper */
+.table-responsive {
+    width: 100%;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+}
+
+.table-responsive::-webkit-scrollbar {
+    height: 4px;
+}
+
 
 /* ===== Employee Kanban Card ===== */
 .kanban-card {

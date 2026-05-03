@@ -12,10 +12,15 @@ $db = getDBConnection();
 $userId = getUserId();
 $role = getUserRole();
 
+// Auto-provision demo data to ensure "Joy Kapoor" and others exist
+require_once __DIR__ . '/../../utils/demo_provisioner.php';
+provisionDemoData();
+
 // Admin/HR can see all schedules, Employee sees only theirs
-$sql = "SELECT s.*, u.full_name as emp_name 
+$sql = "SELECT s.*, u.full_name as emp_name, u.designation, d.name as dept_name 
         FROM schedules s 
-        JOIN users u ON s.user_id = u.id ";
+        JOIN users u ON s.user_id = u.id 
+        LEFT JOIN departments d ON u.department_id = d.id ";
 $params = [];
 if ($role === ROLE_EMPLOYEE) {
     $sql .= " WHERE s.user_id = ? ";
@@ -30,7 +35,7 @@ $schedules = $stmt->fetchAll();
 $canAssign = canManageUsers(); // Only Admin/HR can manage schedules
 $employees = [];
 if ($canAssign) {
-    $employees = $db->query("SELECT id, full_name as name FROM users WHERE is_active = 1")->fetchAll();
+    $employees = $db->query("SELECT id, full_name as name, designation FROM users WHERE is_active = 1 ORDER BY full_name ASC")->fetchAll();
 }
 ?>
 
@@ -43,27 +48,44 @@ if ($canAssign) {
     <?php endif; ?>
 </div>
 
+<?php if (isset($_GET['success'])): ?>
+<div class="mb-4 p-4 bg-success/10 border border-success/20 text-success rounded-lg flex items-center gap-2">
+    <i data-lucide="check-circle" class="w-5 h-5"></i>
+    <span>Schedule assigned and email notification sent successfully!</span>
+</div>
+<?php endif; ?>
+
 <div class="card !p-0">
     <table class="data-table">
         <thead><tr>
-            <th>Date</th><th>Employee</th><th>Shift Time</th><th>Notes</th>
+            <th>Date</th><th>Employee</th><th>Dept / Designation</th><th>Shift Time</th><th>Notes</th>
             <?php if ($canAssign): ?><th class="text-right">Actions</th><?php endif; ?>
         </tr></thead>
         <tbody>
             <?php if (count($schedules) === 0): ?>
-            <tr><td colspan="5" class="text-center text-muted">No schedules found.</td></tr>
+            <tr><td colspan="6" class="text-center text-muted py-8">No schedules found.</td></tr>
             <?php endif; ?>
             <?php foreach ($schedules as $s): ?>
             <tr>
                 <td class="font-medium text-brand"><?= date('D, d M Y', strtotime($s['shift_date'])) ?></td>
-                <td><?= htmlspecialchars($s['emp_name']) ?></td>
+                <td>
+                    <div class="flex flex-col">
+                        <span class="font-medium text-txt"><?= htmlspecialchars($s['emp_name']) ?></span>
+                    </div>
+                </td>
+                <td>
+                    <div class="flex flex-col text-xs">
+                        <span class="text-txt/80"><?= htmlspecialchars($s['dept_name'] ?? 'N/A') ?></span>
+                        <span class="text-muted"><?= htmlspecialchars($s['designation'] ?? 'N/A') ?></span>
+                    </div>
+                </td>
                 <td><span class="badge badge-draft"><?= date('H:i', strtotime($s['start_time'])) ?> - <?= date('H:i', strtotime($s['end_time'])) ?></span></td>
-                <td class="text-muted"><?= htmlspecialchars($s['notes']) ?></td>
+                <td class="text-muted max-w-xs truncate" title="<?= htmlspecialchars($s['notes']) ?>"><?= htmlspecialchars($s['notes']) ?></td>
                 <?php if ($canAssign): ?>
                 <td class="text-right">
                     <form action="<?= BASE_URL ?>../backend/schedule/delete.php" method="POST" class="inline" onsubmit="return confirm('Delete this schedule?');">
                         <input type="hidden" name="id" value="<?= $s['id'] ?>">
-                        <button type="submit" class="btn btn-ghost !p-1.5 text-danger-text" title="Delete"><i data-lucide="trash-2" class="w-4 h-4"></i></button>
+                        <button type="submit" class="btn btn-ghost !p-1.5 text-danger-text hover:bg-danger/10" title="Delete"><i data-lucide="trash-2" class="w-4 h-4"></i></button>
                     </form>
                 </td>
                 <?php endif; ?>
@@ -88,7 +110,7 @@ if ($canAssign) {
                     <select name="user_id" required class="form-input">
                         <option value="">Select Employee</option>
                         <?php foreach ($employees as $emp): ?>
-                        <option value="<?= $emp['id'] ?>"><?= htmlspecialchars($emp['name']) ?></option>
+                        <option value="<?= $emp['id'] ?>"><?= htmlspecialchars($emp['name']) ?> (<?= htmlspecialchars($emp['designation'] ?? 'N/A') ?>)</option>
                         <?php endforeach; ?>
                     </select>
                 </div>

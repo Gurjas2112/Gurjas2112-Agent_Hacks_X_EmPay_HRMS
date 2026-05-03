@@ -44,11 +44,21 @@ $deptCounts = $db->query("
 $totalCount = $db->query("SELECT COUNT(*) FROM users WHERE is_active = 1")->fetchColumn();
 ?>
 
+<!-- Mobile Sidebar Backdrop -->
+<div id="sidebar-backdrop" onclick="toggleMobileSidebar()" class="fixed inset-0 bg-black/50 z-[90] hidden lg:hidden"></div>
+
 <!-- Sidebar — 180px, white bg, right border -->
-<aside class="w-[180px] flex-shrink-0 bg-white border-r border-surface-200 hidden lg:flex flex-col h-full overflow-hidden">
+<aside id="main-sidebar" class="fixed lg:static inset-y-0 left-0 w-[180px] flex-shrink-0 bg-white border-r border-surface-200 -translate-x-full lg:translate-x-0 transition-transform duration-300 z-[100] lg:z-auto flex flex-col h-full overflow-hidden">
     
     <!-- Navigation -->
     <div class="flex-1 overflow-y-auto py-3">
+        <div class="flex items-center justify-between px-3 mb-2 lg:hidden">
+            <span class="font-bold text-brand">EmPay Menu</span>
+            <button onclick="toggleMobileSidebar()" class="p-1 hover:bg-surface-100 rounded">
+                <i data-lucide="x" class="w-4 h-4"></i>
+            </button>
+        </div>
+        
         <p class="sidebar-section-heading">Navigation</p>
         <?php foreach ($sidebarItems as $item):
             if (!in_array($userRole, $item['roles'])) continue;
@@ -83,5 +93,23 @@ $totalCount = $db->query("SELECT COUNT(*) FROM users WHERE is_active = 1")->fetc
     </div>
 </aside>
 
+<script>
+function toggleMobileSidebar() {
+    const sidebar = document.getElementById('main-sidebar');
+    const backdrop = document.getElementById('sidebar-backdrop');
+    const isHidden = sidebar.classList.contains('-translate-x-full');
+    
+    if (isHidden) {
+        sidebar.classList.remove('-translate-x-full');
+        backdrop.classList.remove('hidden');
+        document.body.style.overflow = 'hidden';
+    } else {
+        sidebar.classList.add('-translate-x-full');
+        backdrop.classList.add('hidden');
+        document.body.style.overflow = '';
+    }
+}
+</script>
+
 <!-- Main Content Area -->
-<main class="flex-1 min-w-0 p-6 overflow-y-auto bg-white">
+<main class="flex-1 min-w-0 p-4 lg:p-6 overflow-y-auto bg-white">

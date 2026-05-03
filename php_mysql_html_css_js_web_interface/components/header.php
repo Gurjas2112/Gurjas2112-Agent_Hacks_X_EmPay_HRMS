@@ -45,18 +45,13 @@
 // Flash message display
 $flash = getFlash();
 if ($flash): 
-    $flashClass = match($flash['type']) {
-        'success' => 'flash-success',
-        'error'   => 'flash-error',
-        'warning' => 'flash-warning',
-        default   => 'flash-info',
-    };
-    $flashIcon = match($flash['type']) {
-        'success' => 'check-circle-2',
-        'error'   => 'alert-circle',
-        'warning' => 'alert-triangle',
-        default   => 'info',
-    };
+    $flashType = $flash['type'];
+    switch ($flashType) {
+        case 'success': $flashClass = 'flash-success'; $flashIcon = 'check-circle-2'; break;
+        case 'error':   $flashClass = 'flash-error';   $flashIcon = 'alert-circle';   break;
+        case 'warning': $flashClass = 'flash-warning'; $flashIcon = 'alert-triangle'; break;
+        default:        $flashClass = 'flash-info';    $flashIcon = 'info';           break;
+    }
 ?>
 <div id="flash-message" class="fixed top-4 right-4 z-[9999] max-w-sm" role="alert">
     <div class="flash-message <?= $flashClass ?>">

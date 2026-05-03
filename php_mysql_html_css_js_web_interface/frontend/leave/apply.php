@@ -11,10 +11,16 @@ $db = getDBConnection();
 $userId = getUserId();
 
 // Fetch leave types
-$leaveTypes = $db->query("SELECT * FROM leave_types")->fetchAll();
-
-// Mock balance for now (needs proper calculation logic)
-// In a real app, calculate days taken per leave_type and subtract from max_days
+// Fetch leave balances and types for the user
+$balances = $db->prepare("
+    SELECT lt.id, lt.name, lt.max_days, 
+           COALESCE(SUM(CASE WHEN l.status = 'approved' THEN l.days ELSE 0 END), 0) as taken
+    FROM leave_types lt
+    LEFT JOIN leaves l ON lt.id = l.leave_type_id AND l.user_id = ?
+    GROUP BY lt.id
+");
+$balances->execute([$userId]);
+$leaveStats = $balances->fetchAll();
 ?>
 
 <div class="max-w-2xl">
@@ -24,10 +30,18 @@ $leaveTypes = $db->query("SELECT * FROM leave_types")->fetchAll();
     </div>
 
     <!-- Leave Balance -->
-    <div class="grid grid-cols-3 gap-2 mb-6">
-        <div class="stat-card"><p class="stat-label">Casual leave</p><p class="stat-value stat-value-neutral">8 <span class="text-[13px] font-normal text-muted">/ 12</span></p></div>
-        <div class="stat-card"><p class="stat-label">Sick leave</p><p class="stat-value stat-value-neutral">5 <span class="text-[13px] font-normal text-muted">/ 7</span></p></div>
-        <div class="stat-card"><p class="stat-label">Annual leave</p><p class="stat-value stat-value-neutral">10 <span class="text-[13px] font-normal text-muted">/ 15</span></p></div>
+    <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3 mb-6">
+        <?php foreach ($leaveStats as $stat): 
+            $remaining = $stat['max_days'] - $stat['taken'];
+        ?>
+        <div class="stat-card">
+            <p class="stat-label"><?= htmlspecialchars($stat['name']) ?></p>
+            <p class="stat-value stat-value-neutral">
+                <?= floor($remaining) ?> 
+                <span class="text-[13px] font-normal text-muted">/ <?= floor($stat['max_days']) ?></span>
+            </p>
+        </div>
+        <?php endforeach; ?>
     </div>
 
     <div class="card">
@@ -38,12 +52,12 @@ $leaveTypes = $db->query("SELECT * FROM leave_types")->fetchAll();
                 <label class="form-label block">Leave type *</label>
                 <select name="leave_type_id" required class="form-input">
                     <option value="">Select leave type</option>
-                    <?php foreach ($leaveTypes as $lt): ?>
-                    <option value="<?= $lt['id'] ?>"><?= htmlspecialchars($lt['name']) ?> (Max <?= $lt['max_days'] ?>)</option>
+                    <?php foreach ($leaveStats as $lt): ?>
+                    <option value="<?= $lt['id'] ?>"><?= htmlspecialchars($lt['name']) ?> (Max <?= floor($lt['max_days']) ?>)</option>
                     <?php endforeach; ?>
                 </select>
             </div>
-            <div class="grid grid-cols-2 gap-3">
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
                 <div>
                     <label class="form-label block">Period start *</label>
                     <input type="date" name="from_date" required class="form-input" placeholder="DD/MM/YYYY">
