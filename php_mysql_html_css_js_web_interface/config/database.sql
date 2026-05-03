@@ -73,6 +73,9 @@ CREATE TABLE `attendance` (
                   ) STORED,
     `status`      ENUM('present','absent','late','half_day','on_leave') NOT NULL DEFAULT 'present',
     `notes`       VARCHAR(255) NULL,
+    `latitude`    DECIMAL(10, 8) NULL,
+    `longitude`   DECIMAL(11, 8) NULL,
+    `location_type` ENUM('office', 'remote', 'field') DEFAULT 'office',
     `ip_address`  VARCHAR(45) NULL,
     `created_at`  TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
 
@@ -246,6 +249,24 @@ CREATE TABLE `activity_log` (
     INDEX `idx_log_module` (`module`),
     INDEX `idx_log_created` (`created_at`)
 ) ENGINE=InnoDB;
+
+-- ============================================
+-- 10. SYSTEM SETTINGS
+-- ============================================
+CREATE TABLE `system_settings` (
+    `id`             INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    `setting_key`    VARCHAR(50) NOT NULL UNIQUE,
+    `setting_value`  TEXT NULL,
+    `setting_group`  VARCHAR(50) DEFAULT 'general',
+    `created_at`     TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    `updated_at`     TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+) ENGINE=InnoDB;
+
+INSERT INTO `system_settings` (`setting_key`, `setting_value`, `setting_group`) VALUES
+('office_lat', '18.5204', 'location'),
+('office_lng', '73.8567', 'location'),
+('office_radius', '200', 'location'),
+('nfc_mode', 'standard', 'attendance');
 
 
 -- ============================================

@@ -29,8 +29,23 @@ function initDatabase() {
         sent_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
     ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;";
     
+    // Create system_settings table
+    $settingsSql = "CREATE TABLE IF NOT EXISTS system_settings (
+        id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+        setting_key VARCHAR(50) NOT NULL UNIQUE,
+        setting_value TEXT NULL,
+        setting_group VARCHAR(50) DEFAULT 'general'
+    ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;";
+    
     try {
         $db->exec($sql);
+        $db->exec($settingsSql);
+        
+        // Seed default location if missing
+        $db->exec("INSERT IGNORE INTO system_settings (setting_key, setting_value, setting_group) VALUES 
+            ('office_lat', '18.5204', 'location'),
+            ('office_lng', '73.8567', 'location'),
+            ('nfc_mode', 'standard', 'attendance')");
         
         // Add salary column to users if not exists
         try {
@@ -39,6 +54,13 @@ function initDatabase() {
             // Column likely already exists, ignore
         }
         
+        // Add geolocation columns to attendance if not exists
+        try {
+            $db->exec("ALTER TABLE attendance ADD COLUMN latitude DECIMAL(10, 8) NULL AFTER notes");
+            $db->exec("ALTER TABLE attendance ADD COLUMN longitude DECIMAL(11, 8) NULL AFTER latitude");
+            $db->exec("ALTER TABLE attendance ADD COLUMN location_type ENUM('office', 'remote', 'field') DEFAULT 'office' AFTER longitude");
+        } catch (PDOException $e) { }
+
         return true;
     } catch (PDOException $e) {
         error_log("EmPay Database Init Error: " . $e->getMessage());
