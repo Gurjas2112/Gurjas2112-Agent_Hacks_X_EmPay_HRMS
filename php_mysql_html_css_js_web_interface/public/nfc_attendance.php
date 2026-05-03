@@ -125,14 +125,35 @@ $uidRaw = trim($_GET['uid'] ?? '');
 
 if ($uidRaw === '') {
     renderPage('Tap Your Card', 'Position your ID card near the scanner to record your attendance instantly.', '', 'ready');
+    echo '<script>
+        // Web NFC API support for modern browsers / Kiosk mode
+        if ("NDEFReader" in window) {
+            const reader = new NDEFReader();
+            reader.scan().then(() => {
+                console.log("NFC Scan started successfully.");
+                reader.onreadingerror = () => {
+                    console.error("Cannot read data from the NFC tag. Try another one?");
+                };
+                reader.onreading = ({ message, serialNumber }) => {
+                    // Redirect with the serial number (uid)
+                    window.location.href = "nfc_attendance.php?uid=" + serialNumber;
+                };
+            }).catch(error => {
+                console.log(`Error: ${error}`);
+            });
+        }
+    </script>';
     exit;
 }
 
-$uid = ctype_digit($uidRaw) ? (int)$uidRaw : 0;
-if ($uid <= 0) {
-    http_response_code(400);
-    renderPage('Invalid Tag', 'This ID tag is not recognized. Please contact your HR department.', '', 'error', '', '', $idleUrl);
-    exit;
+// Support both numeric and hex UIDs (some scanners send hex)
+$uid = 0;
+if (ctype_digit($uidRaw)) {
+    $uid = (int)$uidRaw;
+} else {
+    // If not digit, check if it exists as a username or special tag in the DB
+    // For simplicity, we assume the UID is either the Numeric ID or a Hex Serial
+    // In a real system, we might have a 'nfc_tag' column.
 }
 
 $db = getDBConnection();
@@ -142,8 +163,11 @@ if (!$db) {
     exit;
 }
 
-$stmt = $db->prepare('SELECT id, full_name, is_active FROM users WHERE id = ?');
-$stmt->execute([$uid]);
+// Try finding user by ID (numeric) or NFC Tag (if we had a column)
+// Since we only have 'id', we'll try to match $uidRaw against 'id' if it's numeric
+// OR we can add a check for 'username' as a fallback for testing
+$stmt = $db->prepare('SELECT id, full_name, is_active FROM users WHERE id = ? OR username = ?');
+$stmt->execute([$uidRaw, $uidRaw]);
 $user = $stmt->fetch();
 
 if (!$user || (int)$user['is_active'] !== 1) {

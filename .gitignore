@@ -14,3 +14,6 @@ vendor/
 # Temporary files
 *.tmp
 *.log
+
+# Large Assets
+app_prototype_video/

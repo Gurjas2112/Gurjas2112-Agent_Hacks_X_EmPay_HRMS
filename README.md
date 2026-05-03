@@ -17,6 +17,37 @@
 
 ---
 
+## ✨ Core Modules & Features
+
+EmPay is a high-fidelity HRMS solution designed for the Odoo Hackathon, featuring a modern, responsive UI and robust backend logic.
+
+### 📊 1. Real-Time Analytics Dashboard
+- **Stat Cards**: Instant visibility into Total Employees, Present Today, and Pending Leaves.
+- **Dynamic Charts**: Interactive SVG charts (via OWL) for Monthly Salary Trends and Leave Distribution.
+- **Activity Feed**: Real-time notifications for employee check-ins and system events.
+
+### 🕒 2. Intelligent Attendance & Scheduling
+- **NFC-Ready Terminal**: Support for NFC-based attendance (integrated via `nfc_attendance.php`).
+- **One-Click Check-In**: Simplified dashboard widget for employees to clock in/out instantly.
+- **Automated Scheduling**: Shift assignment engine with automatic email notifications.
+
+### 📝 3. Seamless Leave Management
+- **Self-Service Portal**: Employees can apply for Annual, Sick, or Casual leave and track balances.
+- **Approval Workflow**: Multi-tier HR decision engine for approving/rejecting requests.
+- **Priority Sorting**: Smart sorting that prioritizes pending and urgent requests for HR officers.
+
+### 💰 4. Production-Ready Payroll
+- **Statutory Compliance**: Automated calculations for PF (12%), Professional Tax, and Income Tax.
+- **Proration Engine**: Smart salary calculation based on attendance and unpaid leaves.
+- **High-Fidelity Payslips**: Professional, printable HTML/PDF payslips with detailed breakdowns.
+
+### 📥 5. Bulk Onboarding & Auth
+- **CSV Import Engine**: Batch create employee profiles with duplicate detection and automated field mapping.
+- **Welcome Automations**: Triggers professional welcome emails with login credentials upon account creation.
+- **Premium Auth**: Modern, branded login/signup experience with Role-Based Access Control (RBAC).
+
+---
+
 ## 🏗️ Detailed Project Architecture
 
 EmPay HRMS is architected for speed, modularity, and scalability. Below is a detailed map of all core directories and their respective files.
@@ -35,46 +66,19 @@ EmPay HRMS is architected for speed, modularity, and scalability. Below is a det
 - **`auth/role_check.php`**: Advanced RBAC (Role-Based Access Control) utility for granular feature access.
 
 ### ⚙️ 3. Backend Logic (`/backend`)
-- **`/auth`**: 
-  - `login_handler.php`: Verifies credentials and manages session initialization.
-  - `register_handler.php`: Handles new user signups with secure hashing.
-- **`/users`**:
-  - `create_user.php`: Manual employee registration logic.
-  - `update_user.php`: Profile modification and status management.
-  - `import_csv.php`: **(New)** Bulk employee onboarding engine with duplicate detection.
-  - `send_welcome_emails.php`: **(New)** Triggers batch credential emails for new hires.
-- **`/schedule`**:
-  - `assign.php`: Logic for assigning shifts with instant email triggers to employees.
-- **`/attendance`**:
-  - `mark_attendance.php`: Handles real-time check-in/check-out with status validation.
-- **`/leave`**:
-  - `apply_leave.php`: Logic for employee leave requests.
-  - `approve_leave.php`: HR decision engine for leave management.
-- **`/payroll`**:
-  - `generate_salary.php`: Automated payroll calculation and payslip generation.
+- **`/auth`**: Login/Signup handlers with secure hashing.
+- **`/users`**: Employee CRUD, **Bulk CSV Import**, and automated welcome emails.
+- **`/schedule`**: Shift assignment logic with email triggers.
+- **`/attendance`**: Real-time validation and NFC-integration handlers.
+- **`/leave`**: Leave request application and multi-state approval engine.
+- **`/payroll`**: Salary calculation engine with statutory compliance.
 
 ### 🖼️ 4. Frontend & User Interface (`/frontend`)
-- **`/dashboard`**: `index.php` - Role-specific metrics and real-time status updates.
-- **`/users`**:
-  - `index.php`: Searchable Kanban directory of all staff.
-  - `form.php`: Detailed Profile & Edit interface with icon-labeled sections.
-  - `import.php`: **(New)** Drag-and-drop CSV upload and selection UI.
-- **`/attendance`**:
-  - `mark.php`: Employee attendance terminal.
-  - `log.php`: Comprehensive attendance history for HR audits.
-- **`/leave`**:
-  - `apply.php`: Leave application form for employees.
-  - `manage.php`: Review board for Admin/HR to approve/reject leaves.
-- **`/payroll`**:
-  - `index.php`: Payroll summary dashboard for officers.
-  - `payslip.php`: High-fidelity, printable HTML payslip generator.
-
-### 🧱 5. Shared Components & Entry (`/components`, `/public`)
-- **`components/header.php`**: Global meta-tags, Tailwind configurations, and design tokens.
-- **`components/sidebar.php`**: Context-aware navigation sidebar.
-- **`components/navbar.php`**: Breadcrumbs and user action center.
-- **`components/footer.php`**: Script initializers for Lucide and animations.
-- **`public/index.php`**: The main router that resolves all application pages.
+- **`/dashboard`**: Role-specific metrics, SVG charts, and real-time status updates.
+- **`/users`**: Searchable Kanban directory and high-fidelity profile forms.
+- **`/attendance`**: Employee terminal and HR audit logs.
+- **`/leave`**: Leave application and management interfaces.
+- **`/payroll`**: Payroll dashboard and high-fidelity payslip generator.
 
 ---
 
@@ -92,4 +96,4 @@ EmPay HRMS is architected for speed, modularity, and scalability. Below is a det
 4. Access the app at `http://localhost/Agent_Hacks_X_EmPay_HRMS/php_mysql_html_css_js_web_interface/public/`.
 
 ---
-*Built for the Odoo × VIT Pune Hackathon 2026.*
+*Built for the Odoo × VIT Pune Hackathon 2026 by Team Agent Hacks.*
