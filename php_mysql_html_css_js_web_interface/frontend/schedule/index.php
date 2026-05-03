@@ -43,7 +43,7 @@ if ($canAssign) {
     <h1 class="page-title">Schedules</h1>
     <?php if ($canAssign): ?>
     <button class="btn btn-primary" onclick="document.getElementById('assign-schedule-modal').classList.remove('hidden')">
-        <i data-lucide="plus" class="w-4 h-4"></i> Assign Schedule 
+        <i data-lucide="plus" class="w-4 h-4"></i> Assign Schedule
     </button>
     <?php endif; ?>
 </div>
