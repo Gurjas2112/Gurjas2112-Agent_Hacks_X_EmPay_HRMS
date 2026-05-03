@@ -6,6 +6,7 @@
 
 require_once __DIR__ . '/../config/app.php';
 require_once __DIR__ . '/../config/database.php';
+require_once __DIR__ . '/../config/geo_helpers.php';
 
 header('Content-Type: text/html; charset=UTF-8');
 
@@ -151,7 +152,7 @@ if (!$user || (int)$user['is_active'] !== 1) {
     exit;
 }
 
-$today = date('d-m-Y');
+$today = date('Y-m-d');
 $time = date('H:i:s');
 
 // Check existing attendance for today
@@ -182,12 +183,20 @@ if ($attendance && $attendance['check_out'] !== null) {
 
 // CHECK-IN LOGIC
 $status = $time > '09:15:00' ? 'late' : 'present';
-$stmt = $db->prepare('INSERT INTO attendance (user_id, date, check_in, status, ip_address) VALUES (?, ?, ?, ?, ?)');
+
+// Get Office Location for Map Sync
+$officeLat = getSetting('office_lat', 18.5204);
+$officeLng = getSetting('office_lng', 73.8567);
+
+$stmt = $db->prepare('INSERT INTO attendance (user_id, date, check_in, status, latitude, longitude, location_type, ip_address) VALUES (?, ?, ?, ?, ?, ?, ?, ?)');
 $stmt->execute([
     $uid,
     $today,
     $time,
     $status,
+    $officeLat,
+    $officeLng,
+    'office',
     $_SERVER['REMOTE_ADDR'] ?? '',
 ]);
 

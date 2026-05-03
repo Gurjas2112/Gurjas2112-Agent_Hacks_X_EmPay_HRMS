@@ -341,14 +341,15 @@ SELECT
     u.email,
     u.phone,
     u.role,
-    u.designation,
+    des.name AS designation,
     d.name AS department,
     u.basic_salary,
     u.date_of_join,
     u.is_active,
     u.last_login
 FROM `users` u
-LEFT JOIN `departments` d ON u.department_id = d.id;
+LEFT JOIN `departments` d ON u.department_id = d.id
+LEFT JOIN `designations` des ON u.designation_id = des.id;
 
 -- Monthly attendance summary
 CREATE OR REPLACE VIEW `v_attendance_summary` AS
@@ -371,7 +372,7 @@ SELECT
     p.user_id,
     u.full_name,
     d.name AS department,
-    u.designation,
+    des.name AS designation,
     p.month,
     p.working_days,
     p.present_days,
@@ -390,4 +391,5 @@ SELECT
     p.paid_on
 FROM `payroll` p
 JOIN `users` u ON p.user_id = u.id
-LEFT JOIN `departments` d ON u.department_id = d.id;
+LEFT JOIN `departments` d ON u.department_id = d.id
+LEFT JOIN `designations` des ON u.designation_id = des.id;

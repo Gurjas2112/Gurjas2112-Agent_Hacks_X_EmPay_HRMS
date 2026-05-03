@@ -16,12 +16,12 @@ $officeRadius = getSetting('office_radius', 50) ?: 50;
 
 // Fetch today's attendance with location and job details
 $stmt = $db->query("
-    SELECT a.*, u.full_name, d.name as dept_name, des.name as job_title 
+    SELECT a.*, u.full_name, u.role, d.name as dept_name, des.name as job_title 
     FROM attendance a 
     JOIN users u ON a.user_id = u.id 
     LEFT JOIN departments d ON u.department_id = d.id
     LEFT JOIN designations des ON u.designation_id = des.id
-    WHERE a.latitude IS NOT NULL AND a.date = CURRENT_DATE
+    WHERE a.date = CURRENT_DATE
 ");
 $attendees = $stmt->fetchAll();
 ?>
@@ -109,16 +109,22 @@ $attendees = $stmt->fetchAll();
         </div>
     `);
 
-    // Employee Markers
     const attendees = <?= json_encode($attendees) ?>;
+    // Auto-fit bounds if markers exist
+    const markerGroup = [];
     attendees.forEach(emp => {
         if (emp.latitude && emp.longitude) {
+            const isAdmin = emp.role === 'admin';
             const isOffice = emp.location_type === 'office';
-            const color = isOffice ? '#10B981' : '#714B67'; // Vibrant Green vs Brand Purple
-            const shadow = isOffice ? 'rgba(16, 185, 129, 0.3)' : 'rgba(113, 75, 103, 0.3)';
-            const animClass = isOffice ? 'pulse-green' : 'pulse-purple';
             
-            // Custom Pulse Marker with dynamic animations
+            let color = isOffice ? '#10B981' : '#714B67'; 
+            if (isAdmin) color = '#F59E0B'; // Amber/Gold for Admin
+
+            let shadow = isOffice ? 'rgba(16, 185, 129, 0.3)' : 'rgba(113, 75, 103, 0.3)';
+            if (isAdmin) shadow = 'rgba(245, 158, 11, 0.4)';
+
+            const animClass = isAdmin ? 'pulse-amber' : (isOffice ? 'pulse-green' : 'pulse-purple');
+            
             const icon = L.divIcon({
                 className: 'custom-marker',
                 html: `
@@ -132,8 +138,8 @@ $attendees = $stmt->fetchAll();
             });
 
             const marker = L.marker([emp.latitude, emp.longitude], {icon: icon}).addTo(map);
+            markerGroup.push(marker);
             
-            // Light Glassmorphism Popup
             marker.bindPopup(`
                 <div class="glass-popup" style="font-family: 'Outfit', sans-serif; min-width: 170px; color: #1A1A1A;">
                     <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 8px;">
@@ -163,9 +169,8 @@ $attendees = $stmt->fetchAll();
         }
     });
 
-    // Auto-fit bounds if markers exist
-    if (attendees.length > 0) {
-        const group = new L.featureGroup([officeCircle, ...attendees.map(a => L.marker([a.latitude, a.longitude]))]);
+    if (markerGroup.length > 0) {
+        const group = new L.featureGroup([officeCircle, ...markerGroup]);
         map.fitBounds(group.getBounds().pad(0.1));
     }
 </script>
@@ -199,6 +204,7 @@ $attendees = $stmt->fetchAll();
     }
     .pulse-green { animation: pulse 2s infinite ease-out; }
     .pulse-purple { animation: pulse 2s infinite ease-out; animation-delay: 1s; }
+    .pulse-amber { animation: pulse 1.5s infinite ease-out; }
 </style>
 
 <?php require_once COMPONENTS_PATH . 'footer.php'; ?>

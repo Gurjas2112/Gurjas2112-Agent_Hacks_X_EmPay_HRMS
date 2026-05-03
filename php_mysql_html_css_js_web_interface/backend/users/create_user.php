@@ -32,7 +32,7 @@ if (empty($fullName) || empty($email) || empty($username)) {
 }
 
 $departmentId = (int)$_POST['department_id'] ?: null;
-$designation = trim($_POST['designation'] ?? '');
+$designationId = (int)$_POST['designation_id'] ?: null;
 $dateOfJoin = $_POST['date_of_join'] ?? null;
 
 try {
@@ -49,8 +49,8 @@ try {
 
     // Use a temporary password for initial insert
     $tempPassword = password_hash(bin2hex(random_bytes(10)), PASSWORD_DEFAULT);
-    $stmt = $db->prepare("INSERT INTO users (full_name, email, username, password, role, department_id, designation, date_of_join, phone) VALUES (?,?,?,?,?,?,?,?,?)");
-    $stmt->execute([$fullName, $email, $username, $tempPassword, $role, $departmentId, $designation, $dateOfJoin, $phone]);
+    $stmt = $db->prepare("INSERT INTO users (full_name, email, username, password, role, department_id, designation_id, date_of_join, phone) VALUES (?,?,?,?,?,?,?,?,?)");
+    $stmt->execute([$fullName, $email, $username, $tempPassword, $role, $departmentId, $designationId, $dateOfJoin, $phone]);
     
     $newUserId = $db->lastInsertId();
     $empIdPassword = "EMP" . $newUserId . "2002";

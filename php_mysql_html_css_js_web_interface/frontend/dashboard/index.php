@@ -16,7 +16,6 @@ $db = getDBConnection();
 $userId = getUserId();
 $role = getUserRole();
 
-$openPositions = 3; // Mocked for now
 $totalEmployees = 0;
 
 if ($role === ROLE_ADMIN || $role === ROLE_HR || $role === ROLE_PAYROLL) {
@@ -107,17 +106,11 @@ if ($role === ROLE_ADMIN || $role === ROLE_HR || $role === ROLE_PAYROLL) {
             <p class="caption mt-1">Leave requests awaiting action</p>
         </div>
 
-        <?php if ($role === ROLE_ADMIN): ?>
+        <?php if ($role === ROLE_ADMIN || $role === ROLE_HR): ?>
         <div class="stat-card">
             <p class="stat-label">Total Employees</p>
             <p class="stat-value stat-value-neutral"><?= $totalEmployees ?></p>
             <p class="caption mt-1">Active staff members</p>
-        </div>
-        <?php elseif ($role === ROLE_HR): ?>
-        <div class="stat-card">
-            <p class="stat-label">Open Positions</p>
-            <p class="stat-value stat-value-neutral"><?= $openPositions ?></p>
-            <p class="caption mt-1">Vacant roles in active recruitment</p>
         </div>
         <?php endif; ?>
     </div>

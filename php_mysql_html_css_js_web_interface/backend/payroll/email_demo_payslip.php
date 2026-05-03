@@ -21,10 +21,11 @@ if (!$id) {
 }
 
 $db = getDBConnection();
-$stmt = $db->prepare("SELECT p.*, u.full_name, u.email, u.designation, d.name as dept_name 
+$stmt = $db->prepare("SELECT p.*, u.full_name, u.email, des.name as designation, d.name as dept_name 
                       FROM payroll p 
                       JOIN users u ON p.user_id = u.id 
                       LEFT JOIN departments d ON u.department_id = d.id
+                      LEFT JOIN designations des ON u.designation_id = des.id
                       WHERE p.id = ?");
 $stmt->execute([$id]);
 $p = $stmt->fetch();

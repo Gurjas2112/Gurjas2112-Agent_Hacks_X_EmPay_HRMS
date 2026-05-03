@@ -50,7 +50,7 @@ $filteredEmployees = array_filter($employees, function($emp) use ($search, $filt
 });
 
 $totalEmployees = count($filteredEmployees);
-$limit = 6;
+$limit = 1000; // Show all employees on a single page
 $page = isset($_GET['p']) ? (int)$_GET['p'] : 1;
 $offset = ($page - 1) * $limit;
 $groupBy = $_GET['group'] ?? 'none';

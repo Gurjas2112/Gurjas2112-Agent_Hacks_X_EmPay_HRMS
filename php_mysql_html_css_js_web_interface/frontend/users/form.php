@@ -21,7 +21,7 @@ require_once COMPONENTS_PATH . 'sidebar.php';
 
 $user = [
     'full_name' => '', 'email' => '', 'username' => '', 'phone' => '',
-    'department_id' => '', 'designation' => '', 'role' => 'employee', 'date_of_join' => ''
+    'department_id' => '', 'designation_id' => '', 'role' => 'employee', 'date_of_join' => ''
 ];
 
 $db = getDBConnection();
@@ -34,7 +34,8 @@ if ($isEdit) {
     }
 }
 
-$departments = $db->query("SELECT id, name FROM departments")->fetchAll();
+$departments = $db->query("SELECT id, name FROM departments ORDER BY name ASC")->fetchAll();
+$designations = $db->query("SELECT id, name FROM designations ORDER BY name ASC")->fetchAll();
 ?>
 
 
@@ -83,7 +84,12 @@ $departments = $db->query("SELECT id, name FROM departments")->fetchAll();
             </div>
             <div>
                 <label class="form-label block">Designation</label>
-                <input type="text" name="designation" value="<?= htmlspecialchars($user['designation']) ?>" placeholder="Software Engineer" class="form-input" <?= !$canEdit ? 'readonly' : '' ?>>
+                <select name="designation_id" class="form-input" <?= !$canEdit ? 'disabled' : '' ?>>
+                    <option value="">Select designation</option>
+                    <?php foreach ($designations as $desig) { ?>
+                    <option value="<?= $desig['id'] ?>" <?= ($user['designation_id'] ?? '') == $desig['id'] ? 'selected' : '' ?>><?= htmlspecialchars($desig['name']) ?></option>
+                    <?php } ?>
+                </select>
             </div>
             <div>
                 <label class="form-label block">Role *</label>

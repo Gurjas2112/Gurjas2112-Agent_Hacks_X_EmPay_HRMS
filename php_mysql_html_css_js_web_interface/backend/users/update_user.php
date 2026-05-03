@@ -31,13 +31,13 @@ if ($userId <= 0 || empty($fullName) || empty($email)) {
 }
 
 $departmentId = (int)$_POST['department_id'] ?: null;
-$designation = trim($_POST['designation'] ?? '');
+$designationId = (int)$_POST['designation_id'] ?: null;
 $dateOfJoin = $_POST['date_of_join'] ?? null;
 
 try {
     $db = getDBConnection();
-    $stmt = $db->prepare("UPDATE users SET full_name=?, email=?, username=?, role=?, department_id=?, designation=?, date_of_join=?, phone=? WHERE id=?");
-    $stmt->execute([$fullName, $email, $username, $role, $departmentId, $designation, $dateOfJoin, $phone, $userId]);
+    $stmt = $db->prepare("UPDATE users SET full_name=?, email=?, username=?, role=?, department_id=?, designation_id=?, date_of_join=?, phone=? WHERE id=?");
+    $stmt->execute([$fullName, $email, $username, $role, $departmentId, $designationId, $dateOfJoin, $phone, $userId]);
 } catch (PDOException $e) {
     error_log("DB Error update user: " . $e->getMessage());
     setFlash('error', 'Database error: ' . $e->getMessage());
