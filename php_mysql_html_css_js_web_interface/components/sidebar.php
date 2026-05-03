@@ -21,6 +21,7 @@ $sidebarItems = [
 
     ['label' => 'Mark Attendance','icon' => 'clock',            'page' => 'attendance/mark',   'roles' => [ROLE_ADMIN, ROLE_EMPLOYEE, ROLE_HR, ROLE_PAYROLL]],
     ['label' => 'Attendance Log','icon' => 'calendar-days',     'page' => 'attendance/history','roles' => [ROLE_ADMIN, ROLE_EMPLOYEE, ROLE_HR, ROLE_PAYROLL]],
+    ['label' => 'Attendance Map','icon' => 'map',              'page' => 'attendance/map',     'roles' => [ROLE_ADMIN, ROLE_HR]],
     ['label' => 'Apply Leave',   'icon' => 'calendar-plus',    'page' => 'leave/apply',       'roles' => [ROLE_ADMIN, ROLE_EMPLOYEE, ROLE_HR, ROLE_PAYROLL]],
     ['label' => 'Manage Leaves', 'icon' => 'calendar-off',     'page' => 'leave/manage',      'roles' => [ROLE_ADMIN, ROLE_HR, ROLE_PAYROLL]],
     ['label' => 'Schedule',      'icon' => 'calendar-clock',   'page' => 'schedule/index',    'roles' => [ROLE_ADMIN, ROLE_EMPLOYEE, ROLE_HR, ROLE_PAYROLL]],
@@ -28,6 +29,7 @@ $sidebarItems = [
     ['label' => 'My Payslip',    'icon' => 'file-text',        'page' => 'payroll/my_payslips', 'roles' => [ROLE_ADMIN, ROLE_EMPLOYEE, ROLE_HR, ROLE_PAYROLL]],
     ['label' => 'Reports',       'icon' => 'bar-chart-3',      'page' => 'reports/index',      'roles' => [ROLE_ADMIN, ROLE_PAYROLL]],
     ['label' => 'Settings',      'icon' => 'settings',         'page' => 'admin/settings',     'roles' => [ROLE_ADMIN]],
+    ['label' => 'Geo Settings',  'icon' => 'map-pin',          'page' => 'admin/geo_settings', 'roles' => [ROLE_ADMIN]],
 ];
 
 // Fetch Real Dept Counts for Sidebar

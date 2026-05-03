@@ -29,6 +29,10 @@ $statusClass = match($status) {
     'absent' => 'text-danger-text',
     default => 'text-muted'
 };
+
+$locationType = $todayRecord['location_type'] ?? null;
+$lat = $todayRecord['latitude'] ?? null;
+$lng = $todayRecord['longitude'] ?? null;
 ?>
 
 <div class="max-w-lg mx-auto">
@@ -51,13 +55,31 @@ $statusClass = match($status) {
         <form action="<?= BASE_URL ?>../backend/attendance/mark_attendance.php" method="POST" class="flex items-center justify-center gap-3">
             <input type="hidden" name="user_id" value="<?= getUserId() ?>">
             <input type="hidden" name="date" value="<?= date('Y-m-d') ?>">
-            <button type="submit" name="action" value="checkin" class="btn btn-primary">
+            <button type="submit" name="action" value="checkin" class="btn btn-secondary">
                 <i data-lucide="log-in" class="w-4 h-4"></i> Check In
             </button>
             <button type="submit" name="action" value="checkout" class="btn btn-danger">
                 <i data-lucide="log-out" class="w-4 h-4"></i> Check Out
             </button>
         </form>
+
+        <div class="mt-6 pt-6 border-t border-surface-200">
+            <button id="geo-btn" onclick="markGeoAttendance()" class="btn btn-primary w-full py-3" <?= $todayRecord ? 'disabled' : '' ?>>
+                <i data-lucide="map-pin" class="w-4 h-4"></i> 
+                <span id="geo-btn-text">Mark Attendance with Location</span>
+            </button>
+            
+            <?php if ($locationType): ?>
+            <div class="mt-3 flex items-center justify-center gap-2">
+                <span class="badge <?= $locationType === 'office' ? 'badge-present' : 'badge-draft' ?> capitalize">
+                    <i data-lucide="<?= $locationType === 'office' ? 'building' : 'home' ?>" class="w-3 h-3"></i>
+                    <?= $locationType ?>
+                </span>
+                <span class="text-[11px] text-muted"><?= $lat ?>, <?= $lng ?></span>
+            </div>
+            <?php endif; ?>
+            <p id="geo-msg" class="text-[12px] mt-2 hidden"></p>
+        </div>
     </div>
 
     <!-- Week Summary — stat cards -->
@@ -95,6 +117,65 @@ function updateClock() {
 }
 setInterval(updateClock, 1000);
 updateClock();
+
+async function markGeoAttendance() {
+    const btn = document.getElementById('geo-btn');
+    const btnText = document.getElementById('geo-btn-text');
+    const msg = document.getElementById('geo-msg');
+
+    if (!navigator.geolocation) {
+        alert("Geolocation is not supported by your browser");
+        return;
+    }
+
+    btn.disabled = true;
+    btnText.innerText = "Fetching location...";
+    msg.classList.remove('hidden');
+    msg.innerText = "Waiting for GPS...";
+    msg.className = "text-[12px] mt-2 text-muted";
+
+    navigator.geolocation.getCurrentPosition(
+        async (position) => {
+            const { latitude, longitude } = position.coords;
+            btnText.innerText = "Submitting...";
+            
+            try {
+                const formData = new FormData();
+                formData.append('latitude', latitude);
+                formData.append('longitude', longitude);
+
+                const response = await fetch('<?= BASE_URL ?>../backend/attendance_geo.php', {
+                    method: 'POST',
+                    body: formData
+                });
+
+                const result = await response.json();
+                if (result.success) {
+                    msg.innerText = `${result.message} (${result.location_type})`;
+                    msg.className = "text-[12px] mt-2 text-success-text";
+                    setTimeout(() => window.location.reload(), 1500);
+                } else {
+                    msg.innerText = result.message;
+                    msg.className = "text-[12px] mt-2 text-danger-text";
+                    btn.disabled = false;
+                    btnText.innerText = "Mark Attendance with Location";
+                }
+            } catch (error) {
+                msg.innerText = "Error submitting attendance";
+                msg.className = "text-[12px] mt-2 text-danger-text";
+                btn.disabled = false;
+                btnText.innerText = "Mark Attendance with Location";
+            }
+        },
+        (error) => {
+            msg.innerText = "Permission denied or location unavailable";
+            msg.className = "text-[12px] mt-2 text-danger-text";
+            btn.disabled = false;
+            btnText.innerText = "Mark Attendance with Location";
+        },
+        { enableHighAccuracy: true, timeout: 5000, maximumAge: 0 }
+    );
+}
 </script>
 
 <?php require_once COMPONENTS_PATH . 'footer.php'; ?>
