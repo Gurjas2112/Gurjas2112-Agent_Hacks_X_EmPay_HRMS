@@ -13,6 +13,11 @@ require_once __DIR__ . '/../config/database.php';
 function initDatabase() {
     $db = getDBConnection();
     
+    if (!$db) {
+        error_log("EmPay Database Init Error: Could not connect to database.");
+        return false;
+    }
+    
     // Create email_logs table for tracking all automated communication
     $sql = "CREATE TABLE IF NOT EXISTS email_logs (
         id INT AUTO_INCREMENT PRIMARY KEY,
