@@ -51,18 +51,60 @@ $userRole = getUserRole();
         <?php
         // Fetch pending items for badge (HR/Admin only)
         $pendingCount = 0;
+        $pendingLeaves = [];
         if ($userRole === ROLE_ADMIN || $userRole === ROLE_HR) {
             $db = getDBConnection();
-            $pendingCount = (int)$db->query("SELECT COUNT(*) FROM leaves WHERE status = 'pending'")->fetchColumn();
+            $stmt = $db->query("SELECT l.*, u.full_name as name, t.name as type 
+                FROM leaves l 
+                JOIN users u ON l.user_id = u.id 
+                JOIN leave_types t ON l.leave_type_id = t.id 
+                WHERE l.status = 'pending' 
+                ORDER BY l.created_at DESC 
+                LIMIT 10");
+            $pendingLeaves = $stmt->fetchAll();
+            $pendingCount = count($pendingLeaves);
         }
         ?>
         <div class="relative">
-            <button class="w-7 h-7 rounded-full bg-white/15 flex items-center justify-center hover:bg-white/25 transition-colors" aria-label="Notifications">
+            <button onclick="toggleNotifMenu()" class="w-7 h-7 rounded-full bg-white/15 flex items-center justify-center hover:bg-white/25 transition-colors" aria-label="Notifications">
                 <i data-lucide="bell" class="w-3.5 h-3.5"></i>
                 <?php if ($pendingCount > 0): ?>
                     <span class="absolute -top-1 -right-1 w-3.5 h-3.5 bg-danger text-[8px] flex items-center justify-center rounded-full ring-1 ring-brand"><?= $pendingCount ?></span>
                 <?php endif; ?>
             </button>
+            <div id="notif-dropdown" class="hidden absolute top-full right-0 mt-1 w-72 bg-white border border-surface-200 rounded-md shadow-lg z-[100] text-txt">
+                <div class="px-4 py-3 border-b border-surface-100 flex items-center justify-between">
+                    <p class="text-[13px] font-medium">Notifications</p>
+                    <?php if ($pendingCount > 0): ?>
+                    <span class="badge badge-pending"><?= $pendingCount ?> pending</span>
+                    <?php endif; ?>
+                </div>
+                <div class="max-h-64 overflow-y-auto">
+                    <?php if (empty($pendingLeaves)): ?>
+                    <div class="px-4 py-6 text-center text-muted text-[12px]">
+                        <i data-lucide="inbox" class="w-6 h-6 mx-auto mb-2 opacity-50"></i>
+                        <p>No pending notifications</p>
+                    </div>
+                    <?php else: ?>
+                    <?php foreach ($pendingLeaves as $pl): ?>
+                    <div class="px-4 py-3 border-b border-surface-100 hover:bg-surface-50">
+                        <div class="flex items-center gap-2">
+                            <div class="kanban-avatar w-6 h-6 text-[9px]"><?= strtoupper(substr($pl['name'], 0, 2)) ?></div>
+                            <div class="flex-1 min-w-0">
+                                <p class="text-[12px] font-medium truncate"><?= htmlspecialchars($pl['name']) ?></p>
+                                <p class="text-[11px] text-muted"><?= htmlspecialchars($pl['type']) ?> · <?= floor($pl['days']) ?> day<?= $pl['days'] > 1 ? 's' : '' ?></p>
+                            </div>
+                        </div>
+                    </div>
+                    <?php endforeach; ?>
+                    <?php endif; ?>
+                </div>
+                <?php if ($pendingCount > 0): ?>
+                <div class="border-t border-surface-100">
+                    <a href="<?= BASE_URL ?>index.php?page=leave/manage&status=pending" class="block px-4 py-2 text-[12px] text-brand text-center hover:bg-surface-50 font-medium">View All Requests</a>
+                </div>
+                <?php endif; ?>
+            </div>
         </div>
         <button onclick="window.open('https://odoo.com/help', '_blank')" class="w-7 h-7 rounded-full bg-white/15 flex items-center justify-center hover:bg-white/25 transition-colors" aria-label="Help">
             <i data-lucide="help-circle" class="w-3.5 h-3.5"></i>
@@ -92,12 +134,21 @@ $userRole = getUserRole();
 function toggleUserMenu() {
     document.getElementById('user-dropdown').classList.toggle('hidden');
 }
-// Close dropdown when clicking outside
+function toggleNotifMenu() {
+    document.getElementById('notif-dropdown').classList.toggle('hidden');
+}
+// Close dropdowns when clicking outside
 window.addEventListener('click', function(e) {
     if (!e.target.closest('#user-dropdown') && !e.target.closest('button[onclick="toggleUserMenu()"]')) {
         var dropdown = document.getElementById('user-dropdown');
         if (dropdown && !dropdown.classList.contains('hidden')) {
             dropdown.classList.add('hidden');
+        }
+    }
+    if (!e.target.closest('#notif-dropdown') && !e.target.closest('button[onclick="toggleNotifMenu()"]')) {
+        var ndropdown = document.getElementById('notif-dropdown');
+        if (ndropdown && !ndropdown.classList.contains('hidden')) {
+            ndropdown.classList.add('hidden');
         }
     }
 });

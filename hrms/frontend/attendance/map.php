@@ -16,11 +16,10 @@ $officeRadius = getSetting('office_radius', 50) ?: 50;
 
 // Fetch today's attendance with location and job details
 $stmt = $db->query("
-    SELECT a.*, u.full_name, u.role, d.name as dept_name, des.name as job_title 
+    SELECT a.*, u.full_name, u.role, u.designation as job_title, d.name as dept_name
     FROM attendance a 
     JOIN users u ON a.user_id = u.id 
     LEFT JOIN departments d ON u.department_id = d.id
-    LEFT JOIN designations des ON u.designation_id = des.id
     WHERE a.date = CURRENT_DATE
 ");
 $attendees = $stmt->fetchAll();

@@ -12,7 +12,7 @@ define('APP_TAGLINE', 'Human Resource Management System');
 // Base URL - Detect automatically for ngrok/local support
 $protocol = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on') ? "https" : "http";
 $host = $_SERVER['HTTP_HOST'] ?? 'localhost';
-define('BASE_URL', $protocol . "://" . $host . '/Agent_Hacks_X_EmPay_HRMS/php_mysql_html_css_js_web_interface/public/');
+define('BASE_URL', $protocol . "://" . $host . '/nfc-office-erp/hrms/public/');
 define('ASSET_URL', BASE_URL . 'assets/');
 
 // Root path
